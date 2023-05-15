@@ -87,6 +87,8 @@ public class VentanaController implements Initializable {
         if (archivoExcel != null && archivoExcel.exists() && carpetaImagenes != null && carpetaImagenes.exists()) {
             try {
                 if (isNumeric(fontSizeTextInput.getText()) && isNumeric(imageSizeTextInput.getText())) {
+                    logTextArea.setStyle("-fx-text-fill: darkgreen;");
+                    logTextArea.appendText("Generando PDF...\n");
                     generarPDF(Float.parseFloat(fontSizeTextInput.getText()), Float.parseFloat(imageSizeTextInput.getText()),
                             Float.parseFloat(pageWidthTextInput.getText()), Float.parseFloat(pageHeightTextInput.getText()), logTextArea);
                     logTextArea.setStyle("-fx-text-fill: darkgreen;");
@@ -110,6 +112,7 @@ public class VentanaController implements Initializable {
     private static void generarPDF(Float fontSize, Float imageSize, Float pageWidth, Float pageHeight, TextArea logTextArea) throws Exception {
         BasicConfigurator.configure(); // configure Log4j
 
+        final String[] supportedExtensions = {".jpg", ".jpeg", ".png", ".bmp"};
         // Read the Excel file
         final FileInputStream inputStream = new FileInputStream((archivoExcel.getAbsolutePath()));
         final Workbook workbook = new XSSFWorkbook(inputStream);
@@ -145,48 +148,72 @@ public class VentanaController implements Initializable {
             // Load the product image
             Image image = null;
             if (codigo != 0) {
-                final String imagePath = carpetaImagenes.getAbsolutePath() + "\\" + codigo + ".jpg";
-                File imageFile = new File(imagePath);
+
+                File imageFile = null;
+
+                for (String extension : supportedExtensions) {
+                    File file = new File(carpetaImagenes.getAbsolutePath(), codigo + extension);
+                    if (file.isFile()) {
+                        imageFile = file;
+                        break;
+                    }
+                }
+
                 if (imageFile != null && imageFile.exists()) {
                     byte[] imageData = FileUtils.readFileToByteArray(imageFile);
-                    // Add the product image to the PDF document
                     image = new Image(ImageDataFactory.create(imageData));
-                    image.setHeight(imageSize);
-                    image.setWidth(imageSize);
-//            image.setMarginTop(100);
-//            image.setMarginBottom(100);
-//            image.setAutoScale(true);
-                    image.setHorizontalAlignment(HorizontalAlignment.CENTER);
-                    image.setMarginBottom(0);
                 } else {
+                    byte[] imageData = FileUtils.readFileToByteArray(new File(carpetaImagenes.getAbsolutePath(), "SINIMAGEN.jpg"));
+                    image = new Image(ImageDataFactory.create(imageData));
                     logTextArea.setStyle("-fx-text-fill: firebrick;");
-                    logTextArea.appendText("Advertencia: La imagen \"" + codigo + ".jpg\" no existe.\n");
+                    logTextArea.appendText("Advertencia: La imagen \"" + codigo + "\" no existe.\n");
                 }
+//                image.setMarginTop(100);
+//                image.setMarginBottom(100);
+//                image.setAutoScale(true);
+                image.setHeight(imageSize);
+                image.setWidth(imageSize);
+                image.setHorizontalAlignment(HorizontalAlignment.CENTER);
+                image.setMarginBottom(0);
             }
 
             // Add the product data to the PDF document
-            Paragraph p1 = new Paragraph("CODIGO: " + codigo);
-            Paragraph p2 = new Paragraph("Producto: " + producto);
-            Paragraph p3 = new Paragraph("Rubro: " + rubro);
-            Paragraph p4 = new Paragraph("Sub rubro: " + subRubro);
-            Paragraph p5 = new Paragraph("Marca: " + marca);
-            Paragraph p6 = new Paragraph("Precio de venta: $" + String.format("%.2f", (precioVenta != 0) ? precioVenta : ""));
-            Paragraph p7 = new Paragraph("Código externo: " + codigoExterno);
+            Paragraph p1 = new Paragraph();
+            p1.add(new Text("CODIGO: ").setBold());
+            p1.add(new Text("" + codigo));
 
-            p1.setFontSize(fontSize).setBold().setTextAlignment(TextAlignment.CENTER);
-            p2.setFontSize(fontSize).setTextAlignment(TextAlignment.CENTER);
+            Paragraph p2 = new Paragraph(producto);
+
+            Paragraph p3 = new Paragraph();
+            p3.add(new Text("MARCA: ").setBold());
+            p3.add(new Text(marca));
+
+            Paragraph p4 = new Paragraph();
+            p4.add(new Text("RUBRO: ").setBold());
+            p4.add(new Text(rubro));
+
+            Paragraph p5 = new Paragraph();
+            p5.add(new Text("SUB RUBRO: ").setBold());
+            p5.add(new Text(subRubro));
+
+            Paragraph p6 = new Paragraph();
+            p6.add(new Text("COD. EXT.: ").setBold());
+            p6.add(new Text(codigoExterno));
+
+            Paragraph p7 = new Paragraph(precioVenta != 0 ? String.format("$ %(,.2f", precioVenta) : "$ --").setBold();
+
+            p1.setFontSize(fontSize).setTextAlignment(TextAlignment.CENTER);
+            p2.setFontSize(fontSize).setFontColor(new DeviceRgb(0, 0, 139)).setTextAlignment(TextAlignment.CENTER);
             p3.setFontSize(fontSize).setTextAlignment(TextAlignment.CENTER);
             p4.setFontSize(fontSize).setTextAlignment(TextAlignment.CENTER);
             p5.setFontSize(fontSize).setTextAlignment(TextAlignment.CENTER);
-            p6.setFontSize(fontSize).setFontColor(new DeviceRgb(45, 87, 44)).setTextAlignment(TextAlignment.CENTER);
-            p7.setFontSize(fontSize).setTextAlignment(TextAlignment.CENTER);
+            p6.setFontSize(fontSize).setTextAlignment(TextAlignment.CENTER);
+            p7.setFontSize(7).setFontColor(new DeviceRgb(139, 0, 0)).setTextAlignment(TextAlignment.CENTER);
 
             // Create a new table cell with the image and product data
             Cell cell = new Cell();
-            if (image != null) {
-                cell.add(image);
-            }
             cell
+                    .add(image)
                     .add(p1)
                     .add(p2)
                     .add(p3)
@@ -194,12 +221,8 @@ public class VentanaController implements Initializable {
                     .add(p5)
                     .add(p6)
                     .add(p7)
-                    .setTextAlignment(TextAlignment.CENTER);
-            if (image == null) {
-                cell.setVerticalAlignment(VerticalAlignment.BOTTOM);
-            } else {
-                cell.setVerticalAlignment(VerticalAlignment.TOP);
-            }
+                    .setTextAlignment(TextAlignment.CENTER)
+                    .setVerticalAlignment(VerticalAlignment.TOP);
 //            cell.setWidth(620f);
 //            cell.setHeight(100f);
             table.addCell(cell);

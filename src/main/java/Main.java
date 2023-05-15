@@ -10,7 +10,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        stage = primaryStage;
+        Stage stage = primaryStage;
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/Ventana.fxml"));
         primaryStage.setTitle("Generar PDF - Leo");
         primaryStage.setScene(new Scene(root));
