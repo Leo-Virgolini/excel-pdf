@@ -1,13 +1,7 @@
-# ProyectoVirgolini
+# Generador PDF
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.2.3.
+// Generador de un archivo PDF a partir de un Excel e imágenes de un catálogo de productos.
+// Hecho en JavaFX.
 
-// Proyecto Angular CLI con Angular.
 
-
-Run JSON Server:
-json-server --watch database/db.json --delay 100
-
-ADMIN:
-email: admin@admin.com
-password: asd123
+Ejecutar: mvn compile clean javafx:run
