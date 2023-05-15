@@ -1,0 +1,4 @@
+.git
+.idea
+catálogo.pdf
+/target
