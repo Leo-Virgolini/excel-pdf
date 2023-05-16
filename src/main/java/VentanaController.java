@@ -58,7 +58,6 @@ public class VentanaController implements Initializable {
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivo XLSX", "*.xlsx"));
         fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
         archivoExcel = fileChooser.showOpenDialog(Main.stage);
-
         if (archivoExcel != null) {
             ubicacionExcel.setText(archivoExcel.getAbsolutePath());
         } else {
@@ -73,7 +72,6 @@ public class VentanaController implements Initializable {
         directoryChooser.setTitle("Selecciona la carpeta donde están las imágenes");
         directoryChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
         carpetaImagenes = directoryChooser.showDialog(Main.stage);
-
         if (carpetaImagenes != null) {
             ubicacionImagenes.setText(carpetaImagenes.getAbsolutePath());
         } else {
