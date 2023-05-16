@@ -76,7 +76,7 @@
             <Font size="14.0" />
          </font>
       </TextField>
-      <TextField fx:id="imageSizeTextInput" alignment="CENTER" layoutX="125.0" layoutY="282.0" prefHeight="30.0" prefWidth="43.0" text="90">
+      <TextField fx:id="imageSizeTextInput" alignment="CENTER" layoutX="125.0" layoutY="282.0" prefHeight="30.0" prefWidth="43.0" text="89">
          <font>
             <Font size="14.0" />
          </font>

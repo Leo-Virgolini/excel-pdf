@@ -54,7 +54,7 @@ public class VentanaController implements Initializable {
     public void buscarExcel(ActionEvent event) {
         logTextArea.clear();
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Elige archivo XLSX");
+        fileChooser.setTitle("Elige archivo .XLSX");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivo XLSX", "*.xlsx"));
         fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
         archivoExcel = fileChooser.showOpenDialog(Main.stage);
@@ -86,7 +86,7 @@ public class VentanaController implements Initializable {
         logTextArea.clear();
         if (archivoExcel != null && archivoExcel.exists() && carpetaImagenes != null && carpetaImagenes.exists()) {
             try {
-                if (isNumeric(fontSizeTextInput.getText()) && isNumeric(imageSizeTextInput.getText())) {
+                if (isNumeric(fontSizeTextInput.getText()) && isNumeric(imageSizeTextInput.getText()) && isNumeric(pageWidthTextInput.getText()) && isNumeric(pageHeightTextInput.getText())) {
                     logTextArea.setStyle("-fx-text-fill: darkgreen;");
                     logTextArea.appendText("Generando PDF...\n");
                     generarPDF(Float.parseFloat(fontSizeTextInput.getText()), Float.parseFloat(imageSizeTextInput.getText()),
@@ -101,7 +101,7 @@ public class VentanaController implements Initializable {
             } catch (Exception e) {
                 e.printStackTrace();
                 logTextArea.setStyle("-fx-text-fill: firebrick;");
-                logTextArea.appendText("Error: " + e.getMessage() + "\n");
+                logTextArea.appendText("Error: " + e.getLocalizedMessage() + "\n");
             }
         } else {
             logTextArea.setStyle("-fx-text-fill: firebrick;");
@@ -122,9 +122,9 @@ public class VentanaController implements Initializable {
         final Document doc = new Document(pdfDoc, new PageSize(pageWidth, pageHeight), false);
         doc.setMargins(0, 0, 0, 0);
 
-        int rowCount = sheet.getPhysicalNumberOfRows();
-        int productsPerPage = 20;
-        int rowsPerPage = 5;
+        final int rowCount = sheet.getPhysicalNumberOfRows();
+        final int productsPerPage = 20;
+        final int rowsPerPage = 5;
 
         // Create a table with 4 columns and 5 rows per page
         Table table = new Table(new float[]{1, 1, 1, 1}).useAllAvailableWidth();
@@ -159,7 +159,7 @@ public class VentanaController implements Initializable {
                     }
                 }
 
-                if (imageFile != null && imageFile.exists()) {
+                if (imageFile != null && imageFile.isFile()) {
                     byte[] imageData = FileUtils.readFileToByteArray(imageFile);
                     image = new Image(ImageDataFactory.create(imageData));
                 } else {
@@ -246,11 +246,11 @@ public class VentanaController implements Initializable {
         }
 
         // Agregar numero de paginas
-        int numberOfPages = pdfDoc.getNumberOfPages();
+        final int numberOfPages = pdfDoc.getNumberOfPages();
         for (int i = 1; i <= numberOfPages; i++) {
-            // Write aligned text to the specified by parameters point
+            // Write aligned text to the specified parameters point
             doc.showTextAligned(new Paragraph(String.format("Página %s de %s", i, numberOfPages)).setFontSize(5).setFontColor(new DeviceRgb(128, 128, 128)),
-                    pdfDoc.getPage(i).getPageSize().getWidth() / 2, 5, i, TextAlignment.CENTER, VerticalAlignment.MIDDLE, 0);
+                    pdfDoc.getPage(i).getPageSize().getWidth() / 2, 3, i, TextAlignment.CENTER, VerticalAlignment.MIDDLE, 0);
         }
 
         // Close the PDF document
@@ -263,7 +263,7 @@ public class VentanaController implements Initializable {
             return false;
         }
         try {
-            double d = Float.parseFloat(strNum);
+            Float.parseFloat(strNum);
         } catch (NumberFormatException nfe) {
             return false;
         }
