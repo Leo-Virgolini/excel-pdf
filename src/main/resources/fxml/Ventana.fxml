@@ -43,7 +43,7 @@
             <Font size="15.0" />
          </font>
       </TextField>
-      <Button layoutX="500.0" layoutY="55.0" mnemonicParsing="false" onAction="#buscarImagenes" prefHeight="39.0" prefWidth="160.0" text="Examinar..." textFill="#bcb200">
+      <Button layoutX="500.0" layoutY="55.0" mnemonicParsing="false" onAction="#buscarImagenes" prefHeight="39.0" prefWidth="160.0" text="Examinar..." textFill="#9e9510">
          <font>
             <Font name="System Bold" size="17.0" />
          </font>
