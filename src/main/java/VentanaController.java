@@ -81,6 +81,7 @@ public class VentanaController implements Initializable {
                 });
                 service.setOnFailed(e -> {
                     logTextArea.setStyle("-fx-text-fill: firebrick;");
+                    service.getException().printStackTrace();
                     logTextArea.appendText("Error: " + service.getException().getLocalizedMessage() + "\n");
                 });
                 service.start();

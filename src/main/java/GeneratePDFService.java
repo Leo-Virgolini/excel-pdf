@@ -5,6 +5,8 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.*;
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.properties.AreaBreakType;
 import com.itextpdf.layout.properties.HorizontalAlignment;
 import com.itextpdf.layout.properties.TextAlignment;
@@ -14,14 +16,12 @@ import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.scene.control.TextArea;
 import org.apache.commons.io.FileUtils;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.math.BigDecimal;
 
 public class GeneratePDFService extends Service<Void> {
 
@@ -82,18 +82,22 @@ public class GeneratePDFService extends Service<Void> {
                 Row row = sheet.getRow(i);
 
                 // Read the product data from the Excel row
-//            CellType cellType = row.getCell(0).getCellType();
-                long codigo = row.getCell(0) == null ? 0 : (long) row.getCell(0).getNumericCellValue();
-                String producto = row.getCell(1) == null ? "" : row.getCell(1).getStringCellValue();
-                String rubro = row.getCell(2) == null ? "" : row.getCell(2).getStringCellValue();
-                String subRubro = row.getCell(3) == null ? "" : row.getCell(3).getStringCellValue();
-                String marca = row.getCell(4) == null ? "" : row.getCell(4).getStringCellValue();
-                double precioVenta = row.getCell(5) == null ? 0 : row.getCell(5).getNumericCellValue();
-                String codigoExterno = row.getCell(6) == null ? "" : row.getCell(6).getStringCellValue();
+                String codigo = String.format("%.0f", Double.parseDouble(getCellValue(row.getCell(0))));
+                String producto = getCellValue(row.getCell(1));
+                String rubro = getCellValue(row.getCell(2));
+                String subRubro = getCellValue(row.getCell(3));
+                String marca = getCellValue(row.getCell(4));
+                BigDecimal precioVenta;
+                try {
+                    precioVenta = new BigDecimal(getCellValue(row.getCell(5)));
+                } catch (NumberFormatException nfe) {
+                    throw new Exception("En la fila #" + (i + 1) + " el precio de venta es incorrecto.");
+                }
+                String codigoExterno = getCellValue(row.getCell(6));
 
                 // Load the product image
                 Image image;
-                if (codigo != 0) {
+                if (!codigo.isBlank()) {
 
                     File imageFile = null;
 
@@ -121,7 +125,7 @@ public class GeneratePDFService extends Service<Void> {
 //                    image.setHorizontalAlignment(HorizontalAlignment.CENTER);
 //                    image.setMarginBottom(0);
                 } else { // si no hay Código
-                    throw new Exception("En la fila #" + (i + 1) + " tienes un Código en \"0\" o en blanco.");
+                    throw new Exception("En la fila #" + (i + 1) + " tienes un Código en blanco.");
                 }
 
                 image.setHeight(imageSize);
@@ -132,7 +136,7 @@ public class GeneratePDFService extends Service<Void> {
                 // Add the product data to the PDF document
                 Paragraph codigoParagraph = new Paragraph();
                 codigoParagraph.add(new Text("CODIGO: ").setBold());
-                codigoParagraph.add(new Text("" + codigo));
+                codigoParagraph.add(new Text(codigo));
 
                 Paragraph productoParagraph = new Paragraph(producto);
 
@@ -152,7 +156,8 @@ public class GeneratePDFService extends Service<Void> {
                 codExtParagraph.add(new Text("COD. EXT.: ").setBold());
                 codExtParagraph.add(new Text(codigoExterno));
 
-                Paragraph precioParagraph = new Paragraph(precioVenta != 0 ? String.format("$ %(,.2f", precioVenta) : "$ --").setBold();
+                final String formattedPrecioVenta = precioVenta.compareTo(BigDecimal.ZERO) == 0 ? "$ --" : String.format("$ %(,.2f", precioVenta);
+                Paragraph precioParagraph = new Paragraph(formattedPrecioVenta).setBold();
 
                 codigoParagraph.setFontSize(fontSize).setTextAlignment(TextAlignment.CENTER);
                 productoParagraph.setFontSize(fontSize).setFontColor(new DeviceRgb(0, 0, 139)).setTextAlignment(TextAlignment.CENTER);
@@ -219,6 +224,34 @@ public class GeneratePDFService extends Service<Void> {
             }
         }
         return true;
+    }
+
+    private String getCellValue(org.apache.poi.ss.usermodel.Cell cell) {
+        if (cell == null) {
+            return "";
+        }
+
+        final CellType cellType = cell.getCellType();
+        switch (cellType) {
+            case STRING:
+                return cell.getStringCellValue();
+            case NUMERIC:
+                if (DateUtil.isCellDateFormatted(cell)) {
+                    // date values
+                    return cell.getDateCellValue().toString();
+                } else {
+                    // numeric values
+                    return String.valueOf(cell.getNumericCellValue());
+                }
+            case BOOLEAN:
+                return String.valueOf(cell.getBooleanCellValue());
+            case FORMULA:
+                return cell.getCellFormula();
+            case BLANK:
+                return "";
+            default:
+                return "";
+        }
     }
 
 }
