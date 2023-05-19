@@ -14,6 +14,7 @@ import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.scene.control.TextArea;
 import org.apache.commons.io.FileUtils;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -61,7 +62,13 @@ public class GeneratePDFService extends Service<Void> {
         final FileInputStream inputStream = new FileInputStream((archivoExcel.getAbsolutePath()));
         final Workbook workbook = new XSSFWorkbook(inputStream);
         final Sheet sheet = workbook.getSheetAt(0);
-        final int rowCount = sheet.getPhysicalNumberOfRows();
+        // Calculate the actual row count with data
+        int rowCount = 0;
+        for (Row row : sheet) {
+            if (row != null && !isEmptyRow(row)) {
+                rowCount++;
+            }
+        }
         // Create a PDF document
         final PdfDocument pdfDoc = new PdfDocument(new PdfWriter("catálogo.pdf"));
         final Document doc = new Document(pdfDoc, new PageSize(pageWidth, pageHeight), false);
@@ -85,7 +92,7 @@ public class GeneratePDFService extends Service<Void> {
                 String codigoExterno = row.getCell(6) == null ? "" : row.getCell(6).getStringCellValue();
 
                 // Load the product image
-                Image image = null;
+                Image image;
                 if (codigo != 0) {
 
                     File imageFile = null;
@@ -101,7 +108,7 @@ public class GeneratePDFService extends Service<Void> {
                     if (imageFile != null && imageFile.isFile()) {
                         byte[] imageData = FileUtils.readFileToByteArray(imageFile);
                         image = new Image(ImageDataFactory.create(imageData));
-                    } else {
+                    } else { // si no existe el archivo de la imagen
                         byte[] imageData = FileUtils.readFileToByteArray(new File(carpetaImagenes.getAbsolutePath(), "SINIMAGEN.jpg"));
                         image = new Image(ImageDataFactory.create(imageData));
                         Platform.runLater(() -> {
@@ -109,14 +116,18 @@ public class GeneratePDFService extends Service<Void> {
                             logTextArea.appendText("Advertencia: La imagen \"" + codigo + "\" no existe.\n");
                         });
                     }
-//                image.setMarginTop(100);
-//                image.setMarginBottom(100);
-//                image.setAutoScale(true);
-                    image.setHeight(imageSize);
-                    image.setWidth(imageSize);
-                    image.setHorizontalAlignment(HorizontalAlignment.CENTER);
-                    image.setMarginBottom(0);
+//                    image.setHeight(imageSize);
+//                    image.setWidth(imageSize);
+//                    image.setHorizontalAlignment(HorizontalAlignment.CENTER);
+//                    image.setMarginBottom(0);
+                } else { // si no hay Código
+                    throw new Exception("En la fila #" + (i + 1) + " tienes un Código en \"0\" o en blanco.");
                 }
+
+                image.setHeight(imageSize);
+                image.setWidth(imageSize);
+                image.setHorizontalAlignment(HorizontalAlignment.CENTER);
+                image.setMarginBottom(0);
 
                 // Add the product data to the PDF document
                 Paragraph codigoParagraph = new Paragraph();
@@ -198,6 +209,16 @@ public class GeneratePDFService extends Service<Void> {
             doc.close();
             workbook.close();
         }
+    }
+
+    private boolean isEmptyRow(Row row) {
+        for (int i = row.getFirstCellNum(); i <= row.getLastCellNum(); i++) {
+            org.apache.poi.ss.usermodel.Cell cell = row.getCell(i);
+            if (cell != null && cell.getCellType() != CellType.BLANK) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }
