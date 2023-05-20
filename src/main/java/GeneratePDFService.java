@@ -59,46 +59,51 @@ public class GeneratePDFService extends Service<Void> {
         final int productsPerPage = 20;
         final int rowsPerPage = 5;
         // Read the Excel file
-        final FileInputStream inputStream = new FileInputStream((archivoExcel.getAbsolutePath()));
-        final Workbook workbook = new XSSFWorkbook(inputStream);
-        final Sheet sheet = workbook.getSheetAt(0);
-        // Calculate the actual row count with data
-        int rowCount = 0;
-        for (Row row : sheet) {
-            if (row != null && !isEmptyRow(row)) {
-                rowCount++;
-            }
-        }
-        // Create a PDF document
-        final PdfDocument pdfDoc = new PdfDocument(new PdfWriter("catálogo.pdf"));
-        final Document doc = new Document(pdfDoc, new PageSize(pageWidth, pageHeight), false);
-        try {
-            doc.setMargins(0, 0, 0, 0);
-            // Create a table with 4 columns and 5 rows per page
-            Table table = new Table(new float[]{1, 1, 1, 1}).useAllAvailableWidth();
+        try (final FileInputStream inputStream = new FileInputStream(archivoExcel.getAbsolutePath());
+             final Workbook workbook = new XSSFWorkbook(inputStream)) {
+            // Code that uses the workbook
+            final Sheet sheet = workbook.getSheetAt(0);
 
-            // Loop through each row in the Excel sheet
-            for (int i = 1; i < rowCount; i++) {
-                Row row = sheet.getRow(i);
-
-                // Read the product data from the Excel row
-                String codigo = String.format("%.0f", Double.parseDouble(getCellValue(row.getCell(0))));
-                String producto = getCellValue(row.getCell(1));
-                String rubro = getCellValue(row.getCell(2));
-                String subRubro = getCellValue(row.getCell(3));
-                String marca = getCellValue(row.getCell(4));
-                BigDecimal precioVenta;
-                try {
-                    precioVenta = new BigDecimal(getCellValue(row.getCell(5)));
-                } catch (NumberFormatException nfe) {
-                    throw new Exception("En la fila #" + (i + 1) + " el precio de venta es incorrecto.");
+            // Calculate the actual row count with data
+            int rowCount = 0;
+            for (Row row : sheet) {
+                if (row != null && !isEmptyRow(row)) {
+                    rowCount++;
                 }
-                String codigoExterno = getCellValue(row.getCell(6));
+            }
 
-                // Load the product image
-                Image image;
-                if (!codigo.isBlank()) {
+            // Create a PDF document
+            try (final PdfDocument pdfDoc = new PdfDocument(new PdfWriter("catálogo.pdf"));
+                 final Document doc = new Document(pdfDoc, new PageSize(pageWidth, pageHeight), false)) {
 
+                doc.setMargins(0, 0, 0, 0);
+                // Create a table with 4 columns and 5 rows per page
+                Table table = new Table(new float[]{1, 1, 1, 1}).useAllAvailableWidth();
+                // Loop through each row in the Excel sheet
+                for (int i = 1; i < rowCount; i++) {
+                    Row row = sheet.getRow(i);
+                    // Read the product data from the Excel row
+                    String codigo;
+                    try {
+                        final double codigoValue = Double.parseDouble(getCellValue(row.getCell(0)));
+                        codigo = (codigoValue % 1 == 0) ? String.format("%.0f", codigoValue) : String.valueOf(codigoValue);
+                    } catch (NumberFormatException nfe) {
+                        throw new NumberFormatException("Fila #" + (i + 1) + " el CODIGO no es un número.");
+                    }
+                    String producto = getCellValue(row.getCell(1));
+                    String rubro = getCellValue(row.getCell(2));
+                    String subRubro = getCellValue(row.getCell(3));
+                    String marca = getCellValue(row.getCell(4));
+                    BigDecimal precioVenta;
+                    try {
+                        precioVenta = new BigDecimal(getCellValue(row.getCell(5)));
+                    } catch (NumberFormatException nfe) {
+                        throw new NumberFormatException("Fila #" + (i + 1) + " el PRECIO DE VENTA es incorrecto.");
+                    }
+                    String codigoExterno = getCellValue(row.getCell(6));
+
+                    // Load the product image
+                    Image image;
                     File imageFile = null;
 
                     for (String extension : supportedExtensions) {
@@ -120,99 +125,89 @@ public class GeneratePDFService extends Service<Void> {
                             logTextArea.appendText("Advertencia: La imagen \"" + codigo + "\" no existe.\n");
                         });
                     }
-//                    image.setHeight(imageSize);
-//                    image.setWidth(imageSize);
-//                    image.setHorizontalAlignment(HorizontalAlignment.CENTER);
-//                    image.setMarginBottom(0);
-                } else { // si no hay Código
-                    throw new Exception("En la fila #" + (i + 1) + " tienes un Código en blanco.");
-                }
 
-                image.setHeight(imageSize);
-                image.setWidth(imageSize);
-                image.setHorizontalAlignment(HorizontalAlignment.CENTER);
-                image.setMarginBottom(0);
+                    image.setHeight(imageSize);
+                    image.setWidth(imageSize);
+                    image.setHorizontalAlignment(HorizontalAlignment.CENTER);
+                    image.setMarginBottom(0);
 
-                // Add the product data to the PDF document
-                Paragraph codigoParagraph = new Paragraph();
-                codigoParagraph.add(new Text("CODIGO: ").setBold());
-                codigoParagraph.add(new Text(codigo));
+                    // Add the product data to the PDF document
+                    Paragraph codigoParagraph = new Paragraph();
+                    codigoParagraph.add(new Text("CODIGO: ").setBold());
+                    codigoParagraph.add(new Text(codigo));
 
-                Paragraph productoParagraph = new Paragraph(producto);
+                    Paragraph productoParagraph = new Paragraph(producto);
 
-                Paragraph marcaParagraph = new Paragraph();
-                marcaParagraph.add(new Text("MARCA: ").setBold());
-                marcaParagraph.add(new Text(marca));
+                    Paragraph marcaParagraph = new Paragraph();
+                    marcaParagraph.add(new Text("MARCA: ").setBold());
+                    marcaParagraph.add(new Text(marca));
 
-                Paragraph rubroParagraph = new Paragraph();
-                rubroParagraph.add(new Text("RUBRO: ").setBold());
-                rubroParagraph.add(new Text(rubro));
+                    Paragraph rubroParagraph = new Paragraph();
+                    rubroParagraph.add(new Text("RUBRO: ").setBold());
+                    rubroParagraph.add(new Text(rubro));
 
-                Paragraph subRubroParagraph = new Paragraph();
-                subRubroParagraph.add(new Text("SUB RUBRO: ").setBold());
-                subRubroParagraph.add(new Text(subRubro));
+                    Paragraph subRubroParagraph = new Paragraph();
+                    subRubroParagraph.add(new Text("SUB RUBRO: ").setBold());
+                    subRubroParagraph.add(new Text(subRubro));
 
-                Paragraph codExtParagraph = new Paragraph();
-                codExtParagraph.add(new Text("COD. EXT.: ").setBold());
-                codExtParagraph.add(new Text(codigoExterno));
+                    Paragraph codExtParagraph = new Paragraph();
+                    codExtParagraph.add(new Text("COD. EXT.: ").setBold());
+                    codExtParagraph.add(new Text(codigoExterno));
 
-                final String formattedPrecioVenta = precioVenta.compareTo(BigDecimal.ZERO) == 0 ? "$ --" : String.format("$ %(,.2f", precioVenta);
-                Paragraph precioParagraph = new Paragraph(formattedPrecioVenta).setBold();
+                    final String formattedPrecioVenta = precioVenta.compareTo(BigDecimal.ZERO) == 0 ? "$ --" : String.format("$ %(,.2f", precioVenta);
+                    Paragraph precioParagraph = new Paragraph(formattedPrecioVenta).setBold();
 
-                codigoParagraph.setFontSize(fontSize).setTextAlignment(TextAlignment.CENTER);
-                productoParagraph.setFontSize(fontSize).setFontColor(new DeviceRgb(0, 0, 139)).setTextAlignment(TextAlignment.CENTER);
-                marcaParagraph.setFontSize(fontSize).setTextAlignment(TextAlignment.CENTER);
-                rubroParagraph.setFontSize(fontSize).setTextAlignment(TextAlignment.CENTER);
-                subRubroParagraph.setFontSize(fontSize).setTextAlignment(TextAlignment.CENTER);
-                codExtParagraph.setFontSize(fontSize).setTextAlignment(TextAlignment.CENTER);
-                precioParagraph.setFontSize(7).setFontColor(new DeviceRgb(139, 0, 0)).setTextAlignment(TextAlignment.CENTER);
+                    codigoParagraph.setFontSize(fontSize).setTextAlignment(TextAlignment.CENTER);
+                    productoParagraph.setFontSize(fontSize).setFontColor(new DeviceRgb(0, 0, 139)).setTextAlignment(TextAlignment.CENTER);
+                    marcaParagraph.setFontSize(fontSize).setTextAlignment(TextAlignment.CENTER);
+                    rubroParagraph.setFontSize(fontSize).setTextAlignment(TextAlignment.CENTER);
+                    subRubroParagraph.setFontSize(fontSize).setTextAlignment(TextAlignment.CENTER);
+                    codExtParagraph.setFontSize(fontSize).setTextAlignment(TextAlignment.CENTER);
+                    precioParagraph.setFontSize(7).setFontColor(new DeviceRgb(139, 0, 0)).setTextAlignment(TextAlignment.CENTER);
 
-                // Create a new table cell with the image and product data
-                final Cell cell = new Cell();
-                cell
-                        .add(image)
-                        .add(codigoParagraph)
-                        .add(productoParagraph)
-                        .add(marcaParagraph)
-                        .add(rubroParagraph)
-                        .add(subRubroParagraph)
-                        .add(codExtParagraph)
-                        .add(precioParagraph)
-                        .setTextAlignment(TextAlignment.CENTER)
-                        .setVerticalAlignment(VerticalAlignment.TOP);
+                    // Create a new table cell with the image and product data
+                    final Cell cell = new Cell();
+                    cell
+                            .add(image)
+                            .add(codigoParagraph)
+                            .add(productoParagraph)
+                            .add(marcaParagraph)
+                            .add(rubroParagraph)
+                            .add(subRubroParagraph)
+                            .add(codExtParagraph)
+                            .add(precioParagraph)
+                            .setTextAlignment(TextAlignment.CENTER)
+                            .setVerticalAlignment(VerticalAlignment.TOP);
 //            cell.setWidth(620f);
 //            cell.setHeight(100f);
-                table.addCell(cell);
+                    table.addCell(cell);
 
-                // If we've added the maximum number of products per page, start a new page
-                if ((table.getNumberOfRows() % rowsPerPage == 0) && (i % productsPerPage == 0)) {
-                    table.setFixedLayout();
-//                table.setAutoLayout();
-//                table.setWidth(PageSize.A4.getWidth());
-//                table.setHeight(PageSize.A4.getHeight());
-                    doc.add(table);
-                    doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
-                    table = new Table(new float[]{1, 1, 1, 1}).useAllAvailableWidth();
+                    // If we've added the maximum number of products per page, start a new page
+                    if ((table.getNumberOfRows() % rowsPerPage == 0) && (i % productsPerPage == 0)) {
+                        table.setFixedLayout();
+                        doc.add(table);
+                        doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
+                        table = new Table(new float[]{1, 1, 1, 1}).useAllAvailableWidth();
+                    }
                 }
-            }
 
-            // If there are any remaining products, add them to the last page
-            if (table.getNumberOfRows() > 0) {
-                table.setFixedLayout();
-                doc.add(table);
-            }
+                // If there are any remaining products, add them to the last page
+                if (table.getNumberOfRows() > 0) {
+                    table.setFixedLayout();
+                    doc.add(table);
+                }
 
-            // Agregar numero de paginas
-            final int numberOfPages = pdfDoc.getNumberOfPages();
-            for (int i = 1; i <= numberOfPages; i++) {
-                // Write aligned text to the specified parameters point
-                doc.showTextAligned(new Paragraph(String.format("Página %s de %s", i, numberOfPages)).setFontSize(5).setFontColor(new DeviceRgb(128, 128, 128)),
-                        pdfDoc.getPage(i).getPageSize().getWidth() / 2, 3, i, TextAlignment.CENTER, VerticalAlignment.MIDDLE, 0);
+                agregarNumeroPagina(pdfDoc, doc);
+                int finalRowCount = rowCount;
+                Platform.runLater(() -> {
+                    logTextArea.setStyle("-fx-text-fill: darkgreen;");
+                    logTextArea.appendText("Se han generado " + (finalRowCount - 1) + " productos.\n");
+                });
+            } catch (Exception e) {
+                throw e;
             }
-        } finally {
-            // Close the PDF & Excel documents
-            doc.close();
-            workbook.close();
+        } catch (Exception e) {
+            throw e;
         }
     }
 
@@ -251,6 +246,16 @@ public class GeneratePDFService extends Service<Void> {
                 return "";
             default:
                 return "";
+        }
+    }
+
+    private void agregarNumeroPagina(PdfDocument pdfDoc, Document doc) {
+        // Agregar numero de paginas
+        final int numberOfPages = pdfDoc.getNumberOfPages();
+        for (int i = 1; i <= numberOfPages; i++) {
+            // Write aligned text to the specified parameters point
+            doc.showTextAligned(new Paragraph(String.format("Página %s de %s", i, numberOfPages)).setFontSize(5).setFontColor(new DeviceRgb(128, 128, 128)),
+                    pdfDoc.getPage(i).getPageSize().getWidth() / 2, 3, i, TextAlignment.CENTER, VerticalAlignment.MIDDLE, 0);
         }
     }
 
