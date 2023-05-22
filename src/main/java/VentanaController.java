@@ -1,6 +1,8 @@
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
@@ -25,6 +27,8 @@ public class VentanaController implements Initializable {
     private TextField pageWidthTextInput;
     @FXML
     private TextField pageHeightTextInput;
+    @FXML
+    private CheckBox linksCheckBox;
     @FXML
     private TextArea logTextArea;
 
@@ -70,13 +74,14 @@ public class VentanaController implements Initializable {
         if (archivoExcel != null && archivoExcel.isFile() && carpetaImagenes != null && carpetaImagenes.exists()) {
             if (isNumeric(fontSizeTextInput.getText()) && isNumeric(imageSizeTextInput.getText()) && isNumeric(pageWidthTextInput.getText()) && isNumeric(pageHeightTextInput.getText())) {
                 GeneratePDFService service = new GeneratePDFService(archivoExcel, carpetaImagenes, Float.parseFloat(fontSizeTextInput.getText()), Float.parseFloat(imageSizeTextInput.getText()),
-                        Float.parseFloat(pageWidthTextInput.getText()), Float.parseFloat(pageHeightTextInput.getText()), logTextArea);
+                        Float.parseFloat(pageWidthTextInput.getText()), Float.parseFloat(pageHeightTextInput.getText()), linksCheckBox.isSelected(), logTextArea);
                 service.setOnRunning(e -> {
                     logTextArea.setStyle("-fx-text-fill: darkblue;");
                     logTextArea.appendText("Generando PDF...\n");
                 });
                 service.setOnSucceeded(e -> {
                     logTextArea.setStyle("-fx-text-fill: darkgreen;");
+                    logTextArea.appendText("Se han generado " + service.getValue() + " productos.\n");
                     logTextArea.appendText('"' + System.getProperty("user.dir") + System.getProperty("file.separator") + "catálogo.pdf\" generado correctamente.\n");
                 });
                 service.setOnFailed(e -> {
@@ -92,6 +97,15 @@ public class VentanaController implements Initializable {
         } else {
             logTextArea.setStyle("-fx-text-fill: firebrick;");
             logTextArea.appendText("Error: las ubicaciones son incorrectas.\n");
+        }
+    }
+
+    @FXML
+    public void onClick(Event event) {
+        if (linksCheckBox.isSelected()) {
+            imageSizeTextInput.setText("64");
+        } else {
+            imageSizeTextInput.setText("89");
         }
     }
 

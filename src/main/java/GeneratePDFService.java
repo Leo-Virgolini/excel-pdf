@@ -3,6 +3,7 @@ import com.itextpdf.kernel.colors.DeviceRgb;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.kernel.pdf.action.PdfAction;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.*;
 import com.itextpdf.layout.element.Cell;
@@ -23,7 +24,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.math.BigDecimal;
 
-public class GeneratePDFService extends Service<Void> {
+public class GeneratePDFService extends Service<Integer> {
 
     private final File archivoExcel;
     private final File carpetaImagenes;
@@ -31,33 +32,35 @@ public class GeneratePDFService extends Service<Void> {
     private final float imageSize;
     private final float pageWidth;
     private final float pageHeight;
+    private final boolean links;
     private final TextArea logTextArea;
 
-    public GeneratePDFService(File archivoExcel, File carpetaImagenes, float fontSize, float imageSize, float pageWidth, float pageHeight, TextArea logTextArea) {
+    public GeneratePDFService(File archivoExcel, File carpetaImagenes, float fontSize, float imageSize, float pageWidth, float pageHeight, boolean links, TextArea logTextArea) {
         this.archivoExcel = archivoExcel;
         this.carpetaImagenes = carpetaImagenes;
         this.fontSize = fontSize;
         this.imageSize = imageSize;
         this.pageWidth = pageWidth;
         this.pageHeight = pageHeight;
+        this.links = links;
         this.logTextArea = logTextArea;
     }
 
     @Override
-    protected Task<Void> createTask() {
-        return new Task<Void>() {
+    protected Task<Integer> createTask() {
+        return new Task<Integer>() {
             @Override
-            protected Void call() throws Exception {
-                generarPDF(archivoExcel, carpetaImagenes, fontSize, imageSize, pageWidth, pageHeight, logTextArea);
-                return null;
+            protected Integer call() throws Exception {
+                return generarPDF(archivoExcel, carpetaImagenes, fontSize, imageSize, pageWidth, pageHeight, links, logTextArea);
             }
         };
     }
 
-    private void generarPDF(File archivoExcel, File carpetaImagenes, float fontSize, float imageSize, float pageWidth, float pageHeight, TextArea logTextArea) throws Exception {
+    private Integer generarPDF(File archivoExcel, File carpetaImagenes, float fontSize, float imageSize, float pageWidth, float pageHeight, boolean links, TextArea logTextArea) throws Exception {
         final String[] supportedExtensions = {".jpg", ".jpeg", ".png", ".bmp"};
         final int productsPerPage = 20;
         final int rowsPerPage = 5;
+        int generatedRows = 0;
         // Read the Excel file
         try (final FileInputStream inputStream = new FileInputStream(archivoExcel.getAbsolutePath());
              final Workbook workbook = new XSSFWorkbook(inputStream)) {
@@ -126,10 +129,11 @@ public class GeneratePDFService extends Service<Void> {
                         });
                     }
 
-                    image.setHeight(imageSize);
-                    image.setWidth(imageSize);
-                    image.setHorizontalAlignment(HorizontalAlignment.CENTER);
-                    image.setMarginBottom(0);
+                    image
+                            .setHeight(imageSize)
+                            .setWidth(imageSize)
+                            .setHorizontalAlignment(HorizontalAlignment.CENTER)
+                            .setMarginBottom(0);
 
                     // Add the product data to the PDF document
                     Paragraph codigoParagraph = new Paragraph();
@@ -154,6 +158,23 @@ public class GeneratePDFService extends Service<Void> {
                     codExtParagraph.add(new Text("COD. EXT.: ").setBold());
                     codExtParagraph.add(new Text(codigoExterno));
 
+                    Paragraph linkParagraph = null;
+                    if (links && !producto.isBlank()) {
+                        linkParagraph = new Paragraph();
+                        Image button = new Image(ImageDataFactory.create(getClass().getResource("/images/ver.png").toExternalForm()));
+                        button
+                                .setHeight(25)
+                                .setWidth(60)
+                                .setHorizontalAlignment(HorizontalAlignment.CENTER)
+                                .setMarginBottom(0);
+                        final String url = "https://kitchentools.com.ar/productos/" + producto.replaceAll("\\([^)]+\\)$", "").trim().replace(" ", "-");
+                        button.setAction(PdfAction.createURI(url));
+                        linkParagraph.add(button);
+//                        Link link = new Link("VER", PdfAction.createURI(url));
+//                        linkParagraph.setFontSize(12).setFontColor(new DeviceRgb(0, 0, 255)).setUnderline().setTextAlignment(TextAlignment.CENTER);
+//                        linkParagraph.setDestination(url);
+                    }
+
                     final String formattedPrecioVenta = precioVenta.compareTo(BigDecimal.ZERO) == 0 ? "$ --" : String.format("$ %(,.2f", precioVenta);
                     Paragraph precioParagraph = new Paragraph(formattedPrecioVenta).setBold();
 
@@ -175,7 +196,10 @@ public class GeneratePDFService extends Service<Void> {
                             .add(rubroParagraph)
                             .add(subRubroParagraph)
                             .add(codExtParagraph)
-                            .add(precioParagraph)
+                            .add(precioParagraph);
+                    if (linkParagraph != null)
+                        cell.add(linkParagraph);
+                    cell
                             .setTextAlignment(TextAlignment.CENTER)
                             .setVerticalAlignment(VerticalAlignment.TOP);
 //            cell.setWidth(620f);
@@ -189,8 +213,8 @@ public class GeneratePDFService extends Service<Void> {
                         doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
                         table = new Table(new float[]{1, 1, 1, 1}).useAllAvailableWidth();
                     }
+                    generatedRows++;
                 }
-
                 // If there are any remaining products, add them to the last page
                 if (table.getNumberOfRows() > 0) {
                     table.setFixedLayout();
@@ -198,17 +222,14 @@ public class GeneratePDFService extends Service<Void> {
                 }
 
                 agregarNumeroPagina(pdfDoc, doc);
-                int finalRowCount = rowCount;
-                Platform.runLater(() -> {
-                    logTextArea.setStyle("-fx-text-fill: darkgreen;");
-                    logTextArea.appendText("Se han generado " + (finalRowCount - 1) + " productos.\n");
-                });
             } catch (Exception e) {
                 throw e;
             }
         } catch (Exception e) {
             throw e;
         }
+
+        return generatedRows;
     }
 
     private boolean isEmptyRow(Row row) {
