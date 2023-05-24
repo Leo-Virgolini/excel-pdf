@@ -158,10 +158,9 @@ public class GeneratePDFService extends Service<Integer> {
                     codExtParagraph.add(new Text("COD. EXT.: ").setBold());
                     codExtParagraph.add(new Text(codigoExterno));
 
-                    Paragraph linkParagraph = null;
+                    Image button = null;
                     if (links && !producto.isBlank()) {
-                        linkParagraph = new Paragraph();
-                        Image button = new Image(ImageDataFactory.create(getClass().getResource("/images/ver.png").toExternalForm()));
+                        button = new Image(ImageDataFactory.create(getClass().getResource("/images/ver.png").toExternalForm()));
                         button
                                 .setHeight(25)
                                 .setWidth(60)
@@ -169,10 +168,6 @@ public class GeneratePDFService extends Service<Integer> {
                                 .setMarginBottom(0);
                         final String url = "https://kitchentools.com.ar/productos/" + producto.replaceAll("\\([^)]+\\)$", "").trim().replace(" ", "-");
                         button.setAction(PdfAction.createURI(url));
-                        linkParagraph.add(button);
-//                        Link link = new Link("VER", PdfAction.createURI(url));
-//                        linkParagraph.setFontSize(12).setFontColor(new DeviceRgb(0, 0, 255)).setUnderline().setTextAlignment(TextAlignment.CENTER);
-//                        linkParagraph.setDestination(url);
                     }
 
                     final String formattedPrecioVenta = precioVenta.compareTo(BigDecimal.ZERO) == 0 ? "$ --" : String.format("$ %(,.2f", precioVenta);
@@ -197,12 +192,11 @@ public class GeneratePDFService extends Service<Integer> {
                             .add(subRubroParagraph)
                             .add(codExtParagraph)
                             .add(precioParagraph);
-                    if (linkParagraph != null)
-                        cell.add(linkParagraph);
+                    if (button != null)
+                        cell.add(button);
                     cell
                             .setTextAlignment(TextAlignment.CENTER)
                             .setVerticalAlignment(VerticalAlignment.TOP);
-//            cell.setWidth(620f);
 //            cell.setHeight(100f);
                     table.addCell(cell);
 
@@ -220,7 +214,6 @@ public class GeneratePDFService extends Service<Integer> {
                     table.setFixedLayout();
                     doc.add(table);
                 }
-
                 agregarNumeroPagina(pdfDoc, doc);
             } catch (Exception e) {
                 throw e;

@@ -85,8 +85,8 @@ public class VentanaController implements Initializable {
                     logTextArea.appendText('"' + System.getProperty("user.dir") + System.getProperty("file.separator") + "catálogo.pdf\" generado correctamente.\n");
                 });
                 service.setOnFailed(e -> {
+//                    service.getException().printStackTrace();
                     logTextArea.setStyle("-fx-text-fill: firebrick;");
-                    service.getException().printStackTrace();
                     logTextArea.appendText("Error: " + service.getException().getLocalizedMessage() + "\n");
                 });
                 service.start();
