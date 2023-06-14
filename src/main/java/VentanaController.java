@@ -20,7 +20,19 @@ public class VentanaController implements Initializable {
     @FXML
     private TextField ubicacionImagenes;
     @FXML
-    private TextField fontSizeTextInput;
+    private TextField fontSizeCodigo;
+    @FXML
+    private TextField fontSizeProducto;
+    @FXML
+    private TextField fontSizeRubro;
+    @FXML
+    private TextField fontSizeSubRubro;
+    @FXML
+    private TextField fontSizeMarca;
+    @FXML
+    private TextField fontSizePrecio;
+    @FXML
+    private TextField fontSizeCodigoExterno;
     @FXML
     private TextField imageSizeTextInput;
     @FXML
@@ -29,6 +41,22 @@ public class VentanaController implements Initializable {
     private TextField pageHeightTextInput;
     @FXML
     private CheckBox linksCheckBox;
+    @FXML
+    private CheckBox codigoCheckBox;
+    @FXML
+    private CheckBox productoCheckBox;
+    @FXML
+    private CheckBox rubroCheckBox;
+    @FXML
+    private CheckBox subRubroCheckBox;
+    @FXML
+    private CheckBox marcaCheckBox;
+    @FXML
+    private CheckBox precioCheckBox;
+    @FXML
+    private CheckBox codigoExternoCheckBox;
+    @FXML
+    private CheckBox imagenCheckBox;
     @FXML
     private TextArea logTextArea;
 
@@ -72,9 +100,13 @@ public class VentanaController implements Initializable {
     public void generar(ActionEvent event) {
         logTextArea.clear();
         if (archivoExcel != null && archivoExcel.isFile() && carpetaImagenes != null && carpetaImagenes.exists()) {
-            if (isNumeric(fontSizeTextInput.getText()) && isNumeric(imageSizeTextInput.getText()) && isNumeric(pageWidthTextInput.getText()) && isNumeric(pageHeightTextInput.getText())) {
-                GeneratePDFService service = new GeneratePDFService(archivoExcel, carpetaImagenes, Float.parseFloat(fontSizeTextInput.getText()), Float.parseFloat(imageSizeTextInput.getText()),
-                        Float.parseFloat(pageWidthTextInput.getText()), Float.parseFloat(pageHeightTextInput.getText()), linksCheckBox.isSelected(), logTextArea);
+            if (validarTextInputs()) {
+                GeneratePDFService service = new GeneratePDFService(archivoExcel, carpetaImagenes,
+                        Float.parseFloat(fontSizeCodigo.getText()), Float.parseFloat(fontSizeProducto.getText()), Float.parseFloat(fontSizeRubro.getText()), Float.parseFloat(fontSizeSubRubro.getText()),
+                        Float.parseFloat(fontSizeMarca.getText()), Float.parseFloat(fontSizePrecio.getText()), Float.parseFloat(fontSizeCodigoExterno.getText()),
+                        Float.parseFloat(imageSizeTextInput.getText()), Float.parseFloat(pageWidthTextInput.getText()), Float.parseFloat(pageHeightTextInput.getText()),
+                        codigoCheckBox.isSelected(), productoCheckBox.isSelected(), rubroCheckBox.isSelected(), subRubroCheckBox.isSelected(), marcaCheckBox.isSelected(), precioCheckBox.isSelected(),
+                        codigoExternoCheckBox.isSelected(), imagenCheckBox.isSelected(), linksCheckBox.isSelected(), logTextArea);
                 service.setOnRunning(e -> {
                     logTextArea.setStyle("-fx-text-fill: darkblue;");
                     logTextArea.appendText("Generando PDF...\n");
@@ -101,11 +133,83 @@ public class VentanaController implements Initializable {
     }
 
     @FXML
-    public void onClick(Event event) {
+    public void onClickLinks(Event event) {
         if (linksCheckBox.isSelected()) {
             imageSizeTextInput.setText("64");
         } else {
             imageSizeTextInput.setText("89");
+        }
+    }
+
+    @FXML
+    public void onClickImagenes(Event event) {
+        if (imagenCheckBox.isSelected()) {
+            imageSizeTextInput.setDisable(false);
+        } else {
+            imageSizeTextInput.setDisable(true);
+        }
+    }
+
+    @FXML
+    public void onClickCodigoColumn(Event event) {
+        if (codigoCheckBox.isSelected()) {
+            fontSizeCodigo.setDisable(false);
+        } else {
+            fontSizeCodigo.setDisable(true);
+        }
+    }
+
+    @FXML
+    public void onClickProductoColumn(Event event) {
+        if (productoCheckBox.isSelected()) {
+            fontSizeProducto.setDisable(false);
+        } else {
+            fontSizeProducto.setDisable(true);
+        }
+    }
+
+    @FXML
+    public void onClickRubroColumn(Event event) {
+        if (rubroCheckBox.isSelected()) {
+            fontSizeRubro.setDisable(false);
+        } else {
+            fontSizeRubro.setDisable(true);
+        }
+    }
+
+    @FXML
+    public void onClickSubRubroColumn(Event event) {
+        if (subRubroCheckBox.isSelected()) {
+            fontSizeSubRubro.setDisable(false);
+        } else {
+            fontSizeSubRubro.setDisable(true);
+        }
+    }
+
+    @FXML
+    public void onClickMarcaColumn(Event event) {
+        if (marcaCheckBox.isSelected()) {
+            fontSizeMarca.setDisable(false);
+        } else {
+            fontSizeMarca.setDisable(true);
+        }
+    }
+
+    @FXML
+    public void onClickPrecioColumn(Event event) {
+        if (precioCheckBox.isSelected()) {
+            fontSizePrecio.setDisable(false);
+        } else {
+            fontSizePrecio.setDisable(true);
+        }
+    }
+
+    @FXML
+    public void onClickCodigoExternoColumn(Event event) {
+        if (codigoExternoCheckBox.isSelected()) {
+            fontSizeCodigoExterno.setDisable(false);
+        } else {
+            fontSizeCodigoExterno.setDisable(true);
         }
     }
 
@@ -119,6 +223,12 @@ public class VentanaController implements Initializable {
             return false;
         }
         return true;
+    }
+
+    private boolean validarTextInputs() {
+        return isNumeric(fontSizeCodigo.getText()) && isNumeric(fontSizeProducto.getText()) && isNumeric(fontSizeRubro.getText()) && isNumeric(fontSizeSubRubro.getText())
+                && isNumeric(fontSizeMarca.getText()) && isNumeric(fontSizePrecio.getText()) && isNumeric(fontSizeCodigoExterno.getText()) &&
+                isNumeric(imageSizeTextInput.getText()) && isNumeric(pageWidthTextInput.getText()) && isNumeric(pageHeightTextInput.getText());
     }
 
 }

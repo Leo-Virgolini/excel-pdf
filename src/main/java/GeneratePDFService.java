@@ -28,20 +28,50 @@ public class GeneratePDFService extends Service<Integer> {
 
     private final File archivoExcel;
     private final File carpetaImagenes;
-    private final float fontSize;
+    private final float fontSizeCodigo;
+    private final float fontSizeProducto;
+    private final float fontSizeRubro;
+    private final float fontSizeSubRubro;
+    private final float fontSizeMarca;
+    private final float fontSizePrecio;
+    private final float fontSizeCodigoExterno;
     private final float imageSize;
     private final float pageWidth;
     private final float pageHeight;
+    private final boolean codigo;
+    private final boolean producto;
+    private final boolean rubro;
+    private final boolean subRubro;
+    private final boolean marca;
+    private final boolean precio;
+    private final boolean codigoExterno;
+    private final boolean imagenes;
     private final boolean links;
     private final TextArea logTextArea;
 
-    public GeneratePDFService(File archivoExcel, File carpetaImagenes, float fontSize, float imageSize, float pageWidth, float pageHeight, boolean links, TextArea logTextArea) {
+    public GeneratePDFService(File archivoExcel, File carpetaImagenes, float fontSizeCodigo, float fontSizeProducto, float fontSizeRubro, float fontSizeSubRubro,
+                              float fontSizeMarca, float fontSizePrecio, float fontSizeCodigoExterno, float imageSize, float pageWidth, float pageHeight, boolean codigo,
+                              boolean producto, boolean rubro, boolean subRubro, boolean marca, boolean precio, boolean codigoExterno, boolean imagenes, boolean links, TextArea logTextArea) {
         this.archivoExcel = archivoExcel;
         this.carpetaImagenes = carpetaImagenes;
-        this.fontSize = fontSize;
+        this.fontSizeCodigo = fontSizeCodigo;
+        this.fontSizeProducto = fontSizeProducto;
+        this.fontSizeRubro = fontSizeRubro;
+        this.fontSizeSubRubro = fontSizeSubRubro;
+        this.fontSizeMarca = fontSizeMarca;
+        this.fontSizePrecio = fontSizePrecio;
+        this.fontSizeCodigoExterno = fontSizeCodigoExterno;
         this.imageSize = imageSize;
         this.pageWidth = pageWidth;
         this.pageHeight = pageHeight;
+        this.codigo = codigo;
+        this.producto = producto;
+        this.rubro = rubro;
+        this.subRubro = subRubro;
+        this.marca = marca;
+        this.precio = precio;
+        this.codigoExterno = codigoExterno;
+        this.imagenes = imagenes;
         this.links = links;
         this.logTextArea = logTextArea;
     }
@@ -51,13 +81,26 @@ public class GeneratePDFService extends Service<Integer> {
         return new Task<Integer>() {
             @Override
             protected Integer call() throws Exception {
-                return generarPDF(archivoExcel, carpetaImagenes, fontSize, imageSize, pageWidth, pageHeight, links, logTextArea);
+                return generarPDF(archivoExcel, carpetaImagenes, fontSizeCodigo, fontSizeProducto, fontSizeRubro, fontSizeSubRubro, fontSizeMarca, fontSizePrecio, fontSizeCodigoExterno,
+                        imageSize, pageWidth, pageHeight, codigo, producto, rubro, subRubro, marca, precio, codigoExterno, imagenes, links, logTextArea);
             }
         };
     }
 
-    private Integer generarPDF(File archivoExcel, File carpetaImagenes, float fontSize, float imageSize, float pageWidth, float pageHeight, boolean links, TextArea logTextArea) throws Exception {
+    private Integer generarPDF(File archivoExcel, File carpetaImagenes, float fontSizeCodigo, float fontSizeProducto, float fontSizeRubro, float fontSizeSubRubro,
+                               float fontSizeMarca, float fontSizePrecio, float fontSizeCodigoExterno, float imageSize, float pageWidth, float pageHeight, boolean codigoColumn, boolean productoColumn,
+                               boolean rubroColumn, boolean subRubroColumn, boolean marcaColumn, boolean precioColumn, boolean codigoExternoColumn, boolean imagenes, boolean links, TextArea logTextArea) throws Exception {
+
         final String[] supportedExtensions = {".jpg", ".jpeg", ".png", ".bmp"};
+        byte[] sinImagenData = null;
+        for (String extension : supportedExtensions) {
+            File sinImagenfile = new File(carpetaImagenes.getAbsolutePath(), "SINIMAGEN" + extension);
+            if (sinImagenfile.isFile()) {
+                sinImagenData = FileUtils.readFileToByteArray(sinImagenfile);
+                break;
+            }
+        }
+
         final int productsPerPage = 20;
         final int rowsPerPage = 5;
         int generatedRows = 0;
@@ -105,10 +148,9 @@ public class GeneratePDFService extends Service<Integer> {
                     }
                     String codigoExterno = getCellValue(row.getCell(6));
 
-                    // Load the product image
                     Image image;
+                    // Load the product image
                     File imageFile = null;
-
                     for (String extension : supportedExtensions) {
                         File file = new File(carpetaImagenes.getAbsolutePath(), codigo + extension);
                         if (file.isFile()) {
@@ -116,19 +158,20 @@ public class GeneratePDFService extends Service<Integer> {
                             break;
                         }
                     }
-
                     if (imageFile != null && imageFile.isFile()) {
                         byte[] imageData = FileUtils.readFileToByteArray(imageFile);
                         image = new Image(ImageDataFactory.create(imageData));
                     } else { // si no existe el archivo de la imagen
-                        byte[] imageData = FileUtils.readFileToByteArray(new File(carpetaImagenes.getAbsolutePath(), "SINIMAGEN.jpg"));
-                        image = new Image(ImageDataFactory.create(imageData));
+                        if (sinImagenData == null) {
+                            throw new Exception("La imagen \"SINIMAGEN\" no está en la carpeta.");
+                        } else {
+                            image = new Image(ImageDataFactory.create(sinImagenData));
+                        }
                         Platform.runLater(() -> {
                             logTextArea.setStyle("-fx-text-fill: #d3d700;");
                             logTextArea.appendText("Advertencia: La imagen \"" + codigo + "\" no existe.\n");
                         });
                     }
-
                     image
                             .setHeight(imageSize)
                             .setWidth(imageSize)
@@ -160,7 +203,7 @@ public class GeneratePDFService extends Service<Integer> {
 
                     Image button = null;
                     if (links && !producto.isBlank()) {
-                        button = new Image(ImageDataFactory.create(getClass().getResource("/images/ver.png").toExternalForm()));
+                        button = new Image(ImageDataFactory.create(getClass().getResource("/images/button.png").toExternalForm()));
                         button
                                 .setHeight(25)
                                 .setWidth(60)
@@ -173,26 +216,33 @@ public class GeneratePDFService extends Service<Integer> {
                     final String formattedPrecioVenta = precioVenta.compareTo(BigDecimal.ZERO) == 0 ? "$ --" : String.format("$ %(,.2f", precioVenta);
                     Paragraph precioParagraph = new Paragraph(formattedPrecioVenta).setBold();
 
-                    codigoParagraph.setFontSize(fontSize).setTextAlignment(TextAlignment.CENTER);
-                    productoParagraph.setFontSize(fontSize).setFontColor(new DeviceRgb(0, 0, 139)).setTextAlignment(TextAlignment.CENTER);
-                    marcaParagraph.setFontSize(fontSize).setTextAlignment(TextAlignment.CENTER);
-                    rubroParagraph.setFontSize(fontSize).setTextAlignment(TextAlignment.CENTER);
-                    subRubroParagraph.setFontSize(fontSize).setTextAlignment(TextAlignment.CENTER);
-                    codExtParagraph.setFontSize(fontSize).setTextAlignment(TextAlignment.CENTER);
-                    precioParagraph.setFontSize(7).setFontColor(new DeviceRgb(139, 0, 0)).setTextAlignment(TextAlignment.CENTER);
+                    codigoParagraph.setFontSize(fontSizeCodigo).setTextAlignment(TextAlignment.CENTER);
+                    productoParagraph.setFontSize(fontSizeProducto).setFontColor(new DeviceRgb(0, 0, 139)).setTextAlignment(TextAlignment.CENTER);
+                    marcaParagraph.setFontSize(fontSizeMarca).setTextAlignment(TextAlignment.CENTER);
+                    rubroParagraph.setFontSize(fontSizeRubro).setTextAlignment(TextAlignment.CENTER);
+                    subRubroParagraph.setFontSize(fontSizeSubRubro).setTextAlignment(TextAlignment.CENTER);
+                    codExtParagraph.setFontSize(fontSizeCodigoExterno).setTextAlignment(TextAlignment.CENTER);
+                    precioParagraph.setFontSize(fontSizePrecio).setFontColor(new DeviceRgb(139, 0, 0)).setTextAlignment(TextAlignment.CENTER);
 
                     // Create a new table cell with the image and product data
                     final Cell cell = new Cell();
-                    cell
-                            .add(image)
-                            .add(codigoParagraph)
-                            .add(productoParagraph)
-                            .add(marcaParagraph)
-                            .add(rubroParagraph)
-                            .add(subRubroParagraph)
-                            .add(codExtParagraph)
-                            .add(precioParagraph);
-                    if (button != null)
+                    if (imagenes)
+                        cell.add(image);
+                    if (codigoColumn)
+                        cell.add(codigoParagraph);
+                    if (productoColumn)
+                        cell.add(productoParagraph);
+                    if (marcaColumn)
+                        cell.add(marcaParagraph);
+                    if (rubroColumn)
+                        cell.add(rubroParagraph);
+                    if (subRubroColumn)
+                        cell.add(subRubroParagraph);
+                    if (codigoExternoColumn)
+                        cell.add(codExtParagraph);
+                    if (precioColumn)
+                        cell.add(precioParagraph);
+                    if (links)
                         cell.add(button);
                     cell
                             .setTextAlignment(TextAlignment.CENTER)
