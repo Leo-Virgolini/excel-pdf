@@ -38,20 +38,21 @@ public class GeneratePDFService extends Service<Integer> {
     private final float imageSize;
     private final float pageWidth;
     private final float pageHeight;
-    private final boolean codigo;
-    private final boolean producto;
-    private final boolean rubro;
-    private final boolean subRubro;
-    private final boolean marca;
-    private final boolean precio;
-    private final boolean codigoExterno;
+    private final boolean codigoColumn;
+    private final boolean productoColumn;
+    private final boolean rubroColumn;
+    private final boolean subRubroColumn;
+    private final boolean marcaColumn;
+    private final boolean precioColumn;
+    private final boolean codigoExternoColumn;
     private final boolean imagenes;
     private final boolean links;
     private final TextArea logTextArea;
 
     public GeneratePDFService(File archivoExcel, File carpetaImagenes, float fontSizeCodigo, float fontSizeProducto, float fontSizeRubro, float fontSizeSubRubro,
-                              float fontSizeMarca, float fontSizePrecio, float fontSizeCodigoExterno, float imageSize, float pageWidth, float pageHeight, boolean codigo,
-                              boolean producto, boolean rubro, boolean subRubro, boolean marca, boolean precio, boolean codigoExterno, boolean imagenes, boolean links, TextArea logTextArea) {
+                              float fontSizeMarca, float fontSizePrecio, float fontSizeCodigoExterno, float imageSize, float pageWidth, float pageHeight, boolean codigoColumn,
+                              boolean productoColumn, boolean rubroColumn, boolean subRubroColumn, boolean marcaColumn, boolean precioColumn, boolean codigoExternoColumn, boolean imagenes,
+                              boolean links, TextArea logTextArea) {
         this.archivoExcel = archivoExcel;
         this.carpetaImagenes = carpetaImagenes;
         this.fontSizeCodigo = fontSizeCodigo;
@@ -64,13 +65,13 @@ public class GeneratePDFService extends Service<Integer> {
         this.imageSize = imageSize;
         this.pageWidth = pageWidth;
         this.pageHeight = pageHeight;
-        this.codigo = codigo;
-        this.producto = producto;
-        this.rubro = rubro;
-        this.subRubro = subRubro;
-        this.marca = marca;
-        this.precio = precio;
-        this.codigoExterno = codigoExterno;
+        this.codigoColumn = codigoColumn;
+        this.productoColumn = productoColumn;
+        this.rubroColumn = rubroColumn;
+        this.subRubroColumn = subRubroColumn;
+        this.marcaColumn = marcaColumn;
+        this.precioColumn = precioColumn;
+        this.codigoExternoColumn = codigoExternoColumn;
         this.imagenes = imagenes;
         this.links = links;
         this.logTextArea = logTextArea;
@@ -78,11 +79,11 @@ public class GeneratePDFService extends Service<Integer> {
 
     @Override
     protected Task<Integer> createTask() {
-        return new Task<Integer>() {
+        return new Task<>() {
             @Override
             protected Integer call() throws Exception {
                 return generarPDF(archivoExcel, carpetaImagenes, fontSizeCodigo, fontSizeProducto, fontSizeRubro, fontSizeSubRubro, fontSizeMarca, fontSizePrecio, fontSizeCodigoExterno,
-                        imageSize, pageWidth, pageHeight, codigo, producto, rubro, subRubro, marca, precio, codigoExterno, imagenes, links, logTextArea);
+                        imageSize, pageWidth, pageHeight, codigoColumn, productoColumn, rubroColumn, subRubroColumn, marcaColumn, precioColumn, codigoExternoColumn, imagenes, links, logTextArea);
             }
         };
     }
@@ -121,133 +122,140 @@ public class GeneratePDFService extends Service<Integer> {
             // Create a PDF document
             try (final PdfDocument pdfDoc = new PdfDocument(new PdfWriter("catálogo.pdf"));
                  final Document doc = new Document(pdfDoc, new PageSize(pageWidth, pageHeight), false)) {
-
                 doc.setMargins(0, 0, 0, 0);
                 // Create a table with 4 columns and 5 rows per page
                 Table table = new Table(new float[]{1, 1, 1, 1}).useAllAvailableWidth();
                 // Loop through each row in the Excel sheet
                 for (int i = 1; i < rowCount; i++) {
                     Row row = sheet.getRow(i);
-                    // Read the product data from the Excel row
-                    String codigo;
-                    try {
-                        final double codigoValue = Double.parseDouble(getCellValue(row.getCell(0)));
-                        codigo = (codigoValue % 1 == 0) ? String.format("%.0f", codigoValue) : String.valueOf(codigoValue);
-                    } catch (NumberFormatException nfe) {
-                        throw new NumberFormatException("Fila #" + (i + 1) + " el CODIGO no es un número.");
-                    }
-                    String producto = getCellValue(row.getCell(1));
-                    String rubro = getCellValue(row.getCell(2));
-                    String subRubro = getCellValue(row.getCell(3));
-                    String marca = getCellValue(row.getCell(4));
-                    BigDecimal precioVenta;
-                    try {
-                        precioVenta = new BigDecimal(getCellValue(row.getCell(5)));
-                    } catch (NumberFormatException nfe) {
-                        throw new NumberFormatException("Fila #" + (i + 1) + " el PRECIO DE VENTA es incorrecto.");
-                    }
-                    String codigoExterno = getCellValue(row.getCell(6));
+                    // Create a new table cell with the image and product data
+                    Cell cell = new Cell();
+                    // Read the product data from the Excel rows
+                    String codigo = null;
+                    if (codigoColumn) { // CODIGO
+                        try {
+                            final double codigoValue = Double.parseDouble(getCellValue(row.getCell(0)));
+                            codigo = (codigoValue % 1 == 0) ? String.format("%.0f", codigoValue) : String.valueOf(codigoValue);
+                        } catch (NumberFormatException nfe) {
+                            throw new NumberFormatException("Fila #" + (i + 1) + " el CODIGO no es un número.");
+                        }
 
-                    Image image;
-                    // Load the product image
-                    File imageFile = null;
-                    for (String extension : supportedExtensions) {
-                        File file = new File(carpetaImagenes.getAbsolutePath(), codigo + extension);
-                        if (file.isFile()) {
-                            imageFile = file;
-                            break;
+                        final Paragraph codigoParagraph = new Paragraph();
+                        codigoParagraph.add(new Text("CODIGO: ").setBold());
+                        codigoParagraph.add(new Text(codigo));
+                        codigoParagraph.setFontSize(fontSizeCodigo).setTextAlignment(TextAlignment.CENTER);
+                        cell.add(codigoParagraph);
+                    }
+
+                    String producto = null;
+                    if (productoColumn) { // PRODUCTO
+                        producto = getCellValue(row.getCell(1));
+                        final Paragraph productoParagraph = new Paragraph(producto);
+                        productoParagraph.setFontSize(fontSizeProducto).setFontColor(new DeviceRgb(0, 0, 139)).setTextAlignment(TextAlignment.CENTER);
+                        cell.add(productoParagraph);
+                    }
+
+                    if (rubroColumn) { // RUBRO
+                        String rubro = getCellValue(row.getCell(2));
+                        final Paragraph rubroParagraph = new Paragraph();
+                        rubroParagraph.add(new Text("RUBRO: ").setBold());
+                        rubroParagraph.add(new Text(rubro));
+                        rubroParagraph.setFontSize(fontSizeRubro).setTextAlignment(TextAlignment.CENTER);
+                        cell.add(rubroParagraph);
+                    }
+
+                    if (subRubroColumn) { // SUBRUBRO
+                        String subRubro = getCellValue(row.getCell(3));
+                        final Paragraph subRubroParagraph = new Paragraph();
+                        subRubroParagraph.add(new Text("SUB RUBRO: ").setBold());
+                        subRubroParagraph.add(new Text(subRubro));
+                        subRubroParagraph.setFontSize(fontSizeSubRubro).setTextAlignment(TextAlignment.CENTER);
+                        cell.add(subRubroParagraph);
+                    }
+
+                    if (marcaColumn) { // MARCA
+                        String marca = getCellValue(row.getCell(4));
+                        final Paragraph marcaParagraph = new Paragraph();
+                        marcaParagraph.add(new Text("MARCA: ").setBold());
+                        marcaParagraph.add(new Text(marca));
+                        marcaParagraph.setFontSize(fontSizeMarca).setTextAlignment(TextAlignment.CENTER);
+                        cell.add(marcaParagraph);
+                    }
+
+                    if (precioColumn) { // PRECIO
+                        try {
+                            BigDecimal precioVenta = new BigDecimal(getCellValue(row.getCell(5)));
+                            final String formattedPrecioVenta = precioVenta.compareTo(BigDecimal.ZERO) == 0 ? "$ --" : String.format("$ %(,.2f", precioVenta);
+                            final Paragraph precioParagraph = new Paragraph(formattedPrecioVenta).setBold();
+                            precioParagraph.setFontSize(fontSizePrecio).setFontColor(new DeviceRgb(139, 0, 0)).setTextAlignment(TextAlignment.CENTER);
+                            cell.add(precioParagraph);
+                        } catch (NumberFormatException nfe) {
+                            throw new NumberFormatException("Fila #" + (i + 1) + " el PRECIO DE VENTA es incorrecto.");
                         }
                     }
-                    if (imageFile != null && imageFile.isFile()) {
-                        byte[] imageData = FileUtils.readFileToByteArray(imageFile);
-                        image = new Image(ImageDataFactory.create(imageData));
-                    } else { // si no existe el archivo de la imagen
-                        if (sinImagenData == null) {
-                            throw new Exception("La imagen \"SINIMAGEN\" no está en la carpeta.");
-                        } else {
-                            image = new Image(ImageDataFactory.create(sinImagenData));
-                        }
-                        Platform.runLater(() -> {
-                            logTextArea.setStyle("-fx-text-fill: #d3d700;");
-                            logTextArea.appendText("Advertencia: La imagen \"" + codigo + "\" no existe.\n");
-                        });
+
+                    if (codigoExternoColumn) { // CODIGO EXTERNO
+                        String codigoExterno = getCellValue(row.getCell(6));
+                        final Paragraph codExtParagraph = new Paragraph();
+                        codExtParagraph.add(new Text("COD. EXT.: ").setBold());
+                        codExtParagraph.add(new Text(codigoExterno));
+                        codExtParagraph.setFontSize(fontSizeCodigoExterno).setTextAlignment(TextAlignment.CENTER);
+                        cell.add(codExtParagraph);
                     }
-                    image
-                            .setHeight(imageSize)
-                            .setWidth(imageSize)
-                            .setHorizontalAlignment(HorizontalAlignment.CENTER)
-                            .setMarginBottom(0);
 
-                    // Add the product data to the PDF document
-                    Paragraph codigoParagraph = new Paragraph();
-                    codigoParagraph.add(new Text("CODIGO: ").setBold());
-                    codigoParagraph.add(new Text(codigo));
-
-                    Paragraph productoParagraph = new Paragraph(producto);
-
-                    Paragraph marcaParagraph = new Paragraph();
-                    marcaParagraph.add(new Text("MARCA: ").setBold());
-                    marcaParagraph.add(new Text(marca));
-
-                    Paragraph rubroParagraph = new Paragraph();
-                    rubroParagraph.add(new Text("RUBRO: ").setBold());
-                    rubroParagraph.add(new Text(rubro));
-
-                    Paragraph subRubroParagraph = new Paragraph();
-                    subRubroParagraph.add(new Text("SUB RUBRO: ").setBold());
-                    subRubroParagraph.add(new Text(subRubro));
-
-                    Paragraph codExtParagraph = new Paragraph();
-                    codExtParagraph.add(new Text("COD. EXT.: ").setBold());
-                    codExtParagraph.add(new Text(codigoExterno));
-
-                    Image button = null;
-                    if (links && !producto.isBlank()) {
-                        button = new Image(ImageDataFactory.create(getClass().getResource("/images/button.png").toExternalForm()));
-                        button
-                                .setHeight(25)
-                                .setWidth(60)
+                    if (imagenes && !codigo.isBlank()) { // IMAGENES
+                        Image image;
+                        // Load the product image
+                        File imageFile = null;
+                        for (String extension : supportedExtensions) {
+                            File file = new File(carpetaImagenes.getAbsolutePath(), codigo + extension);
+                            if (file.isFile()) {
+                                imageFile = file;
+                                break;
+                            }
+                        }
+                        if (imageFile != null && imageFile.isFile()) {
+                            byte[] imageData = FileUtils.readFileToByteArray(imageFile);
+                            image = new Image(ImageDataFactory.create(imageData));
+                        } else { // si no existe el archivo de la imagen
+                            if (sinImagenData == null) {
+                                throw new Exception("La imagen \"SINIMAGEN\" no está en la carpeta.");
+                            } else {
+                                image = new Image(ImageDataFactory.create(sinImagenData));
+                            }
+                            final String finalCodigo = codigo;
+                            Platform.runLater(() -> {
+                                logTextArea.setStyle("-fx-text-fill: #d3d700;");
+                                logTextArea.appendText("Advertencia: La imagen \"" + finalCodigo + "\" no existe.\n");
+                            });
+                        }
+                        image
+                                .setHeight(imageSize)
+                                .setWidth(imageSize)
                                 .setHorizontalAlignment(HorizontalAlignment.CENTER)
                                 .setMarginBottom(0);
-                        final String url = "https://kitchentools.com.ar/productos/" + producto.replaceAll("\\([^)]+\\)$", "").trim().replace(" ", "-");
-                        button.setAction(PdfAction.createURI(url));
+
+                        cell.add(image);
                     }
 
-                    final String formattedPrecioVenta = precioVenta.compareTo(BigDecimal.ZERO) == 0 ? "$ --" : String.format("$ %(,.2f", precioVenta);
-                    Paragraph precioParagraph = new Paragraph(formattedPrecioVenta).setBold();
+                    if (links) { // LINKS
+                        if (producto != null && !producto.isBlank()) {
+                            Image button = new Image(ImageDataFactory.create(getClass().getResource("/images/button.png").toExternalForm()));
+                            button
+                                    .setHeight(25)
+                                    .setWidth(60)
+                                    .setHorizontalAlignment(HorizontalAlignment.CENTER)
+                                    .setMarginBottom(0);
+                            final String url = "https://kitchentools.com.ar/productos/" + producto.replaceAll("\\([^)]+\\)$", "").trim().replace(" ", "-");
+                            button.setAction(PdfAction.createURI(url));
+                            cell.add(button);
+                        }
+                    }
 
-                    codigoParagraph.setFontSize(fontSizeCodigo).setTextAlignment(TextAlignment.CENTER);
-                    productoParagraph.setFontSize(fontSizeProducto).setFontColor(new DeviceRgb(0, 0, 139)).setTextAlignment(TextAlignment.CENTER);
-                    marcaParagraph.setFontSize(fontSizeMarca).setTextAlignment(TextAlignment.CENTER);
-                    rubroParagraph.setFontSize(fontSizeRubro).setTextAlignment(TextAlignment.CENTER);
-                    subRubroParagraph.setFontSize(fontSizeSubRubro).setTextAlignment(TextAlignment.CENTER);
-                    codExtParagraph.setFontSize(fontSizeCodigoExterno).setTextAlignment(TextAlignment.CENTER);
-                    precioParagraph.setFontSize(fontSizePrecio).setFontColor(new DeviceRgb(139, 0, 0)).setTextAlignment(TextAlignment.CENTER);
-
-                    // Create a new table cell with the image and product data
-                    final Cell cell = new Cell();
-                    if (imagenes)
-                        cell.add(image);
-                    if (codigoColumn)
-                        cell.add(codigoParagraph);
-                    if (productoColumn)
-                        cell.add(productoParagraph);
-                    if (marcaColumn)
-                        cell.add(marcaParagraph);
-                    if (rubroColumn)
-                        cell.add(rubroParagraph);
-                    if (subRubroColumn)
-                        cell.add(subRubroParagraph);
-                    if (codigoExternoColumn)
-                        cell.add(codExtParagraph);
-                    if (precioColumn)
-                        cell.add(precioParagraph);
-                    if (links)
-                        cell.add(button);
                     cell
                             .setTextAlignment(TextAlignment.CENTER)
                             .setVerticalAlignment(VerticalAlignment.TOP);
-//            cell.setHeight(100f);
+//                    cell.setHeight(100f);
                     table.addCell(cell);
 
                     // If we've added the maximum number of products per page, start a new page

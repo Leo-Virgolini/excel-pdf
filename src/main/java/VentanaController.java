@@ -40,8 +40,6 @@ public class VentanaController implements Initializable {
     @FXML
     private TextField pageHeightTextInput;
     @FXML
-    private CheckBox linksCheckBox;
-    @FXML
     private CheckBox codigoCheckBox;
     @FXML
     private CheckBox productoCheckBox;
@@ -57,6 +55,8 @@ public class VentanaController implements Initializable {
     private CheckBox codigoExternoCheckBox;
     @FXML
     private CheckBox imagenCheckBox;
+    @FXML
+    private CheckBox linksCheckBox;
     @FXML
     private TextArea logTextArea;
 
@@ -213,7 +213,7 @@ public class VentanaController implements Initializable {
         }
     }
 
-    private static boolean isNumeric(String strNum) {
+    private boolean isNumeric(String strNum) {
         if (strNum == null) {
             return false;
         }
