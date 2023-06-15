@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane minHeight="318.0" minWidth="500.0" prefHeight="456.0" prefWidth="737.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="VentanaController">
+<AnchorPane minHeight="318.0" minWidth="500.0" prefHeight="456.0" prefWidth="737.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fx.VentanaController">
    <children>
       <Label layoutX="41.0" layoutY="12.0" prefHeight="35.0" prefWidth="160.0" text="Ubicación archivo excel:">
          <font>
@@ -44,7 +44,7 @@
             <Font size="15.0" />
          </font>
       </TextField>
-      <Button layoutX="564.0" layoutY="55.0" mnemonicParsing="false" onAction="#buscarImagenes" prefHeight="39.0" prefWidth="160.0" text="Examinar..." textFill="#9e9510">
+      <Button layoutX="564.0" layoutY="55.0" mnemonicParsing="false" onAction="#buscarImagenes" prefHeight="39.0" prefWidth="160.0" text="Examinar..." textFill="#d9b247">
          <font>
             <Font name="System Bold" size="17.0" />
          </font>
@@ -60,7 +60,7 @@
          <font>
             <Font name="System Italic" size="14.0" />
          </font></TextArea>
-      <Button layoutX="304.0" layoutY="349.0" mnemonicParsing="false" onAction="#generar" prefHeight="54.0" prefWidth="169.0" text="Generar" textFill="#ff4f4f">
+      <Button alignment="CENTER" layoutX="287.0" layoutY="349.0" mnemonicParsing="false" onAction="#generar" prefHeight="63.0" prefWidth="214.0" text="Generar PDF" textFill="#ff5722" wrapText="true">
          <font>
             <Font name="System Bold" size="21.0" />
          </font>
@@ -72,37 +72,37 @@
             </ImageView>
          </graphic>
       </Button>
-      <TextField fx:id="imageSizeTextInput" alignment="CENTER" layoutX="164.0" layoutY="364.0" prefHeight="30.0" prefWidth="43.0" text="89">
+      <TextField fx:id="imageSizeTextInput" alignment="CENTER" layoutX="190.0" layoutY="364.0" prefHeight="30.0" prefWidth="43.0" text="89">
          <font>
             <Font size="15.0" />
          </font>
       </TextField>
-      <Label layoutX="51.0" layoutY="360.0" prefHeight="35.0" prefWidth="113.0" text="Tamaño imagen:">
+      <Label layoutX="77.0" layoutY="360.0" prefHeight="35.0" prefWidth="113.0" text="Tamaño imagen:">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <TextField fx:id="pageWidthTextInput" alignment="CENTER" layoutX="587.0" layoutY="368.0" prefHeight="30.0" prefWidth="66.0" text="595">
+      <TextField fx:id="pageWidthTextInput" alignment="CENTER" layoutX="593.0" layoutY="362.0" prefHeight="30.0" prefWidth="66.0" text="595">
          <font>
             <Font size="15.0" />
          </font>
       </TextField>
-      <TextField fx:id="pageHeightTextInput" alignment="CENTER" layoutX="587.0" layoutY="405.0" prefHeight="30.0" prefWidth="66.0" text="842">
+      <TextField fx:id="pageHeightTextInput" alignment="CENTER" layoutX="593.0" layoutY="399.0" prefHeight="30.0" prefWidth="66.0" text="842">
          <font>
             <Font size="15.0" />
          </font>
       </TextField>
-      <Label layoutX="532.0" layoutY="365.0" prefHeight="35.0" prefWidth="53.0" text="Ancho:">
+      <Label layoutX="538.0" layoutY="359.0" prefHeight="35.0" prefWidth="53.0" text="Ancho:">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <Label layoutX="543.0" layoutY="402.0" prefHeight="35.0" prefWidth="43.0" text="Alto:">
+      <Label layoutX="549.0" layoutY="396.0" prefHeight="35.0" prefWidth="43.0" text="Alto:">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <CheckBox fx:id="linksCheckBox" layoutX="48.0" layoutY="411.0" mnemonicParsing="false" onAction="#onClickLinks" text="Generar links" textFill="#000dff" underline="true">
+      <CheckBox fx:id="linksCheckBox" layoutX="77.0" layoutY="411.0" mnemonicParsing="false" onAction="#onClickLinks" text="Generar links" textFill="#000dff" underline="true">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
@@ -142,12 +142,12 @@
             <Font name="System Bold" size="15.0" />
          </font>
       </CheckBox>
-      <CheckBox fx:id="imagenCheckBox" layoutX="51.0" layoutY="332.0" mnemonicParsing="false" onAction="#onClickImagenes" selected="true" text="Generar imagenes" textFill="#7b7b7b" underline="true">
+      <CheckBox fx:id="imagenCheckBox" layoutX="77.0" layoutY="332.0" mnemonicParsing="false" onAction="#onClickImagenes" selected="true" text="Generar imágenes" textFill="#7b7b7b" underline="true">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </CheckBox>
-      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="535.0" layoutY="330.0" prefHeight="35.0" prefWidth="120.0" text="Hoja" textAlignment="CENTER" underline="true">
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="545.0" layoutY="324.0" prefHeight="35.0" prefWidth="120.0" text="Hoja" textAlignment="CENTER" textFill="#595959" underline="true">
          <font>
             <Font name="System Bold" size="24.0" />
          </font>
@@ -192,17 +192,17 @@
             <Font size="15.0" />
          </font>
       </Label>
-      <Label layoutX="208.0" layoutY="362.0" prefHeight="35.0" prefWidth="22.0" text="px">
+      <Label layoutX="234.0" layoutY="362.0" prefHeight="35.0" prefWidth="22.0" text="px">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <Label layoutX="655.0" layoutY="365.0" prefHeight="35.0" prefWidth="22.0" text="px">
+      <Label layoutX="661.0" layoutY="359.0" prefHeight="35.0" prefWidth="22.0" text="px">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <Label layoutX="655.0" layoutY="402.0" prefHeight="35.0" prefWidth="22.0" text="px">
+      <Label layoutX="661.0" layoutY="396.0" prefHeight="35.0" prefWidth="22.0" text="px">
          <font>
             <Font size="15.0" />
          </font>
