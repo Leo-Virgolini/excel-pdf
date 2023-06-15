@@ -127,29 +127,26 @@ public class GeneratePDFService extends Service<Integer> {
                 Table table = new Table(new float[]{1, 1, 1, 1}).useAllAvailableWidth();
                 // Loop through each row in the Excel sheet
                 for (int i = 1; i < rowCount; i++) {
+                    // Read the product data from the Excel rows
                     Row row = sheet.getRow(i);
                     // Create a new table cell with the image and product data
                     Cell cell = new Cell();
-                    // Read the product data from the Excel rows
-                    String codigo = null;
                     if (codigoColumn) { // CODIGO
                         try {
                             final double codigoValue = Double.parseDouble(getCellValue(row.getCell(0)));
-                            codigo = (codigoValue % 1 == 0) ? String.format("%.0f", codigoValue) : String.valueOf(codigoValue);
+                            String codigo = (codigoValue % 1 == 0) ? String.format("%.0f", codigoValue) : String.valueOf(codigoValue);
+                            final Paragraph codigoParagraph = new Paragraph();
+                            codigoParagraph.add(new Text("CODIGO: ").setBold());
+                            codigoParagraph.add(new Text(codigo));
+                            codigoParagraph.setFontSize(fontSizeCodigo).setTextAlignment(TextAlignment.CENTER);
+                            cell.add(codigoParagraph);
                         } catch (NumberFormatException nfe) {
                             throw new NumberFormatException("Fila #" + (i + 1) + " el CODIGO no es un número.");
                         }
-
-                        final Paragraph codigoParagraph = new Paragraph();
-                        codigoParagraph.add(new Text("CODIGO: ").setBold());
-                        codigoParagraph.add(new Text(codigo));
-                        codigoParagraph.setFontSize(fontSizeCodigo).setTextAlignment(TextAlignment.CENTER);
-                        cell.add(codigoParagraph);
                     }
 
-                    String producto = null;
                     if (productoColumn) { // PRODUCTO
-                        producto = getCellValue(row.getCell(1));
+                        String producto = getCellValue(row.getCell(1));
                         final Paragraph productoParagraph = new Paragraph(producto);
                         productoParagraph.setFontSize(fontSizeProducto).setFontColor(new DeviceRgb(0, 0, 139)).setTextAlignment(TextAlignment.CENTER);
                         cell.add(productoParagraph);
@@ -203,44 +200,49 @@ public class GeneratePDFService extends Service<Integer> {
                         cell.add(codExtParagraph);
                     }
 
-                    if (imagenes && !codigo.isBlank()) { // IMAGENES
-                        Image image;
-                        // Load the product image
-                        File imageFile = null;
-                        for (String extension : supportedExtensions) {
-                            File file = new File(carpetaImagenes.getAbsolutePath(), codigo + extension);
-                            if (file.isFile()) {
-                                imageFile = file;
-                                break;
+                    if (imagenes) { // IMAGENES
+                        try {
+                            final double codigoValue = Double.parseDouble(getCellValue(row.getCell(0)));
+                            final String codigo = (codigoValue % 1 == 0) ? String.format("%.0f", codigoValue) : String.valueOf(codigoValue);
+                            Image image;
+                            // Load the product image
+                            File imageFile = null;
+                            for (String extension : supportedExtensions) {
+                                File file = new File(carpetaImagenes.getAbsolutePath(), codigo + extension);
+                                if (file.isFile()) {
+                                    imageFile = file;
+                                    break;
+                                }
                             }
-                        }
-                        if (imageFile != null && imageFile.isFile()) {
-                            byte[] imageData = FileUtils.readFileToByteArray(imageFile);
-                            image = new Image(ImageDataFactory.create(imageData));
-                        } else { // si no existe el archivo de la imagen
-                            if (sinImagenData == null) {
-                                throw new Exception("La imagen \"SINIMAGEN\" no está en la carpeta.");
-                            } else {
-                                image = new Image(ImageDataFactory.create(sinImagenData));
+                            if (imageFile != null && imageFile.isFile()) {
+                                byte[] imageData = FileUtils.readFileToByteArray(imageFile);
+                                image = new Image(ImageDataFactory.create(imageData));
+                            } else { // si no existe el archivo de la imagen
+                                if (sinImagenData == null) {
+                                    throw new Exception("La imagen \"SINIMAGEN\" no está en la carpeta.");
+                                } else {
+                                    image = new Image(ImageDataFactory.create(sinImagenData));
+                                }
+                                Platform.runLater(() -> {
+                                    logTextArea.setStyle("-fx-text-fill: #d3d700;");
+                                    logTextArea.appendText("Advertencia: La imagen \"" + codigo + "\" no existe.\n");
+                                });
                             }
-                            final String finalCodigo = codigo;
-                            Platform.runLater(() -> {
-                                logTextArea.setStyle("-fx-text-fill: #d3d700;");
-                                logTextArea.appendText("Advertencia: La imagen \"" + finalCodigo + "\" no existe.\n");
-                            });
+                            image
+                                    .setHeight(imageSize)
+                                    .setWidth(imageSize)
+                                    .setHorizontalAlignment(HorizontalAlignment.CENTER)
+                                    .setMarginBottom(0);
+                            cell.add(image);
+                        } catch (NumberFormatException nfe) {
+                            throw new NumberFormatException("Fila #" + (i + 1) + " el CODIGO no es un número.");
                         }
-                        image
-                                .setHeight(imageSize)
-                                .setWidth(imageSize)
-                                .setHorizontalAlignment(HorizontalAlignment.CENTER)
-                                .setMarginBottom(0);
-
-                        cell.add(image);
                     }
 
                     if (links) { // LINKS
-                        if (producto != null && !producto.isBlank()) {
-                            Image button = new Image(ImageDataFactory.create(getClass().getResource("/images/button.png").toExternalForm()));
+                        String producto = getCellValue(row.getCell(1));
+                        if (!producto.isBlank()) {
+                            final Image button = new Image(ImageDataFactory.create(getClass().getResource("/images/button.png").toExternalForm()));
                             button
                                     .setHeight(25)
                                     .setWidth(60)
@@ -254,6 +256,7 @@ public class GeneratePDFService extends Service<Integer> {
 
                     cell
                             .setTextAlignment(TextAlignment.CENTER)
+                            .setHorizontalAlignment(HorizontalAlignment.CENTER)
                             .setVerticalAlignment(VerticalAlignment.TOP);
 //                    cell.setHeight(100f);
                     table.addCell(cell);

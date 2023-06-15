@@ -44,7 +44,7 @@
             <Font size="15.0" />
          </font>
       </TextField>
-      <Button layoutX="566.0" layoutY="55.0" mnemonicParsing="false" onAction="#buscarImagenes" prefHeight="39.0" prefWidth="160.0" text="Examinar..." textFill="#9e9510">
+      <Button layoutX="564.0" layoutY="55.0" mnemonicParsing="false" onAction="#buscarImagenes" prefHeight="39.0" prefWidth="160.0" text="Examinar..." textFill="#9e9510">
          <font>
             <Font name="System Bold" size="17.0" />
          </font>
@@ -60,7 +60,7 @@
          <font>
             <Font name="System Italic" size="14.0" />
          </font></TextArea>
-      <Button layoutX="285.0" layoutY="378.0" mnemonicParsing="false" onAction="#generar" prefHeight="54.0" prefWidth="169.0" text="Generar" textFill="#ff4f4f">
+      <Button layoutX="304.0" layoutY="349.0" mnemonicParsing="false" onAction="#generar" prefHeight="54.0" prefWidth="169.0" text="Generar" textFill="#ff4f4f">
          <font>
             <Font name="System Bold" size="21.0" />
          </font>
@@ -82,27 +82,27 @@
             <Font size="15.0" />
          </font>
       </Label>
-      <TextField fx:id="pageWidthTextInput" alignment="CENTER" layoutX="559.0" layoutY="377.0" prefHeight="30.0" prefWidth="66.0" text="595">
+      <TextField fx:id="pageWidthTextInput" alignment="CENTER" layoutX="587.0" layoutY="368.0" prefHeight="30.0" prefWidth="66.0" text="595">
          <font>
             <Font size="15.0" />
          </font>
       </TextField>
-      <TextField fx:id="pageHeightTextInput" alignment="CENTER" layoutX="559.0" layoutY="414.0" prefHeight="30.0" prefWidth="66.0" text="842">
+      <TextField fx:id="pageHeightTextInput" alignment="CENTER" layoutX="587.0" layoutY="405.0" prefHeight="30.0" prefWidth="66.0" text="842">
          <font>
             <Font size="15.0" />
          </font>
       </TextField>
-      <Label layoutX="504.0" layoutY="374.0" prefHeight="35.0" prefWidth="53.0" text="Ancho:">
+      <Label layoutX="532.0" layoutY="365.0" prefHeight="35.0" prefWidth="53.0" text="Ancho:">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <Label layoutX="515.0" layoutY="411.0" prefHeight="35.0" prefWidth="43.0" text="Alto:">
+      <Label layoutX="543.0" layoutY="402.0" prefHeight="35.0" prefWidth="43.0" text="Alto:">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <CheckBox fx:id="linksCheckBox" layoutX="307.0" layoutY="332.0" mnemonicParsing="false" onAction="#onClickLinks" text="Generar links" textFill="#000dff" underline="true">
+      <CheckBox fx:id="linksCheckBox" layoutX="48.0" layoutY="411.0" mnemonicParsing="false" onAction="#onClickLinks" text="Generar links" textFill="#000dff" underline="true">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
@@ -147,7 +147,7 @@
             <Font name="System Bold" size="15.0" />
          </font>
       </CheckBox>
-      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="507.0" layoutY="339.0" prefHeight="35.0" prefWidth="120.0" text="Hoja" textAlignment="CENTER" underline="true">
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="535.0" layoutY="330.0" prefHeight="35.0" prefWidth="120.0" text="Hoja" textAlignment="CENTER" underline="true">
          <font>
             <Font name="System Bold" size="24.0" />
          </font>
@@ -197,12 +197,12 @@
             <Font size="15.0" />
          </font>
       </Label>
-      <Label layoutX="627.0" layoutY="374.0" prefHeight="35.0" prefWidth="22.0" text="px">
+      <Label layoutX="655.0" layoutY="365.0" prefHeight="35.0" prefWidth="22.0" text="px">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <Label layoutX="627.0" layoutY="411.0" prefHeight="35.0" prefWidth="22.0" text="px">
+      <Label layoutX="655.0" layoutY="402.0" prefHeight="35.0" prefWidth="22.0" text="px">
          <font>
             <Font size="15.0" />
          </font>
