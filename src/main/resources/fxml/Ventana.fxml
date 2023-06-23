@@ -3,6 +3,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
@@ -60,7 +61,7 @@
          <font>
             <Font name="System Italic" size="14.0" />
          </font></TextArea>
-      <Button alignment="CENTER" layoutX="287.0" layoutY="349.0" mnemonicParsing="false" onAction="#generar" prefHeight="63.0" prefWidth="214.0" text="Generar PDF" textFill="#ff5722" wrapText="true">
+      <Button fx:id="generarButton" alignment="CENTER" layoutX="287.0" layoutY="349.0" mnemonicParsing="false" onAction="#generar" prefHeight="63.0" prefWidth="214.0" text="Generar PDF" textFill="#ff5722" wrapText="true">
          <font>
             <Font name="System Bold" size="21.0" />
          </font>
@@ -72,7 +73,7 @@
             </ImageView>
          </graphic>
       </Button>
-      <TextField fx:id="imageSizeTextInput" alignment="CENTER" layoutX="190.0" layoutY="364.0" prefHeight="30.0" prefWidth="43.0" text="89">
+      <TextField fx:id="imageSizeTextInput" alignment="CENTER" layoutX="190.0" layoutY="364.0" prefHeight="30.0" prefWidth="43.0" text="80">
          <font>
             <Font size="15.0" />
          </font>
@@ -237,5 +238,6 @@
             <Font size="15.0" />
          </font>
       </Label>
+      <ProgressIndicator fx:id="progressIndicator" layoutX="339.0" layoutY="150.0" visible="false" />
    </children>
 </AnchorPane>

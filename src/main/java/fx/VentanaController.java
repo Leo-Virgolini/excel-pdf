@@ -4,9 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import org.apache.log4j.BasicConfigurator;
@@ -62,6 +60,10 @@ public class VentanaController implements Initializable {
     private CheckBox linksCheckBox;
     @FXML
     private TextArea logTextArea;
+    @FXML
+    private Button generarButton;
+    @FXML
+    private ProgressIndicator progressIndicator;
 
     private static File archivoExcel;
     private static File carpetaImagenes;
@@ -111,18 +113,24 @@ public class VentanaController implements Initializable {
                         codigoCheckBox.isSelected(), productoCheckBox.isSelected(), rubroCheckBox.isSelected(), subRubroCheckBox.isSelected(), marcaCheckBox.isSelected(), precioCheckBox.isSelected(),
                         codigoExternoCheckBox.isSelected(), imagenCheckBox.isSelected(), linksCheckBox.isSelected(), logTextArea);
                 service.setOnRunning(e -> {
+                    generarButton.setDisable(true);
+                    progressIndicator.setVisible(true);
                     logTextArea.setStyle("-fx-text-fill: darkblue;");
                     logTextArea.appendText("Generando PDF...\n");
                 });
                 service.setOnSucceeded(e -> {
                     logTextArea.setStyle("-fx-text-fill: darkgreen;");
                     logTextArea.appendText("Se han generado " + service.getValue() + " productos.\n");
-                    logTextArea.appendText('"' + System.getProperty("user.dir") + System.getProperty("file.separator") + "catálogo.pdf\" generado correctamente.\n");
+                    logTextArea.appendText('"' + System.getProperty("user.dir") + System.getProperty("file.separator") + "catálogo.pdf\" generado.\n");
+                    generarButton.setDisable(false);
+                    progressIndicator.setVisible(false);
                 });
                 service.setOnFailed(e -> {
 //                    service.getException().printStackTrace();
                     logTextArea.setStyle("-fx-text-fill: firebrick;");
                     logTextArea.appendText("Error: " + service.getException().getLocalizedMessage() + "\n");
+                    generarButton.setDisable(false);
+                    progressIndicator.setVisible(false);
                 });
                 service.start();
             } else {
