@@ -1,5 +1,6 @@
 package fx;
 
+import com.itextpdf.kernel.colors.DeviceRgb;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -34,6 +35,20 @@ public class VentanaController implements Initializable {
     private TextField fontSizePrecio;
     @FXML
     private TextField fontSizeCodigoExterno;
+    @FXML
+    private ColorPicker codigoColorPicker;
+    @FXML
+    private ColorPicker productoColorPicker;
+    @FXML
+    private ColorPicker rubroColorPicker;
+    @FXML
+    private ColorPicker subRubroColorPicker;
+    @FXML
+    private ColorPicker marcaColorPicker;
+    @FXML
+    private ColorPicker precioColorPicker;
+    @FXML
+    private ColorPicker codigoExternoColorPicker;
     @FXML
     private TextField imageSizeTextInput;
     @FXML
@@ -109,6 +124,13 @@ public class VentanaController implements Initializable {
                 GeneratePDFService service = new GeneratePDFService(archivoExcel, carpetaImagenes,
                         Float.parseFloat(fontSizeCodigo.getText()), Float.parseFloat(fontSizeProducto.getText()), Float.parseFloat(fontSizeRubro.getText()), Float.parseFloat(fontSizeSubRubro.getText()),
                         Float.parseFloat(fontSizeMarca.getText()), Float.parseFloat(fontSizePrecio.getText()), Float.parseFloat(fontSizeCodigoExterno.getText()),
+                        new DeviceRgb((int) (codigoColorPicker.getValue().getRed() * 255), (int) (codigoColorPicker.getValue().getGreen() * 255), (int) (codigoColorPicker.getValue().getBlue() * 255)),
+                        new DeviceRgb((int) (productoColorPicker.getValue().getRed() * 255), (int) (productoColorPicker.getValue().getGreen() * 255), (int) (productoColorPicker.getValue().getBlue() * 255)),
+                        new DeviceRgb((int) (rubroColorPicker.getValue().getRed() * 255), (int) (rubroColorPicker.getValue().getGreen() * 255), (int) (rubroColorPicker.getValue().getBlue() * 255)),
+                        new DeviceRgb((int) (subRubroColorPicker.getValue().getRed() * 255), (int) (subRubroColorPicker.getValue().getGreen() * 255), (int) (subRubroColorPicker.getValue().getBlue() * 255)),
+                        new DeviceRgb((int) (marcaColorPicker.getValue().getRed() * 255), (int) (marcaColorPicker.getValue().getGreen() * 255), (int) (marcaColorPicker.getValue().getBlue() * 255)),
+                        new DeviceRgb((int) (precioColorPicker.getValue().getRed() * 255), (int) (precioColorPicker.getValue().getGreen() * 255), (int) (precioColorPicker.getValue().getBlue() * 255)),
+                        new DeviceRgb((int) (codigoExternoColorPicker.getValue().getRed() * 255), (int) (codigoExternoColorPicker.getValue().getGreen() * 255), (int) (codigoExternoColorPicker.getValue().getBlue() * 255)),
                         Float.parseFloat(imageSizeTextInput.getText()), Float.parseFloat(pageWidthTextInput.getText()), Float.parseFloat(pageHeightTextInput.getText()),
                         codigoCheckBox.isSelected(), productoCheckBox.isSelected(), rubroCheckBox.isSelected(), subRubroCheckBox.isSelected(), marcaCheckBox.isSelected(), precioCheckBox.isSelected(),
                         codigoExternoCheckBox.isSelected(), imagenCheckBox.isSelected(), linksCheckBox.isSelected(), logTextArea);
@@ -165,8 +187,10 @@ public class VentanaController implements Initializable {
     public void onClickCodigoColumn(Event event) {
         if (codigoCheckBox.isSelected()) {
             fontSizeCodigo.setDisable(false);
+            codigoColorPicker.setDisable(false);
         } else {
             fontSizeCodigo.setDisable(true);
+            codigoColorPicker.setDisable(true);
         }
     }
 
@@ -174,8 +198,10 @@ public class VentanaController implements Initializable {
     public void onClickProductoColumn(Event event) {
         if (productoCheckBox.isSelected()) {
             fontSizeProducto.setDisable(false);
+            productoColorPicker.setDisable(false);
         } else {
             fontSizeProducto.setDisable(true);
+            productoColorPicker.setDisable(true);
         }
     }
 
@@ -183,8 +209,11 @@ public class VentanaController implements Initializable {
     public void onClickRubroColumn(Event event) {
         if (rubroCheckBox.isSelected()) {
             fontSizeRubro.setDisable(false);
+            rubroColorPicker.setDisable(false);
+            rubroColorPicker.getValue();
         } else {
             fontSizeRubro.setDisable(true);
+            rubroColorPicker.setDisable(true);
         }
     }
 
@@ -192,8 +221,10 @@ public class VentanaController implements Initializable {
     public void onClickSubRubroColumn(Event event) {
         if (subRubroCheckBox.isSelected()) {
             fontSizeSubRubro.setDisable(false);
+            subRubroColorPicker.setDisable(false);
         } else {
             fontSizeSubRubro.setDisable(true);
+            subRubroColorPicker.setDisable(true);
         }
     }
 
@@ -201,8 +232,10 @@ public class VentanaController implements Initializable {
     public void onClickMarcaColumn(Event event) {
         if (marcaCheckBox.isSelected()) {
             fontSizeMarca.setDisable(false);
+            marcaColorPicker.setDisable(false);
         } else {
             fontSizeMarca.setDisable(true);
+            marcaColorPicker.setDisable(true);
         }
     }
 
@@ -210,8 +243,10 @@ public class VentanaController implements Initializable {
     public void onClickPrecioColumn(Event event) {
         if (precioCheckBox.isSelected()) {
             fontSizePrecio.setDisable(false);
+            precioColorPicker.setDisable(false);
         } else {
             fontSizePrecio.setDisable(true);
+            precioColorPicker.setDisable(true);
         }
     }
 
@@ -219,8 +254,10 @@ public class VentanaController implements Initializable {
     public void onClickCodigoExternoColumn(Event event) {
         if (codigoExternoCheckBox.isSelected()) {
             fontSizeCodigoExterno.setDisable(false);
+            codigoExternoColorPicker.setDisable(false);
         } else {
             fontSizeCodigoExterno.setDisable(true);
+            codigoExternoColorPicker.setDisable(true);
         }
     }
 

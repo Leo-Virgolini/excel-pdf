@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ColorPicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.TextArea?>
@@ -9,21 +10,22 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane minHeight="318.0" minWidth="500.0" prefHeight="456.0" prefWidth="737.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fx.VentanaController">
+<AnchorPane minHeight="318.0" minWidth="500.0" prefHeight="464.0" prefWidth="838.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fx.VentanaController">
    <children>
       <Label layoutX="41.0" layoutY="12.0" prefHeight="35.0" prefWidth="160.0" text="Ubicación archivo excel:">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <TextField fx:id="ubicacionExcel" editable="false" layoutX="204.0" layoutY="14.0" prefHeight="31.0" prefWidth="358.0" promptText="C:\Lista.xlsx">
+      <TextField fx:id="ubicacionExcel" editable="false" layoutX="204.0" layoutY="14.0" prefHeight="31.0" prefWidth="459.0" promptText="C:\Lista.xlsx">
          <font>
             <Font size="15.0" />
          </font>
       </TextField>
-      <Button layoutX="565.0" layoutY="10.0" mnemonicParsing="false" onAction="#buscarExcel" prefHeight="41.0" prefWidth="160.0" text="Examinar..." textFill="#00a40b">
+      <Button layoutX="669.0" layoutY="10.0" mnemonicParsing="false" onAction="#buscarExcel" prefHeight="41.0" prefWidth="160.0" text="Examinar..." textFill="#00a40b">
          <font>
             <Font name="System Bold" size="17.0" />
          </font>
@@ -40,12 +42,12 @@
             <Font size="15.0" />
          </font>
       </Label>
-      <TextField fx:id="ubicacionImagenes" editable="false" layoutX="204.0" layoutY="60.0" prefHeight="31.0" prefWidth="357.0" promptText="C:\imagenes">
+      <TextField fx:id="ubicacionImagenes" editable="false" layoutX="204.0" layoutY="60.0" prefHeight="31.0" prefWidth="459.0" promptText="C:\imagenes">
          <font>
             <Font size="15.0" />
          </font>
       </TextField>
-      <Button layoutX="564.0" layoutY="55.0" mnemonicParsing="false" onAction="#buscarImagenes" prefHeight="39.0" prefWidth="160.0" text="Examinar..." textFill="#d9b247">
+      <Button layoutX="668.0" layoutY="55.0" mnemonicParsing="false" onAction="#buscarImagenes" prefHeight="39.0" prefWidth="160.0" text="Examinar..." textFill="#d9b247">
          <font>
             <Font name="System Bold" size="17.0" />
          </font>
@@ -57,11 +59,11 @@
             </ImageView>
          </graphic>
       </Button>
-      <TextArea fx:id="logTextArea" editable="false" layoutX="9.0" layoutY="106.0" prefHeight="127.0" prefWidth="720.0">
+      <TextArea fx:id="logTextArea" editable="false" layoutX="9.0" layoutY="106.0" prefHeight="139.0" prefWidth="820.0">
          <font>
             <Font name="System Italic" size="14.0" />
          </font></TextArea>
-      <Button fx:id="generarButton" alignment="CENTER" layoutX="287.0" layoutY="349.0" mnemonicParsing="false" onAction="#generar" prefHeight="63.0" prefWidth="214.0" text="Generar PDF" textFill="#ff5722" wrapText="true">
+      <Button fx:id="generarButton" alignment="CENTER" layoutX="340.0" layoutY="373.0" mnemonicParsing="false" onAction="#generar" prefHeight="63.0" prefWidth="214.0" text="Generar PDF" textFill="#ff5722" wrapText="true">
          <font>
             <Font name="System Bold" size="21.0" />
          </font>
@@ -73,37 +75,37 @@
             </ImageView>
          </graphic>
       </Button>
-      <TextField fx:id="imageSizeTextInput" alignment="CENTER" layoutX="190.0" layoutY="364.0" prefHeight="30.0" prefWidth="43.0" text="80">
+      <TextField fx:id="imageSizeTextInput" alignment="CENTER" layoutX="190.0" layoutY="388.0" prefHeight="30.0" prefWidth="43.0" text="80">
          <font>
             <Font size="15.0" />
          </font>
       </TextField>
-      <Label layoutX="77.0" layoutY="360.0" prefHeight="35.0" prefWidth="113.0" text="Tamaño imagen:">
+      <Label layoutX="77.0" layoutY="384.0" prefHeight="35.0" prefWidth="113.0" text="Tamaño imagen:">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <TextField fx:id="pageWidthTextInput" alignment="CENTER" layoutX="593.0" layoutY="362.0" prefHeight="30.0" prefWidth="66.0" text="595">
+      <TextField fx:id="pageWidthTextInput" alignment="CENTER" layoutX="738.0" layoutY="386.0" prefHeight="30.0" prefWidth="66.0" text="595">
          <font>
             <Font size="15.0" />
          </font>
       </TextField>
-      <TextField fx:id="pageHeightTextInput" alignment="CENTER" layoutX="593.0" layoutY="399.0" prefHeight="30.0" prefWidth="66.0" text="842">
+      <TextField fx:id="pageHeightTextInput" alignment="CENTER" layoutX="738.0" layoutY="423.0" prefHeight="30.0" prefWidth="66.0" text="842">
          <font>
             <Font size="15.0" />
          </font>
       </TextField>
-      <Label layoutX="538.0" layoutY="359.0" prefHeight="35.0" prefWidth="53.0" text="Ancho:">
+      <Label layoutX="683.0" layoutY="383.0" prefHeight="35.0" prefWidth="53.0" text="Ancho:">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <Label layoutX="549.0" layoutY="396.0" prefHeight="35.0" prefWidth="43.0" text="Alto:">
+      <Label layoutX="694.0" layoutY="420.0" prefHeight="35.0" prefWidth="43.0" text="Alto:">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <CheckBox fx:id="linksCheckBox" layoutX="77.0" layoutY="411.0" mnemonicParsing="false" onAction="#onClickLinks" text="Generar links" textFill="#000dff" underline="true">
+      <CheckBox fx:id="linksCheckBox" layoutX="77.0" layoutY="429.0" mnemonicParsing="false" onAction="#onClickLinks" text="Generar links" textFill="#000dff" underline="true">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
@@ -113,131 +115,166 @@
             <Font name="System Bold" size="15.0" />
          </font>
       </CheckBox>
-      <CheckBox fx:id="rubroCheckBox" layoutX="192.0" layoutY="255.0" mnemonicParsing="false" onAction="#onClickRubroColumn" selected="true" text="Rubro" textFill="#056600" underline="true">
+      <CheckBox fx:id="rubroCheckBox" layoutX="231.0" layoutY="255.0" mnemonicParsing="false" onAction="#onClickRubroColumn" selected="true" text="Rubro" textFill="#056600" underline="true">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </CheckBox>
-      <CheckBox fx:id="codigoExternoCheckBox" layoutX="592.0" layoutY="254.0" mnemonicParsing="false" onAction="#onClickCodigoExternoColumn" selected="true" text="Código externo" textFill="#056600" underline="true">
+      <CheckBox fx:id="codigoExternoCheckBox" layoutX="692.0" layoutY="254.0" mnemonicParsing="false" onAction="#onClickCodigoExternoColumn" selected="true" text="Código externo" textFill="#056600" underline="true">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </CheckBox>
-      <CheckBox fx:id="precioCheckBox" layoutX="451.0" layoutY="255.0" mnemonicParsing="false" onAction="#onClickPrecioColumn" selected="true" text="Precio de venta" textFill="#056600" underline="true">
+      <CheckBox fx:id="precioCheckBox" layoutX="550.0" layoutY="255.0" mnemonicParsing="false" onAction="#onClickPrecioColumn" selected="true" text="Precio de venta" textFill="#056600" underline="true">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </CheckBox>
-      <CheckBox fx:id="productoCheckBox" layoutX="93.0" layoutY="254.0" mnemonicParsing="false" onAction="#onClickProductoColumn" selected="true" text="Producto" textFill="#056600" underline="true">
+      <CheckBox fx:id="productoCheckBox" layoutX="118.0" layoutY="254.0" mnemonicParsing="false" onAction="#onClickProductoColumn" selected="true" text="Producto" textFill="#056600" underline="true">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </CheckBox>
-      <CheckBox fx:id="subRubroCheckBox" layoutX="269.0" layoutY="254.0" mnemonicParsing="false" onAction="#onClickSubRubroColumn" selected="true" text="Sub rubro" textFill="#056600" underline="true">
+      <CheckBox fx:id="subRubroCheckBox" layoutX="338.0" layoutY="254.0" mnemonicParsing="false" onAction="#onClickSubRubroColumn" selected="true" text="Sub rubro" textFill="#056600" underline="true">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </CheckBox>
-      <CheckBox fx:id="marcaCheckBox" layoutX="372.0" layoutY="255.0" mnemonicParsing="false" onAction="#onClickMarcaColumn" selected="true" text="Marca" textFill="#056600" underline="true">
+      <CheckBox fx:id="marcaCheckBox" layoutX="458.0" layoutY="255.0" mnemonicParsing="false" onAction="#onClickMarcaColumn" selected="true" text="Marca" textFill="#056600" underline="true">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </CheckBox>
-      <CheckBox fx:id="imagenCheckBox" layoutX="77.0" layoutY="332.0" mnemonicParsing="false" onAction="#onClickImagenes" selected="true" text="Generar imágenes" textFill="#7b7b7b" underline="true">
+      <CheckBox fx:id="imagenCheckBox" layoutX="77.0" layoutY="356.0" mnemonicParsing="false" onAction="#onClickImagenes" selected="true" text="Generar imágenes" textFill="#7b7b7b" underline="true">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </CheckBox>
-      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="545.0" layoutY="324.0" prefHeight="35.0" prefWidth="120.0" text="Hoja" textAlignment="CENTER" textFill="#595959" underline="true">
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="690.0" layoutY="348.0" prefHeight="35.0" prefWidth="120.0" text="Hoja" textAlignment="CENTER" textFill="#595959" underline="true">
          <font>
             <Font name="System Bold" size="24.0" />
          </font>
       </Label>
-      <TextField fx:id="fontSizeCodigo" alignment="CENTER" layoutX="40.0" layoutY="277.0" prefHeight="30.0" prefWidth="43.0" text="6">
+      <TextField fx:id="fontSizeCodigo" alignment="CENTER" layoutX="28.0" layoutY="280.0" prefHeight="30.0" prefWidth="43.0" text="6">
          <font>
             <Font size="14.0" />
          </font>
       </TextField>
-      <TextField fx:id="fontSizeProducto" alignment="CENTER" layoutX="129.0" layoutY="277.0" prefHeight="30.0" prefWidth="43.0" text="6">
+      <TextField fx:id="fontSizeProducto" alignment="CENTER" layoutX="138.0" layoutY="280.0" prefHeight="30.0" prefWidth="43.0" text="6">
          <font>
             <Font size="14.0" />
          </font>
       </TextField>
-      <TextField fx:id="fontSizeRubro" alignment="CENTER" layoutX="219.0" layoutY="277.0" prefHeight="30.0" prefWidth="43.0" text="6">
+      <TextField fx:id="fontSizeRubro" alignment="CENTER" layoutX="243.0" layoutY="280.0" prefHeight="30.0" prefWidth="43.0" text="6">
          <font>
             <Font size="14.0" />
          </font>
       </TextField>
-      <TextField fx:id="fontSizeSubRubro" alignment="CENTER" layoutX="307.0" layoutY="277.0" prefHeight="30.0" prefWidth="43.0" text="6">
+      <TextField fx:id="fontSizeSubRubro" alignment="CENTER" layoutX="366.0" layoutY="280.0" prefHeight="30.0" prefWidth="43.0" text="6">
          <font>
             <Font size="14.0" />
          </font>
       </TextField>
-      <TextField fx:id="fontSizeMarca" alignment="CENTER" layoutX="400.0" layoutY="277.0" prefHeight="30.0" prefWidth="43.0" text="6">
+      <TextField fx:id="fontSizeMarca" alignment="CENTER" layoutX="471.0" layoutY="280.0" prefHeight="30.0" prefWidth="43.0" text="6">
          <font>
             <Font size="14.0" />
          </font>
       </TextField>
-      <TextField fx:id="fontSizePrecio" alignment="CENTER" layoutX="506.0" layoutY="277.0" prefHeight="30.0" prefWidth="43.0" text="7">
+      <TextField fx:id="fontSizePrecio" alignment="CENTER" layoutX="605.0" layoutY="280.0" prefHeight="30.0" prefWidth="43.0" text="7">
          <font>
             <Font size="14.0" />
          </font>
       </TextField>
-      <TextField fx:id="fontSizeCodigoExterno" alignment="CENTER" layoutX="643.0" layoutY="277.0" prefHeight="30.0" prefWidth="43.0" text="6">
+      <TextField fx:id="fontSizeCodigoExterno" alignment="CENTER" layoutX="743.0" layoutY="280.0" prefHeight="30.0" prefWidth="43.0" text="6">
          <font>
             <Font size="14.0" />
          </font>
       </TextField>
-      <Label layoutX="84.0" layoutY="274.0" prefHeight="35.0" prefWidth="22.0" text="px">
+      <Label layoutX="72.0" layoutY="276.0" prefHeight="35.0" prefWidth="22.0" text="px">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <Label layoutX="234.0" layoutY="362.0" prefHeight="35.0" prefWidth="22.0" text="px">
+      <Label layoutX="234.0" layoutY="386.0" prefHeight="35.0" prefWidth="22.0" text="px">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <Label layoutX="661.0" layoutY="359.0" prefHeight="35.0" prefWidth="22.0" text="px">
+      <Label layoutX="806.0" layoutY="383.0" prefHeight="35.0" prefWidth="22.0" text="px">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <Label layoutX="661.0" layoutY="396.0" prefHeight="35.0" prefWidth="22.0" text="px">
+      <Label layoutX="806.0" layoutY="420.0" prefHeight="35.0" prefWidth="22.0" text="px">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <Label layoutX="173.0" layoutY="274.0" prefHeight="35.0" prefWidth="22.0" text="px">
+      <Label layoutX="182.0" layoutY="276.0" prefHeight="35.0" prefWidth="22.0" text="px">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <Label layoutX="263.0" layoutY="274.0" prefHeight="35.0" prefWidth="22.0" text="px">
+      <Label layoutX="287.0" layoutY="276.0" prefHeight="35.0" prefWidth="22.0" text="px">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <Label layoutX="350.0" layoutY="274.0" prefHeight="35.0" prefWidth="22.0" text="px">
+      <Label layoutX="409.0" layoutY="276.0" prefHeight="35.0" prefWidth="22.0" text="px">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <Label layoutX="443.0" layoutY="274.0" prefHeight="35.0" prefWidth="22.0" text="px">
+      <Label layoutX="516.0" layoutY="276.0" prefHeight="35.0" prefWidth="22.0" text="px">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <Label layoutX="550.0" layoutY="274.0" prefHeight="35.0" prefWidth="22.0" text="px">
+      <Label layoutX="649.0" layoutY="276.0" prefHeight="35.0" prefWidth="22.0" text="px">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <Label layoutX="687.0" layoutY="274.0" prefHeight="35.0" prefWidth="22.0" text="px">
+      <Label layoutX="787.0" layoutY="276.0" prefHeight="35.0" prefWidth="22.0" text="px">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
       <ProgressIndicator fx:id="progressIndicator" layoutX="339.0" layoutY="150.0" visible="false" />
+      <ColorPicker fx:id="codigoColorPicker" layoutX="7.0" layoutY="312.0" prefHeight="26.0" prefWidth="98.0">
+         <value>
+            <Color />
+         </value>
+      </ColorPicker>
+      <ColorPicker fx:id="productoColorPicker" layoutX="119.0" layoutY="312.0" prefHeight="26.0" prefWidth="98.0">
+         <value>
+            <Color blue="0.545098066329956" />
+         </value>
+      </ColorPicker>
+      <ColorPicker fx:id="rubroColorPicker" layoutX="231.0" layoutY="312.0" prefHeight="26.0" prefWidth="98.0">
+         <value>
+            <Color />
+         </value>
+      </ColorPicker>
+      <ColorPicker fx:id="subRubroColorPicker" layoutX="343.0" layoutY="312.0" prefHeight="26.0" prefWidth="98.0">
+         <value>
+            <Color />
+         </value>
+      </ColorPicker>
+      <ColorPicker fx:id="marcaColorPicker" layoutX="458.0" layoutY="312.0" prefHeight="26.0" prefWidth="98.0">
+         <value>
+            <Color />
+         </value>
+      </ColorPicker>
+      <ColorPicker fx:id="precioColorPicker" layoutX="573.0" layoutY="312.0" prefHeight="26.0" prefWidth="120.0">
+         <value>
+            <Color red="0.545098066329956" />
+         </value>
+      </ColorPicker>
+      <ColorPicker fx:id="codigoExternoColorPicker" layoutX="714.0" layoutY="312.0" prefHeight="26.0" prefWidth="98.0">
+         <value>
+            <Color />
+         </value>
+      </ColorPicker>
    </children>
 </AnchorPane>
