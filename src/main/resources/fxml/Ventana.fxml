@@ -75,7 +75,7 @@
             </ImageView>
          </graphic>
       </Button>
-      <TextField fx:id="imageSizeTextInput" alignment="CENTER" layoutX="190.0" layoutY="388.0" prefHeight="30.0" prefWidth="43.0" text="80">
+      <TextField fx:id="imageSizeTextInput" alignment="CENTER" layoutX="190.0" layoutY="388.0" prefHeight="30.0" prefWidth="43.0" text="89">
          <font>
             <Font size="15.0" />
          </font>

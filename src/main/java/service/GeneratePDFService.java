@@ -20,6 +20,7 @@ import javafx.concurrent.Task;
 import javafx.scene.control.TextArea;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import pdf.ClippedTableRenderer;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -110,9 +111,6 @@ public class GeneratePDFService extends Service<Integer> {
                                boolean rubroColumn, boolean subRubroColumn, boolean marcaColumn, boolean precioColumn, boolean codigoExternoColumn, boolean imagenes, boolean links, TextArea logTextArea) throws Exception {
 
         final String[] supportedExtensions = {".jpg", ".jpeg", ".png", ".bmp"};
-
-        final ImageData buttonImagenData = ImageDataFactory.create(getClass().getResource("/images/button.png").toExternalForm());
-
         Image sinImagen = null;
         for (String extension : supportedExtensions) {
             File sinImagenfile = new File(carpetaImagenes.getAbsolutePath(), "SINIMAGEN" + extension);
@@ -121,7 +119,7 @@ public class GeneratePDFService extends Service<Integer> {
                 break;
             }
         }
-
+        final ImageData buttonImagenData = ImageDataFactory.create(getClass().getResource("/images/button.png").toExternalForm());
         final int productsPerPage = 20;
         final int rowsPerPage = 5;
         int generatedRows = 0;
@@ -303,9 +301,8 @@ public class GeneratePDFService extends Service<Integer> {
                             .setVerticalAlignment(VerticalAlignment.MIDDLE);
 //                    cell.setKeepTogether(true);
 
-                    System.out.println("cell h:" + cell.getHeight());
-
                     table.addCell(cell);
+//                    System.out.println("cell height: " + cell.getHeight());
 
                     // If we've added the maximum number of products per page, start a new page
                     if ((table.getNumberOfRows() % rowsPerPage == 0) && (i % productsPerPage == 0)) {
@@ -315,6 +312,7 @@ public class GeneratePDFService extends Service<Integer> {
                         table.setMargin(0);
                         table.setPadding(0);
                         table.setFixedLayout();
+                        table.setNextRenderer(new ClippedTableRenderer(table));
                         doc.add(table);
                         doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
                         table = new Table(UnitValue.createPercentArray(4)).useAllAvailableWidth();
@@ -327,10 +325,10 @@ public class GeneratePDFService extends Service<Integer> {
                     table.setMargin(0);
                     table.setPadding(0);
                     table.setFixedLayout();
+                    table.setNextRenderer(new ClippedTableRenderer(table));
                     doc.add(table);
                 }
                 agregarNumeroPagina(pdfDoc, doc);
-
             } catch (Exception e) {
                 throw e;
             }
@@ -379,9 +377,10 @@ public class GeneratePDFService extends Service<Integer> {
 
     private void agregarNumeroPagina(PdfDocument pdfDoc, Document doc) {
         final int numberOfPages = pdfDoc.getNumberOfPages();
+        final DeviceRgb fontColor = new DeviceRgb(128, 128, 128);
         for (int i = 1; i <= numberOfPages; i++) {
             // Write aligned text to the specified parameters point
-            doc.showTextAligned(new Paragraph(String.format("Página %s de %s", i, numberOfPages)).setFontSize(5).setFontColor(new DeviceRgb(128, 128, 128)),
+            doc.showTextAligned(new Paragraph(String.format("Página %s de %s", i, numberOfPages)).setFontSize(5).setFontColor(fontColor),
                     pageWidth / 2, 3, i, TextAlignment.CENTER, VerticalAlignment.MIDDLE, 0);
         }
     }
