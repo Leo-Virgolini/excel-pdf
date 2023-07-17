@@ -28,7 +28,7 @@ public class ClippedTableRenderer extends TableRenderer {
 
     @Override
     protected TableRenderer createOverflowRenderer(Table.RowRange rowRange) {
-        System.out.println("rowRange: " + rowRange.getStartRow() + "-" + rowRange.getFinishRow());
+//        System.out.println("rowRange: " + rowRange.getStartRow() + "-" + rowRange.getFinishRow());
         throw new RuntimeException("El contenido no entra en las celdas. Disminuye el tamaño de la imagen o de las fuentes.");
     }
 

@@ -10,17 +10,236 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.paint.Color?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane minHeight="318.0" minWidth="500.0" prefHeight="464.0" prefWidth="838.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fx.VentanaController">
+<AnchorPane minHeight="318.0" minWidth="500.0" prefHeight="519.0" prefWidth="838.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fx.VentanaController">
    <children>
-      <Label layoutX="41.0" layoutY="12.0" prefHeight="35.0" prefWidth="160.0" text="Ubicación archivo excel:">
+      <Pane layoutX="7.0" layoutY="305.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="305.2">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffffff00" height="118.0" layoutX="666.0" layoutY="90.60000610351562" stroke="BLACK" strokeType="INSIDE" width="160.0" />
+            <Button fx:id="generarButton" alignment="CENTER" layoutX="333.0" layoutY="119.0" mnemonicParsing="false" onAction="#generar" prefHeight="63.0" prefWidth="214.0" text="Generar PDF" textFill="#ff5722" wrapText="true">
+               <font>
+                  <Font name="System Bold" size="21.0" />
+               </font>
+               <graphic>
+                  <ImageView fitHeight="40.0" fitWidth="40.0">
+                     <image>
+                        <Image url="@../images/icons8-pdf-48.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <TextField fx:id="imageSizeTextInput" alignment="CENTER" layoutX="183.0" layoutY="134.0" prefHeight="30.0" prefWidth="43.0" text="89">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </TextField>
+            <Label layoutX="70.0" layoutY="130.0" prefHeight="35.0" prefWidth="113.0" text="Tamaño imagen:">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <TextField fx:id="pageWidthTextInput" alignment="CENTER" layoutX="731.0" layoutY="132.0" prefHeight="30.0" prefWidth="66.0" text="595">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </TextField>
+            <TextField fx:id="pageHeightTextInput" alignment="CENTER" layoutX="731.0" layoutY="169.0" prefHeight="30.0" prefWidth="66.0" text="842">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </TextField>
+            <Label layoutX="676.0" layoutY="129.0" prefHeight="35.0" prefWidth="53.0" text="Ancho:">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <Label layoutX="687.0" layoutY="166.0" prefHeight="35.0" prefWidth="43.0" text="Alto:">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <CheckBox fx:id="linksCheckBox" layoutX="70.0" layoutY="175.0" mnemonicParsing="false" onAction="#onClickLinks" text="Generar links" textFill="#000dff" underline="true">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </CheckBox>
+            <CheckBox fx:id="codigoCheckBox" layoutX="2.0" mnemonicParsing="false" onAction="#onClickCodigoColumn" selected="true" text="Código" textFill="#056600" underline="true">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </CheckBox>
+            <CheckBox fx:id="rubroCheckBox" layoutX="229.0" layoutY="1.0" mnemonicParsing="false" onAction="#onClickRubroColumn" selected="true" text="Rubro" textFill="#056600" underline="true">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </CheckBox>
+            <CheckBox fx:id="codigoExternoCheckBox" layoutX="685.0" mnemonicParsing="false" onAction="#onClickCodigoExternoColumn" selected="true" text="Código externo" textFill="#056600" underline="true">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </CheckBox>
+            <CheckBox fx:id="precioCheckBox" layoutX="543.0" layoutY="1.0" mnemonicParsing="false" onAction="#onClickPrecioColumn" selected="true" text="Precio de venta" textFill="#056600" underline="true">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </CheckBox>
+            <CheckBox fx:id="productoCheckBox" layoutX="111.0" mnemonicParsing="false" onAction="#onClickProductoColumn" selected="true" text="Producto" textFill="#056600" underline="true">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </CheckBox>
+            <CheckBox fx:id="subRubroCheckBox" layoutX="331.0" mnemonicParsing="false" onAction="#onClickSubRubroColumn" selected="true" text="Sub rubro" textFill="#056600" underline="true">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </CheckBox>
+            <CheckBox fx:id="marcaCheckBox" layoutX="451.0" layoutY="1.0" mnemonicParsing="false" onAction="#onClickMarcaColumn" selected="true" text="Marca" textFill="#056600" underline="true">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </CheckBox>
+            <CheckBox fx:id="imagenCheckBox" layoutX="70.0" layoutY="102.0" mnemonicParsing="false" onAction="#onClickImagenes" selected="true" text="Generar imágenes" textFill="#7b7b7b" underline="true">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </CheckBox>
+            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="690.0" layoutY="94.0" prefHeight="35.0" prefWidth="120.0" text="Hoja" textAlignment="CENTER" textFill="#595959" underline="true">
+               <font>
+                  <Font name="System Bold" size="24.0" />
+               </font>
+            </Label>
+            <TextField fx:id="fontSizeCodigo" alignment="CENTER" layoutX="21.0" layoutY="26.0" prefHeight="30.0" prefWidth="43.0" text="6">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </TextField>
+            <TextField fx:id="fontSizeProducto" alignment="CENTER" layoutX="131.0" layoutY="26.0" prefHeight="30.0" prefWidth="43.0" text="6">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </TextField>
+            <TextField fx:id="fontSizeRubro" alignment="CENTER" layoutX="241.0" layoutY="26.0" prefHeight="30.0" prefWidth="43.0" text="6">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </TextField>
+            <TextField fx:id="fontSizeSubRubro" alignment="CENTER" layoutX="359.0" layoutY="26.0" prefHeight="30.0" prefWidth="43.0" text="6">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </TextField>
+            <TextField fx:id="fontSizeMarca" alignment="CENTER" layoutX="464.0" layoutY="26.0" prefHeight="30.0" prefWidth="43.0" text="6">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </TextField>
+            <TextField fx:id="fontSizePrecio" alignment="CENTER" layoutX="598.0" layoutY="26.0" prefHeight="30.0" prefWidth="43.0" text="7">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </TextField>
+            <TextField fx:id="fontSizeCodigoExterno" alignment="CENTER" layoutX="736.0" layoutY="26.0" prefHeight="30.0" prefWidth="43.0" text="6">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </TextField>
+            <Label layoutX="65.0" layoutY="22.0" prefHeight="35.0" prefWidth="22.0" text="px">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <Label layoutX="227.0" layoutY="132.0" prefHeight="35.0" prefWidth="22.0" text="px">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <Label layoutX="799.0" layoutY="129.0" prefHeight="35.0" prefWidth="22.0" text="px">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <Label layoutX="799.0" layoutY="166.0" prefHeight="35.0" prefWidth="22.0" text="px">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <Label layoutX="175.0" layoutY="22.0" prefHeight="35.0" prefWidth="22.0" text="px">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <Label layoutX="285.0" layoutY="22.0" prefHeight="35.0" prefWidth="22.0" text="px">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <Label layoutX="402.0" layoutY="22.0" prefHeight="35.0" prefWidth="22.0" text="px">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <Label layoutX="509.0" layoutY="22.0" prefHeight="35.0" prefWidth="22.0" text="px">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <Label layoutX="642.0" layoutY="22.0" prefHeight="35.0" prefWidth="22.0" text="px">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <Label layoutX="780.0" layoutY="22.0" prefHeight="35.0" prefWidth="22.0" text="px">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <ColorPicker fx:id="codigoColorPicker" layoutY="58.0" prefHeight="26.0" prefWidth="98.0">
+               <value>
+                  <Color />
+               </value>
+            </ColorPicker>
+            <ColorPicker fx:id="productoColorPicker" layoutX="112.0" layoutY="58.0" prefHeight="26.0" prefWidth="98.0">
+               <value>
+                  <Color blue="0.545098066329956" />
+               </value>
+            </ColorPicker>
+            <ColorPicker fx:id="rubroColorPicker" layoutX="224.0" layoutY="58.0" prefHeight="26.0" prefWidth="98.0">
+               <value>
+                  <Color />
+               </value>
+            </ColorPicker>
+            <ColorPicker fx:id="subRubroColorPicker" layoutX="336.0" layoutY="58.0" prefHeight="26.0" prefWidth="98.0">
+               <value>
+                  <Color />
+               </value>
+            </ColorPicker>
+            <ColorPicker fx:id="marcaColorPicker" layoutX="451.0" layoutY="58.0" prefHeight="26.0" prefWidth="98.0">
+               <value>
+                  <Color />
+               </value>
+            </ColorPicker>
+            <ColorPicker fx:id="precioColorPicker" layoutX="566.0" layoutY="58.0" prefHeight="26.0" prefWidth="120.0">
+               <value>
+                  <Color red="0.545098066329956" />
+               </value>
+            </ColorPicker>
+            <ColorPicker fx:id="codigoExternoColorPicker" layoutX="707.0" layoutY="58.0" prefHeight="26.0" prefWidth="98.0">
+               <value>
+                  <Color />
+               </value>
+            </ColorPicker>
+         </children>
+      </Pane>
+      <Label layoutX="35.0" layoutY="12.0" prefHeight="35.0" prefWidth="177.0" text="Ubicación archivo excel:">
          <font>
-            <Font size="15.0" />
+            <Font name="System Bold" size="15.0" />
          </font>
       </Label>
-      <TextField fx:id="ubicacionExcel" editable="false" layoutX="204.0" layoutY="14.0" prefHeight="31.0" prefWidth="459.0" promptText="C:\Lista.xlsx">
+      <TextField fx:id="ubicacionExcel" editable="false" layoutX="206.0" layoutY="14.0" prefHeight="31.0" prefWidth="459.0" promptText="C:\Lista.xlsx">
          <font>
             <Font size="15.0" />
          </font>
@@ -37,12 +256,12 @@
             </ImageView>
          </graphic>
       </Button>
-      <Label layoutX="12.0" layoutY="53.0" prefHeight="46.0" prefWidth="190.0" text="Ubicación carpeta imágenes:" textAlignment="CENTER" wrapText="true">
+      <Label layoutX="2.0" layoutY="53.0" prefHeight="46.0" prefWidth="201.0" text="Ubicación carpeta imágenes:" textAlignment="CENTER" wrapText="true">
          <font>
-            <Font size="15.0" />
+            <Font name="System Bold" size="15.0" />
          </font>
       </Label>
-      <TextField fx:id="ubicacionImagenes" editable="false" layoutX="204.0" layoutY="60.0" prefHeight="31.0" prefWidth="459.0" promptText="C:\imagenes">
+      <TextField fx:id="ubicacionImagenes" editable="false" layoutX="205.0" layoutY="60.0" prefHeight="31.0" prefWidth="459.0" promptText="C:\imagenes">
          <font>
             <Font size="15.0" />
          </font>
@@ -59,222 +278,32 @@
             </ImageView>
          </graphic>
       </Button>
-      <TextArea fx:id="logTextArea" editable="false" layoutX="9.0" layoutY="106.0" prefHeight="139.0" prefWidth="820.0">
+      <TextArea fx:id="logTextArea" editable="false" layoutX="9.0" layoutY="152.0" prefHeight="144.0" prefWidth="820.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="152.0">
          <font>
             <Font name="System Italic" size="14.0" />
          </font></TextArea>
-      <Button fx:id="generarButton" alignment="CENTER" layoutX="340.0" layoutY="373.0" mnemonicParsing="false" onAction="#generar" prefHeight="63.0" prefWidth="214.0" text="Generar PDF" textFill="#ff5722" wrapText="true">
+      <ProgressIndicator fx:id="progressIndicator" layoutX="339.0" layoutY="201.0" visible="false" />
+      <Label layoutX="41.0" layoutY="103.0" prefHeight="35.0" prefWidth="178.0" text="Ubicación carátula pdf:" textFill="#8e8e8e">
          <font>
-            <Font name="System Bold" size="21.0" />
+            <Font name="System Bold Italic" size="15.0" />
+         </font>
+      </Label>
+      <TextField fx:id="ubicacionCaratula" editable="false" layoutX="205.0" layoutY="105.0" prefHeight="31.0" prefWidth="459.0" promptText="C:\cáratula.pdf">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </TextField>
+      <Button layoutX="668.0" layoutY="100.0" mnemonicParsing="false" onAction="#buscarCaratula" prefHeight="41.0" prefWidth="160.0" text="Examinar..." textFill="#ff2d2d">
+         <font>
+            <Font name="System Bold" size="17.0" />
          </font>
          <graphic>
-            <ImageView fitHeight="40.0" fitWidth="40.0">
+            <ImageView fitHeight="30.0" fitWidth="30.0">
                <image>
                   <Image url="@../images/icons8-pdf-48.png" />
                </image>
             </ImageView>
          </graphic>
       </Button>
-      <TextField fx:id="imageSizeTextInput" alignment="CENTER" layoutX="190.0" layoutY="388.0" prefHeight="30.0" prefWidth="43.0" text="89">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </TextField>
-      <Label layoutX="77.0" layoutY="384.0" prefHeight="35.0" prefWidth="113.0" text="Tamaño imagen:">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </Label>
-      <TextField fx:id="pageWidthTextInput" alignment="CENTER" layoutX="738.0" layoutY="386.0" prefHeight="30.0" prefWidth="66.0" text="595">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </TextField>
-      <TextField fx:id="pageHeightTextInput" alignment="CENTER" layoutX="738.0" layoutY="423.0" prefHeight="30.0" prefWidth="66.0" text="842">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </TextField>
-      <Label layoutX="683.0" layoutY="383.0" prefHeight="35.0" prefWidth="53.0" text="Ancho:">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </Label>
-      <Label layoutX="694.0" layoutY="420.0" prefHeight="35.0" prefWidth="43.0" text="Alto:">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </Label>
-      <CheckBox fx:id="linksCheckBox" layoutX="77.0" layoutY="429.0" mnemonicParsing="false" onAction="#onClickLinks" text="Generar links" textFill="#000dff" underline="true">
-         <font>
-            <Font name="System Bold" size="15.0" />
-         </font>
-      </CheckBox>
-      <CheckBox fx:id="codigoCheckBox" layoutX="9.0" layoutY="254.0" mnemonicParsing="false" onAction="#onClickCodigoColumn" selected="true" text="Código" textFill="#056600" underline="true">
-         <font>
-            <Font name="System Bold" size="15.0" />
-         </font>
-      </CheckBox>
-      <CheckBox fx:id="rubroCheckBox" layoutX="231.0" layoutY="255.0" mnemonicParsing="false" onAction="#onClickRubroColumn" selected="true" text="Rubro" textFill="#056600" underline="true">
-         <font>
-            <Font name="System Bold" size="15.0" />
-         </font>
-      </CheckBox>
-      <CheckBox fx:id="codigoExternoCheckBox" layoutX="692.0" layoutY="254.0" mnemonicParsing="false" onAction="#onClickCodigoExternoColumn" selected="true" text="Código externo" textFill="#056600" underline="true">
-         <font>
-            <Font name="System Bold" size="15.0" />
-         </font>
-      </CheckBox>
-      <CheckBox fx:id="precioCheckBox" layoutX="550.0" layoutY="255.0" mnemonicParsing="false" onAction="#onClickPrecioColumn" selected="true" text="Precio de venta" textFill="#056600" underline="true">
-         <font>
-            <Font name="System Bold" size="15.0" />
-         </font>
-      </CheckBox>
-      <CheckBox fx:id="productoCheckBox" layoutX="118.0" layoutY="254.0" mnemonicParsing="false" onAction="#onClickProductoColumn" selected="true" text="Producto" textFill="#056600" underline="true">
-         <font>
-            <Font name="System Bold" size="15.0" />
-         </font>
-      </CheckBox>
-      <CheckBox fx:id="subRubroCheckBox" layoutX="338.0" layoutY="254.0" mnemonicParsing="false" onAction="#onClickSubRubroColumn" selected="true" text="Sub rubro" textFill="#056600" underline="true">
-         <font>
-            <Font name="System Bold" size="15.0" />
-         </font>
-      </CheckBox>
-      <CheckBox fx:id="marcaCheckBox" layoutX="458.0" layoutY="255.0" mnemonicParsing="false" onAction="#onClickMarcaColumn" selected="true" text="Marca" textFill="#056600" underline="true">
-         <font>
-            <Font name="System Bold" size="15.0" />
-         </font>
-      </CheckBox>
-      <CheckBox fx:id="imagenCheckBox" layoutX="77.0" layoutY="356.0" mnemonicParsing="false" onAction="#onClickImagenes" selected="true" text="Generar imágenes" textFill="#7b7b7b" underline="true">
-         <font>
-            <Font name="System Bold" size="15.0" />
-         </font>
-      </CheckBox>
-      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="690.0" layoutY="348.0" prefHeight="35.0" prefWidth="120.0" text="Hoja" textAlignment="CENTER" textFill="#595959" underline="true">
-         <font>
-            <Font name="System Bold" size="24.0" />
-         </font>
-      </Label>
-      <TextField fx:id="fontSizeCodigo" alignment="CENTER" layoutX="28.0" layoutY="280.0" prefHeight="30.0" prefWidth="43.0" text="6">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </TextField>
-      <TextField fx:id="fontSizeProducto" alignment="CENTER" layoutX="138.0" layoutY="280.0" prefHeight="30.0" prefWidth="43.0" text="6">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </TextField>
-      <TextField fx:id="fontSizeRubro" alignment="CENTER" layoutX="243.0" layoutY="280.0" prefHeight="30.0" prefWidth="43.0" text="6">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </TextField>
-      <TextField fx:id="fontSizeSubRubro" alignment="CENTER" layoutX="366.0" layoutY="280.0" prefHeight="30.0" prefWidth="43.0" text="6">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </TextField>
-      <TextField fx:id="fontSizeMarca" alignment="CENTER" layoutX="471.0" layoutY="280.0" prefHeight="30.0" prefWidth="43.0" text="6">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </TextField>
-      <TextField fx:id="fontSizePrecio" alignment="CENTER" layoutX="605.0" layoutY="280.0" prefHeight="30.0" prefWidth="43.0" text="7">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </TextField>
-      <TextField fx:id="fontSizeCodigoExterno" alignment="CENTER" layoutX="743.0" layoutY="280.0" prefHeight="30.0" prefWidth="43.0" text="6">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </TextField>
-      <Label layoutX="72.0" layoutY="276.0" prefHeight="35.0" prefWidth="22.0" text="px">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </Label>
-      <Label layoutX="234.0" layoutY="386.0" prefHeight="35.0" prefWidth="22.0" text="px">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </Label>
-      <Label layoutX="806.0" layoutY="383.0" prefHeight="35.0" prefWidth="22.0" text="px">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </Label>
-      <Label layoutX="806.0" layoutY="420.0" prefHeight="35.0" prefWidth="22.0" text="px">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </Label>
-      <Label layoutX="182.0" layoutY="276.0" prefHeight="35.0" prefWidth="22.0" text="px">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </Label>
-      <Label layoutX="287.0" layoutY="276.0" prefHeight="35.0" prefWidth="22.0" text="px">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </Label>
-      <Label layoutX="409.0" layoutY="276.0" prefHeight="35.0" prefWidth="22.0" text="px">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </Label>
-      <Label layoutX="516.0" layoutY="276.0" prefHeight="35.0" prefWidth="22.0" text="px">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </Label>
-      <Label layoutX="649.0" layoutY="276.0" prefHeight="35.0" prefWidth="22.0" text="px">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </Label>
-      <Label layoutX="787.0" layoutY="276.0" prefHeight="35.0" prefWidth="22.0" text="px">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </Label>
-      <ProgressIndicator fx:id="progressIndicator" layoutX="339.0" layoutY="150.0" visible="false" />
-      <ColorPicker fx:id="codigoColorPicker" layoutX="7.0" layoutY="312.0" prefHeight="26.0" prefWidth="98.0">
-         <value>
-            <Color />
-         </value>
-      </ColorPicker>
-      <ColorPicker fx:id="productoColorPicker" layoutX="119.0" layoutY="312.0" prefHeight="26.0" prefWidth="98.0">
-         <value>
-            <Color blue="0.545098066329956" />
-         </value>
-      </ColorPicker>
-      <ColorPicker fx:id="rubroColorPicker" layoutX="231.0" layoutY="312.0" prefHeight="26.0" prefWidth="98.0">
-         <value>
-            <Color />
-         </value>
-      </ColorPicker>
-      <ColorPicker fx:id="subRubroColorPicker" layoutX="343.0" layoutY="312.0" prefHeight="26.0" prefWidth="98.0">
-         <value>
-            <Color />
-         </value>
-      </ColorPicker>
-      <ColorPicker fx:id="marcaColorPicker" layoutX="458.0" layoutY="312.0" prefHeight="26.0" prefWidth="98.0">
-         <value>
-            <Color />
-         </value>
-      </ColorPicker>
-      <ColorPicker fx:id="precioColorPicker" layoutX="573.0" layoutY="312.0" prefHeight="26.0" prefWidth="120.0">
-         <value>
-            <Color red="0.545098066329956" />
-         </value>
-      </ColorPicker>
-      <ColorPicker fx:id="codigoExternoColorPicker" layoutX="714.0" layoutY="312.0" prefHeight="26.0" prefWidth="98.0">
-         <value>
-            <Color />
-         </value>
-      </ColorPicker>
    </children>
 </AnchorPane>

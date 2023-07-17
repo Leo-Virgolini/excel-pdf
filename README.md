@@ -1,5 +1,7 @@
 # Generador PDF
 
+JDK 20.
+
 Generador de un archivo PDF a partir de un Excel e imágenes de un catálogo de productos.
 Hecho en JavaFX.
 

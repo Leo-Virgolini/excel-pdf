@@ -22,6 +22,8 @@ public class VentanaController implements Initializable {
     @FXML
     private TextField ubicacionImagenes;
     @FXML
+    private TextField ubicacionCaratula;
+    @FXML
     private TextField fontSizeCodigo;
     @FXML
     private TextField fontSizeProducto;
@@ -80,8 +82,9 @@ public class VentanaController implements Initializable {
     @FXML
     private ProgressIndicator progressIndicator;
 
-    private static File archivoExcel;
-    private static File carpetaImagenes;
+    private File archivoExcel;
+    private File carpetaImagenes;
+    private File archivoPdf;
 
     public void initialize(URL url, ResourceBundle rb) {
         BasicConfigurator.configure(); // configure Log4j
@@ -117,11 +120,26 @@ public class VentanaController implements Initializable {
     }
 
     @FXML
+    public void buscarCaratula(ActionEvent event) {
+        logTextArea.clear();
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Elige archivo .PDF");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivo PDF", "*.pdf"));
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+        archivoPdf = fileChooser.showOpenDialog(Main.stage);
+        if (archivoExcel != null) {
+            ubicacionCaratula.setText(archivoPdf.getAbsolutePath());
+        } else {
+            ubicacionCaratula.clear();
+        }
+    }
+
+    @FXML
     public void generar(ActionEvent event) {
         logTextArea.clear();
         if (archivoExcel != null && archivoExcel.isFile() && carpetaImagenes != null && carpetaImagenes.exists()) {
             if (validarTextInputs()) {
-                GeneratePDFService service = new GeneratePDFService(archivoExcel, carpetaImagenes,
+                GeneratePDFService service = new GeneratePDFService(archivoExcel, carpetaImagenes, archivoPdf,
                         Float.parseFloat(fontSizeCodigo.getText()), Float.parseFloat(fontSizeProducto.getText()), Float.parseFloat(fontSizeRubro.getText()), Float.parseFloat(fontSizeSubRubro.getText()),
                         Float.parseFloat(fontSizeMarca.getText()), Float.parseFloat(fontSizePrecio.getText()), Float.parseFloat(fontSizeCodigoExterno.getText()),
                         new DeviceRgb((int) (codigoColorPicker.getValue().getRed() * 255), (int) (codigoColorPicker.getValue().getGreen() * 255), (int) (codigoColorPicker.getValue().getBlue() * 255)),
