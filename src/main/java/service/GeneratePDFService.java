@@ -33,6 +33,7 @@ public class GeneratePDFService extends Service<Integer> {
     private final File archivoExcel;
     private final File carpetaImagenes;
     private final File archivoPdf;
+    private final File archivoDestino;
     private final float codigoFontSize;
     private final float productoFontSize;
     private final float rubroFontSize;
@@ -61,13 +62,14 @@ public class GeneratePDFService extends Service<Integer> {
     private final boolean links;
     private final TextArea logTextArea;
 
-    public GeneratePDFService(File archivoExcel, File carpetaImagenes, File archivoPdf, float codigoFontSize, float productoFontSize, float rubroFontSize, float subRubroFontSize, float marcaFontSize,
+    public GeneratePDFService(File archivoExcel, File carpetaImagenes, File archivoPdf, File archivoDestino, float codigoFontSize, float productoFontSize, float rubroFontSize, float subRubroFontSize, float marcaFontSize,
                               float precioFontSize, float codigoExternoFontSize, DeviceRgb codigoColor, DeviceRgb productoColor, DeviceRgb rubroColor, DeviceRgb subRubroColor, DeviceRgb marcaColor,
                               DeviceRgb precioColor, DeviceRgb codigoExternoColor, float imageSize, float pageWidth, float pageHeight, boolean codigoColumn, boolean productoColumn, boolean rubroColumn,
                               boolean subRubroColumn, boolean marcaColumn, boolean precioColumn, boolean codigoExternoColumn, boolean imagenes, boolean links, TextArea logTextArea) {
         this.archivoExcel = archivoExcel;
         this.carpetaImagenes = carpetaImagenes;
         this.archivoPdf = archivoPdf;
+        this.archivoDestino = archivoDestino;
         this.codigoFontSize = codigoFontSize;
         this.productoFontSize = productoFontSize;
         this.rubroFontSize = rubroFontSize;
@@ -102,27 +104,20 @@ public class GeneratePDFService extends Service<Integer> {
         return new Task<>() {
             @Override
             protected Integer call() throws Exception {
-                return generarPDF(archivoExcel, carpetaImagenes, archivoPdf, codigoFontSize, productoFontSize, rubroFontSize, subRubroFontSize, marcaFontSize, precioFontSize, codigoExternoFontSize,
+                return generarPDF(archivoExcel, carpetaImagenes, archivoPdf, archivoDestino, codigoFontSize, productoFontSize, rubroFontSize, subRubroFontSize, marcaFontSize, precioFontSize, codigoExternoFontSize,
                         codigoColor, productoColor, rubroColor, subRubroColor, marcaColor, precioColor, codigoExternoColor, imageSize, pageWidth, pageHeight, codigoColumn, productoColumn,
                         rubroColumn, subRubroColumn, marcaColumn, precioColumn, codigoExternoColumn, imagenes, links, logTextArea);
             }
         };
     }
 
-    private Integer generarPDF(File archivoExcel, File carpetaImagenes, File archivoPdf, float codigoFontSize, float productoFontSize, float rubroFontSize, float subRubroFontSize,
+    private Integer generarPDF(File archivoExcel, File carpetaImagenes, File archivoPdf, File archivoDestino, float codigoFontSize, float productoFontSize, float rubroFontSize, float subRubroFontSize,
                                float marcaFontSize, float precioFontSize, float codigoExternoFontSize, DeviceRgb codigoColor, DeviceRgb productoColor, DeviceRgb rubroColor, DeviceRgb subRubroColor,
                                DeviceRgb marcaColor, DeviceRgb precioColor, DeviceRgb codigoExternoColor, float imageSize, float pageWidth, float pageHeight, boolean codigoColumn, boolean productoColumn,
                                boolean rubroColumn, boolean subRubroColumn, boolean marcaColumn, boolean precioColumn, boolean codigoExternoColumn, boolean imagenes, boolean links, TextArea logTextArea) throws Exception {
 
         final String[] supportedExtensions = {".jpg", ".jpeg", ".png", ".bmp"};
-        Image sinImagen = null;
-        for (String extension : supportedExtensions) {
-            File sinImagenfile = new File(carpetaImagenes.getAbsolutePath(), "SINIMAGEN" + extension);
-            if (sinImagenfile.isFile()) {
-                sinImagen = new Image(ImageDataFactory.create(sinImagenfile.getAbsolutePath()));
-                break;
-            }
-        }
+        final Image sinImagen = new Image(ImageDataFactory.create((getClass().getResource("/images/SINIMAGEN.jpg").toExternalForm())));
         final ImageData buttonImagenData = ImageDataFactory.create(getClass().getResource("/images/button.png").toExternalForm());
         final int productsPerPage = 20;
         final int rowsPerPage = 5;
@@ -141,7 +136,7 @@ public class GeneratePDFService extends Service<Integer> {
             }
 
             // Create a PDF document
-            try (final PdfDocument pdfDoc = new PdfDocument(new PdfWriter("catálogo.pdf"));
+            try (final PdfDocument pdfDoc = new PdfDocument(new PdfWriter(archivoDestino.getAbsolutePath()));
                  final Document doc = new Document(pdfDoc, new PageSize(pageWidth, pageHeight), false)) {
                 doc.setMargins(0, 0, 0, 0);
                 if (archivoPdf != null && archivoPdf.isFile()) {
@@ -266,12 +261,8 @@ public class GeneratePDFService extends Service<Integer> {
                             }
                             if (imageFile != null && imageFile.isFile()) {
                                 image = new Image(ImageDataFactory.create(imageFile.getAbsolutePath()));
-                            } else { // si no existe el archivo de la imagen
-                                if (sinImagen == null) {
-                                    throw new Exception("La imagen \"SINIMAGEN\" no está en la carpeta.");
-                                } else {
-                                    image = sinImagen;
-                                }
+                            } else { // si no existe el archivo de la imagen usar SINIMAGEN.jpg
+                                image = sinImagen;
                                 Platform.runLater(() -> {
                                     logTextArea.setStyle("-fx-text-fill: #d3d700;");
                                     logTextArea.appendText("Advertencia: La imagen \"" + codigo + "\" no existe.\n");

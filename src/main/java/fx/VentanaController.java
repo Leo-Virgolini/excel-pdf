@@ -13,6 +13,8 @@ import service.GeneratePDFService;
 
 import java.io.*;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
 public class VentanaController implements Initializable {
@@ -85,6 +87,7 @@ public class VentanaController implements Initializable {
     private File archivoExcel;
     private File carpetaImagenes;
     private File archivoPdf;
+    private File archivoDestino;
 
     public void initialize(URL url, ResourceBundle rb) {
         BasicConfigurator.configure(); // configure Log4j
@@ -96,7 +99,12 @@ public class VentanaController implements Initializable {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Elige archivo .XLSX");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivo XLSX", "*.xlsx"));
-        fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+        final File defaultPath = new File("Z:\\Doc. Compartidos\\CATALOGOS");
+        if (!defaultPath.exists() || !defaultPath.isDirectory()) {
+            fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+        } else {
+            fileChooser.setInitialDirectory(defaultPath);
+        }
         archivoExcel = fileChooser.showOpenDialog(Main.stage);
         if (archivoExcel != null) {
             ubicacionExcel.setText(archivoExcel.getAbsolutePath());
@@ -110,7 +118,12 @@ public class VentanaController implements Initializable {
         logTextArea.clear();
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle("Selecciona la carpeta donde están las imágenes");
-        directoryChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+        final File defaultPath = new File("Z:\\Doc. Compartidos\\DUX ERP Linea GE\\IMAGENES");
+        if (!defaultPath.exists() || !defaultPath.isDirectory()) {
+            directoryChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+        } else {
+            directoryChooser.setInitialDirectory(defaultPath);
+        }
         carpetaImagenes = directoryChooser.showDialog(Main.stage);
         if (carpetaImagenes != null) {
             ubicacionImagenes.setText(carpetaImagenes.getAbsolutePath());
@@ -125,9 +138,14 @@ public class VentanaController implements Initializable {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Elige archivo .PDF");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivo PDF", "*.pdf"));
-        fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+        final File defaultPath = new File("Z:\\Doc. Compartidos\\CATALOGOS\\CATALOGOS VENDEDORES\\CARATULAS");
+        if (!defaultPath.exists() || !defaultPath.isDirectory()) {
+            fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+        } else {
+            fileChooser.setInitialDirectory(defaultPath);
+        }
         archivoPdf = fileChooser.showOpenDialog(Main.stage);
-        if (archivoExcel != null) {
+        if (archivoPdf != null) {
             ubicacionCaratula.setText(archivoPdf.getAbsolutePath());
         } else {
             ubicacionCaratula.clear();
@@ -139,40 +157,42 @@ public class VentanaController implements Initializable {
         logTextArea.clear();
         if (archivoExcel != null && archivoExcel.isFile() && carpetaImagenes != null && carpetaImagenes.exists()) {
             if (validarTextInputs()) {
-                GeneratePDFService service = new GeneratePDFService(archivoExcel, carpetaImagenes, archivoPdf,
-                        Float.parseFloat(fontSizeCodigo.getText()), Float.parseFloat(fontSizeProducto.getText()), Float.parseFloat(fontSizeRubro.getText()), Float.parseFloat(fontSizeSubRubro.getText()),
-                        Float.parseFloat(fontSizeMarca.getText()), Float.parseFloat(fontSizePrecio.getText()), Float.parseFloat(fontSizeCodigoExterno.getText()),
-                        new DeviceRgb((int) (codigoColorPicker.getValue().getRed() * 255), (int) (codigoColorPicker.getValue().getGreen() * 255), (int) (codigoColorPicker.getValue().getBlue() * 255)),
-                        new DeviceRgb((int) (productoColorPicker.getValue().getRed() * 255), (int) (productoColorPicker.getValue().getGreen() * 255), (int) (productoColorPicker.getValue().getBlue() * 255)),
-                        new DeviceRgb((int) (rubroColorPicker.getValue().getRed() * 255), (int) (rubroColorPicker.getValue().getGreen() * 255), (int) (rubroColorPicker.getValue().getBlue() * 255)),
-                        new DeviceRgb((int) (subRubroColorPicker.getValue().getRed() * 255), (int) (subRubroColorPicker.getValue().getGreen() * 255), (int) (subRubroColorPicker.getValue().getBlue() * 255)),
-                        new DeviceRgb((int) (marcaColorPicker.getValue().getRed() * 255), (int) (marcaColorPicker.getValue().getGreen() * 255), (int) (marcaColorPicker.getValue().getBlue() * 255)),
-                        new DeviceRgb((int) (precioColorPicker.getValue().getRed() * 255), (int) (precioColorPicker.getValue().getGreen() * 255), (int) (precioColorPicker.getValue().getBlue() * 255)),
-                        new DeviceRgb((int) (codigoExternoColorPicker.getValue().getRed() * 255), (int) (codigoExternoColorPicker.getValue().getGreen() * 255), (int) (codigoExternoColorPicker.getValue().getBlue() * 255)),
-                        Float.parseFloat(imageSizeTextInput.getText()), Float.parseFloat(pageWidthTextInput.getText()), Float.parseFloat(pageHeightTextInput.getText()),
-                        codigoCheckBox.isSelected(), productoCheckBox.isSelected(), rubroCheckBox.isSelected(), subRubroCheckBox.isSelected(), marcaCheckBox.isSelected(), precioCheckBox.isSelected(),
-                        codigoExternoCheckBox.isSelected(), imagenCheckBox.isSelected(), linksCheckBox.isSelected(), logTextArea);
-                service.setOnRunning(e -> {
-                    generarButton.setDisable(true);
-                    progressIndicator.setVisible(true);
-                    logTextArea.setStyle("-fx-text-fill: darkblue;");
-                    logTextArea.appendText("Generando PDF...\n");
-                });
-                service.setOnSucceeded(e -> {
-                    logTextArea.setStyle("-fx-text-fill: darkgreen;");
-                    logTextArea.appendText("Se han generado " + service.getValue() + " productos.\n");
-                    logTextArea.appendText('"' + System.getProperty("user.dir") + System.getProperty("file.separator") + "catálogo.pdf\" generado.\n");
-                    generarButton.setDisable(false);
-                    progressIndicator.setVisible(false);
-                });
-                service.setOnFailed(e -> {
+                if (elegirDestino()) {
+                    GeneratePDFService service = new GeneratePDFService(archivoExcel, carpetaImagenes, archivoPdf, archivoDestino,
+                            Float.parseFloat(fontSizeCodigo.getText()), Float.parseFloat(fontSizeProducto.getText()), Float.parseFloat(fontSizeRubro.getText()), Float.parseFloat(fontSizeSubRubro.getText()),
+                            Float.parseFloat(fontSizeMarca.getText()), Float.parseFloat(fontSizePrecio.getText()), Float.parseFloat(fontSizeCodigoExterno.getText()),
+                            new DeviceRgb((int) (codigoColorPicker.getValue().getRed() * 255), (int) (codigoColorPicker.getValue().getGreen() * 255), (int) (codigoColorPicker.getValue().getBlue() * 255)),
+                            new DeviceRgb((int) (productoColorPicker.getValue().getRed() * 255), (int) (productoColorPicker.getValue().getGreen() * 255), (int) (productoColorPicker.getValue().getBlue() * 255)),
+                            new DeviceRgb((int) (rubroColorPicker.getValue().getRed() * 255), (int) (rubroColorPicker.getValue().getGreen() * 255), (int) (rubroColorPicker.getValue().getBlue() * 255)),
+                            new DeviceRgb((int) (subRubroColorPicker.getValue().getRed() * 255), (int) (subRubroColorPicker.getValue().getGreen() * 255), (int) (subRubroColorPicker.getValue().getBlue() * 255)),
+                            new DeviceRgb((int) (marcaColorPicker.getValue().getRed() * 255), (int) (marcaColorPicker.getValue().getGreen() * 255), (int) (marcaColorPicker.getValue().getBlue() * 255)),
+                            new DeviceRgb((int) (precioColorPicker.getValue().getRed() * 255), (int) (precioColorPicker.getValue().getGreen() * 255), (int) (precioColorPicker.getValue().getBlue() * 255)),
+                            new DeviceRgb((int) (codigoExternoColorPicker.getValue().getRed() * 255), (int) (codigoExternoColorPicker.getValue().getGreen() * 255), (int) (codigoExternoColorPicker.getValue().getBlue() * 255)),
+                            Float.parseFloat(imageSizeTextInput.getText()), Float.parseFloat(pageWidthTextInput.getText()), Float.parseFloat(pageHeightTextInput.getText()),
+                            codigoCheckBox.isSelected(), productoCheckBox.isSelected(), rubroCheckBox.isSelected(), subRubroCheckBox.isSelected(), marcaCheckBox.isSelected(), precioCheckBox.isSelected(),
+                            codigoExternoCheckBox.isSelected(), imagenCheckBox.isSelected(), linksCheckBox.isSelected(), logTextArea);
+                    service.setOnRunning(e -> {
+                        generarButton.setDisable(true);
+                        progressIndicator.setVisible(true);
+                        logTextArea.setStyle("-fx-text-fill: darkblue;");
+                        logTextArea.appendText("Generando PDF...\n");
+                    });
+                    service.setOnSucceeded(e -> {
+                        logTextArea.setStyle("-fx-text-fill: darkgreen;");
+                        logTextArea.appendText("Se han generado " + service.getValue() + " productos.\n");
+                        logTextArea.appendText('"' + archivoDestino.getAbsolutePath() + "\" generado.\n");
+                        generarButton.setDisable(false);
+                        progressIndicator.setVisible(false);
+                    });
+                    service.setOnFailed(e -> {
 //                    service.getException().printStackTrace();
-                    logTextArea.setStyle("-fx-text-fill: firebrick;");
-                    logTextArea.appendText("Error: " + service.getException().getLocalizedMessage() + "\n");
-                    generarButton.setDisable(false);
-                    progressIndicator.setVisible(false);
-                });
-                service.start();
+                        logTextArea.setStyle("-fx-text-fill: firebrick;");
+                        logTextArea.appendText("Error: " + service.getException().getLocalizedMessage() + "\n");
+                        generarButton.setDisable(false);
+                        progressIndicator.setVisible(false);
+                    });
+                    service.start();
+                }
             } else {
                 logTextArea.setStyle("-fx-text-fill: firebrick;");
                 logTextArea.appendText("Completa los parámetros correctamente.\n");
@@ -295,6 +315,26 @@ public class VentanaController implements Initializable {
         return isNumeric(fontSizeCodigo.getText()) && isNumeric(fontSizeProducto.getText()) && isNumeric(fontSizeRubro.getText()) && isNumeric(fontSizeSubRubro.getText())
                 && isNumeric(fontSizeMarca.getText()) && isNumeric(fontSizePrecio.getText()) && isNumeric(fontSizeCodigoExterno.getText()) &&
                 isNumeric(imageSizeTextInput.getText()) && isNumeric(pageWidthTextInput.getText()) && isNumeric(pageHeightTextInput.getText());
+    }
+
+    private boolean elegirDestino() {
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yy");
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Seleccione destino y nombre a guardar");
+        final File defaultPath = new File("Z:\\Doc. Compartidos\\CATALOGOS\\CATALOGOS VENDEDORES");
+        if (!defaultPath.exists() || !defaultPath.isDirectory()) {
+            fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+        } else {
+            fileChooser.setInitialDirectory(defaultPath);
+        }
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivo PDF", "*.pdf"));
+        fileChooser.setInitialFileName((archivoPdf != null ? archivoPdf.getName().replaceFirst("[.][^.]+$", "").toUpperCase() : "") + " - " + formatter.format(LocalDate.now()));
+        archivoDestino = fileChooser.showSaveDialog(Main.stage);
+        if (archivoDestino != null) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }
