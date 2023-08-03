@@ -118,7 +118,7 @@ public class VentanaController implements Initializable {
         logTextArea.clear();
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle("Selecciona la carpeta donde están las imágenes");
-        final File defaultPath = new File("Z:\\Doc. Compartidos\\DUX ERP Linea GE\\IMAGENES");
+        final File defaultPath = new File("Z:\\Doc. Compartidos\\DUX ERP Linea GE\\IMAGENES (subidas a la Web)");
         if (!defaultPath.exists() || !defaultPath.isDirectory()) {
             directoryChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
         } else {
@@ -330,7 +330,7 @@ public class VentanaController implements Initializable {
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivo PDF", "*.pdf"));
         fileChooser.setInitialFileName((archivoPdf != null ? archivoPdf.getName().replaceFirst("[.][^.]+$", "").toUpperCase() : "") + " - " + formatter.format(LocalDate.now()));
         archivoDestino = fileChooser.showSaveDialog(Main.stage);
-        if (archivoDestino != null) {
+        if (archivoDestino != null && archivoDestino.exists()) {
             return true;
         } else {
             return false;
