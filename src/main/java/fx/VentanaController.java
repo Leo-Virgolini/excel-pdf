@@ -322,15 +322,15 @@ public class VentanaController implements Initializable {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Seleccione destino y nombre a guardar");
         final File defaultPath = new File("Z:\\Doc. Compartidos\\CATALOGOS\\CATALOGOS VENDEDORES");
-        if (!defaultPath.exists() || !defaultPath.isDirectory()) {
-            fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
-        } else {
+        if (defaultPath.exists() && defaultPath.isDirectory()) {
             fileChooser.setInitialDirectory(defaultPath);
+        } else {
+            fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
         }
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivo PDF", "*.pdf"));
         fileChooser.setInitialFileName((archivoPdf != null ? archivoPdf.getName().replaceFirst("[.][^.]+$", "").toUpperCase() : "") + " - " + formatter.format(LocalDate.now()));
         archivoDestino = fileChooser.showSaveDialog(Main.stage);
-        if (archivoDestino != null && archivoDestino.exists()) {
+        if (archivoDestino != null) {
             return true;
         } else {
             return false;
