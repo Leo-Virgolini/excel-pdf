@@ -6,6 +6,7 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.paint.Color;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import org.apache.log4j.BasicConfigurator;
@@ -16,6 +17,7 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
+import java.util.prefs.Preferences;
 
 public class VentanaController implements Initializable {
 
@@ -91,6 +93,12 @@ public class VentanaController implements Initializable {
 
     public void initialize(URL url, ResourceBundle rb) {
         BasicConfigurator.configure(); // configure Log4j
+        loadPreferences(); // Load previous state from preferences
+        Main.stage.setOnCloseRequest(event -> {
+            // Execute your code here when the window is closed
+//            event.consume(); // Prevent the default close action
+            savePreferences();
+        });
     }
 
     @FXML
@@ -297,6 +305,110 @@ public class VentanaController implements Initializable {
             fontSizeCodigoExterno.setDisable(true);
             codigoExternoColorPicker.setDisable(true);
         }
+    }
+
+    private void loadPreferences() {
+        Preferences prefs = Preferences.userRoot().node("catalogo");
+        fontSizeCodigo.setText(prefs.get("fontSizeCodigo", "6"));
+        fontSizeProducto.setText(prefs.get("fontSizeProducto", "6"));
+        fontSizeRubro.setText(prefs.get("fontSizeRubro", "6"));
+        fontSizeSubRubro.setText(prefs.get("fontSizeSubRubro", "6"));
+        fontSizeMarca.setText(prefs.get("fontSizeMarca", "6"));
+        fontSizePrecio.setText(prefs.get("fontSizePrecio", "7"));
+        fontSizeCodigoExterno.setText(prefs.get("fontSizeCodigoExterno", "6"));
+
+        String[] codigoColor = prefs.get("codigoColorPicker", "0,0,0").split(",");
+        codigoColorPicker.setValue(new Color(Double.parseDouble(codigoColor[0]), Double.parseDouble(codigoColor[1]), Double.parseDouble(codigoColor[2]), 1));
+        String[] productoColor = prefs.get("productoColorPicker", "0,0,139").split(",");
+        productoColorPicker.setValue(new Color(Double.parseDouble(productoColor[0]), Double.parseDouble(productoColor[1]), Double.parseDouble(productoColor[2]), 1));
+        String[] rubroColor = prefs.get("rubroColorPicker", "0,0,0").split(",");
+        rubroColorPicker.setValue(new Color(Double.parseDouble(rubroColor[0]), Double.parseDouble(rubroColor[1]), Double.parseDouble(rubroColor[2]), 1));
+        String[] subRubroColor = prefs.get("subRubroColorPicker", "0,0,0").split(",");
+        subRubroColorPicker.setValue(new Color(Double.parseDouble(subRubroColor[0]), Double.parseDouble(subRubroColor[1]), Double.parseDouble(subRubroColor[2]), 1));
+        String[] marcaColor = prefs.get("marcaColorPicker", "0,0,0").split(",");
+        marcaColorPicker.setValue(new Color(Double.parseDouble(marcaColor[0]), Double.parseDouble(marcaColor[1]), Double.parseDouble(marcaColor[2]), 1));
+        String[] precioColor = prefs.get("precioColorPicker", "139,0,0").split(",");
+        precioColorPicker.setValue(new Color(Double.parseDouble(precioColor[0]), Double.parseDouble(precioColor[1]), Double.parseDouble(precioColor[2]), 1));
+        String[] codigoExternoColor = prefs.get("codigoExternoColorPicker", "0,0,0").split(",");
+        codigoExternoColorPicker.setValue(new Color(Double.parseDouble(codigoExternoColor[0]), Double.parseDouble(codigoExternoColor[1]), Double.parseDouble(codigoExternoColor[2]), 1));
+
+        imageSizeTextInput.setText(prefs.get("imageSizeTextInput", "89"));
+        pageWidthTextInput.setText(prefs.get("pageWidthTextInput", "595"));
+        pageHeightTextInput.setText(prefs.get("pageHeightTextInput", "842"));
+
+        codigoCheckBox.setSelected(prefs.getBoolean("codigoCheckBox", true));
+        if (!codigoCheckBox.isSelected()) {
+            fontSizeCodigo.setDisable(true);
+            codigoColorPicker.setDisable(true);
+        }
+        productoCheckBox.setSelected(prefs.getBoolean("productoCheckBox", true));
+        if (!productoCheckBox.isSelected()) {
+            fontSizeProducto.setDisable(true);
+            productoColorPicker.setDisable(true);
+        }
+        rubroCheckBox.setSelected(prefs.getBoolean("rubroCheckBox", true));
+        if (!rubroCheckBox.isSelected()) {
+            fontSizeRubro.setDisable(true);
+            rubroColorPicker.setDisable(true);
+        }
+        subRubroCheckBox.setSelected(prefs.getBoolean("subRubroCheckBox", true));
+        if (!subRubroCheckBox.isSelected()) {
+            fontSizeSubRubro.setDisable(true);
+            subRubroColorPicker.setDisable(true);
+        }
+        marcaCheckBox.setSelected(prefs.getBoolean("marcaCheckBox", true));
+        if (!marcaCheckBox.isSelected()) {
+            fontSizeMarca.setDisable(true);
+            marcaColorPicker.setDisable(true);
+        }
+        precioCheckBox.setSelected(prefs.getBoolean("precioCheckBox", true));
+        if (!precioCheckBox.isSelected()) {
+            fontSizePrecio.setDisable(true);
+            precioColorPicker.setDisable(true);
+        }
+        codigoExternoCheckBox.setSelected(prefs.getBoolean("codigoExternoCheckBox", true));
+        if (!codigoExternoCheckBox.isSelected()) {
+            fontSizeCodigoExterno.setDisable(true);
+            codigoExternoColorPicker.setDisable(true);
+        }
+        imagenCheckBox.setSelected(prefs.getBoolean("imagenCheckBox", true));
+        if (!imagenCheckBox.isSelected()) {
+            imageSizeTextInput.setDisable(true);
+        }
+    }
+
+    private void savePreferences() {
+        // Save state to preferences when the application is closed
+        Preferences prefs = Preferences.userRoot().node("catalogo");
+        prefs.put("fontSizeCodigo", fontSizeCodigo.getText());
+        prefs.put("fontSizeProducto", fontSizeProducto.getText());
+        prefs.put("fontSizeRubro", fontSizeRubro.getText());
+        prefs.put("fontSizeSubRubro", fontSizeSubRubro.getText());
+        prefs.put("fontSizeMarca", fontSizeMarca.getText());
+        prefs.put("fontSizePrecio", fontSizePrecio.getText());
+        prefs.put("fontSizeCodigoExterno", fontSizeCodigoExterno.getText());
+
+        prefs.put("codigoColorPicker", codigoColorPicker.getValue().getRed() + "," + codigoColorPicker.getValue().getGreen() + "," + codigoColorPicker.getValue().getBlue());
+        prefs.put("productoColorPicker", productoColorPicker.getValue().getRed() + "," + productoColorPicker.getValue().getGreen() + "," + productoColorPicker.getValue().getBlue());
+        prefs.put("rubroColorPicker", rubroColorPicker.getValue().getRed() + "," + rubroColorPicker.getValue().getGreen() + "," + rubroColorPicker.getValue().getBlue());
+        prefs.put("subRubroColorPicker", subRubroColorPicker.getValue().getRed() + "," + subRubroColorPicker.getValue().getGreen() + "," + subRubroColorPicker.getValue().getBlue());
+        prefs.put("marcaColorPicker", marcaColorPicker.getValue().getRed() + "," + marcaColorPicker.getValue().getGreen() + "," + marcaColorPicker.getValue().getBlue());
+        prefs.put("precioColorPicker", precioColorPicker.getValue().getRed() + "," + precioColorPicker.getValue().getGreen() + "," + precioColorPicker.getValue().getBlue());
+        prefs.put("codigoExternoColorPicker", codigoExternoColorPicker.getValue().getRed() + "," + codigoExternoColorPicker.getValue().getGreen() + "," + codigoExternoColorPicker.getValue().getBlue());
+
+        prefs.put("imageSizeTextInput", imageSizeTextInput.getText());
+        prefs.put("pageWidthTextInput", pageWidthTextInput.getText());
+        prefs.put("pageHeightTextInput", pageHeightTextInput.getText());
+
+        prefs.putBoolean("codigoCheckBox", codigoCheckBox.isSelected());
+        prefs.putBoolean("productoCheckBox", productoCheckBox.isSelected());
+        prefs.putBoolean("rubroCheckBox", rubroCheckBox.isSelected());
+        prefs.putBoolean("subRubroCheckBox", subRubroCheckBox.isSelected());
+        prefs.putBoolean("marcaCheckBox", marcaCheckBox.isSelected());
+        prefs.putBoolean("precioCheckBox", precioCheckBox.isSelected());
+        prefs.putBoolean("codigoExternoCheckBox", codigoExternoCheckBox.isSelected());
+        prefs.putBoolean("imagenCheckBox", imagenCheckBox.isSelected());
+        prefs.putBoolean("linksCheckBox", linksCheckBox.isSelected());
     }
 
     private boolean isNumeric(String strNum) {
