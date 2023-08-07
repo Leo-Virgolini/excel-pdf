@@ -32,7 +32,7 @@
                   </ImageView>
                </graphic>
             </Button>
-            <TextField fx:id="imageSizeTextInput" alignment="CENTER" layoutX="183.0" layoutY="134.0" prefHeight="30.0" prefWidth="43.0" text="89">
+            <TextField fx:id="imageSizeTextInput" alignment="CENTER" layoutX="183.0" layoutY="134.0" prefHeight="31.0" prefWidth="53.0" text="89">
                <font>
                   <Font size="15.0" />
                </font>
@@ -112,37 +112,37 @@
                   <Font name="System Bold" size="24.0" />
                </font>
             </Label>
-            <TextField fx:id="fontSizeCodigo" alignment="CENTER" layoutX="21.0" layoutY="26.0" prefHeight="30.0" prefWidth="43.0" text="6">
+            <TextField fx:id="codigoFontSize" alignment="CENTER" layoutX="21.0" layoutY="26.0" prefHeight="30.0" prefWidth="43.0" text="6">
                <font>
                   <Font size="14.0" />
                </font>
             </TextField>
-            <TextField fx:id="fontSizeProducto" alignment="CENTER" layoutX="131.0" layoutY="26.0" prefHeight="30.0" prefWidth="43.0" text="6">
+            <TextField fx:id="productoFontSize" alignment="CENTER" layoutX="131.0" layoutY="26.0" prefHeight="30.0" prefWidth="43.0" text="6">
                <font>
                   <Font size="14.0" />
                </font>
             </TextField>
-            <TextField fx:id="fontSizeRubro" alignment="CENTER" layoutX="241.0" layoutY="26.0" prefHeight="30.0" prefWidth="43.0" text="6">
+            <TextField fx:id="rubroFontSize" alignment="CENTER" layoutX="241.0" layoutY="26.0" prefHeight="30.0" prefWidth="43.0" text="6">
                <font>
                   <Font size="14.0" />
                </font>
             </TextField>
-            <TextField fx:id="fontSizeSubRubro" alignment="CENTER" layoutX="359.0" layoutY="26.0" prefHeight="30.0" prefWidth="43.0" text="6">
+            <TextField fx:id="subRubroFontSize" alignment="CENTER" layoutX="359.0" layoutY="26.0" prefHeight="30.0" prefWidth="43.0" text="6">
                <font>
                   <Font size="14.0" />
                </font>
             </TextField>
-            <TextField fx:id="fontSizeMarca" alignment="CENTER" layoutX="464.0" layoutY="26.0" prefHeight="30.0" prefWidth="43.0" text="6">
+            <TextField fx:id="marcaFontSize" alignment="CENTER" layoutX="464.0" layoutY="26.0" prefHeight="30.0" prefWidth="43.0" text="6">
                <font>
                   <Font size="14.0" />
                </font>
             </TextField>
-            <TextField fx:id="fontSizePrecio" alignment="CENTER" layoutX="598.0" layoutY="26.0" prefHeight="30.0" prefWidth="43.0" text="7">
+            <TextField fx:id="precioFontSize" alignment="CENTER" layoutX="598.0" layoutY="26.0" prefHeight="30.0" prefWidth="43.0" text="7">
                <font>
                   <Font size="14.0" />
                </font>
             </TextField>
-            <TextField fx:id="fontSizeCodigoExterno" alignment="CENTER" layoutX="736.0" layoutY="26.0" prefHeight="30.0" prefWidth="43.0" text="6">
+            <TextField fx:id="codigoExternoFontSize" alignment="CENTER" layoutX="736.0" layoutY="26.0" prefHeight="30.0" prefWidth="43.0" text="6">
                <font>
                   <Font size="14.0" />
                </font>
@@ -152,7 +152,7 @@
                   <Font size="15.0" />
                </font>
             </Label>
-            <Label layoutX="227.0" layoutY="132.0" prefHeight="35.0" prefWidth="22.0" text="px">
+            <Label layoutX="236.0" layoutY="132.0" prefHeight="35.0" prefWidth="22.0" text="px">
                <font>
                   <Font size="15.0" />
                </font>
@@ -282,7 +282,7 @@
          <font>
             <Font name="System Italic" size="14.0" />
          </font></TextArea>
-      <ProgressIndicator fx:id="progressIndicator" layoutX="339.0" layoutY="201.0" visible="false" />
+      <ProgressIndicator fx:id="progressIndicator" layoutX="390.0" layoutY="201.0" visible="false" />
       <Label layoutX="41.0" layoutY="103.0" prefHeight="35.0" prefWidth="178.0" text="Ubicación carátula pdf:" textFill="#8e8e8e">
          <font>
             <Font name="System Bold Italic" size="15.0" />

@@ -28,19 +28,19 @@ public class VentanaController implements Initializable {
     @FXML
     private TextField ubicacionCaratula;
     @FXML
-    private TextField fontSizeCodigo;
+    private TextField codigoFontSize;
     @FXML
-    private TextField fontSizeProducto;
+    private TextField productoFontSize;
     @FXML
-    private TextField fontSizeRubro;
+    private TextField rubroFontSize;
     @FXML
-    private TextField fontSizeSubRubro;
+    private TextField subRubroFontSize;
     @FXML
-    private TextField fontSizeMarca;
+    private TextField marcaFontSize;
     @FXML
-    private TextField fontSizePrecio;
+    private TextField precioFontSize;
     @FXML
-    private TextField fontSizeCodigoExterno;
+    private TextField codigoExternoFontSize;
     @FXML
     private ColorPicker codigoColorPicker;
     @FXML
@@ -95,8 +95,6 @@ public class VentanaController implements Initializable {
         BasicConfigurator.configure(); // configure Log4j
         loadPreferences(); // Load previous state from preferences
         Main.stage.setOnCloseRequest(event -> {
-            // Execute your code here when the window is closed
-//            event.consume(); // Prevent the default close action
             savePreferences();
         });
     }
@@ -167,8 +165,8 @@ public class VentanaController implements Initializable {
             if (validarTextInputs()) {
                 if (elegirDestino()) {
                     GeneratePDFService service = new GeneratePDFService(archivoExcel, carpetaImagenes, archivoPdf, archivoDestino,
-                            Float.parseFloat(fontSizeCodigo.getText()), Float.parseFloat(fontSizeProducto.getText()), Float.parseFloat(fontSizeRubro.getText()), Float.parseFloat(fontSizeSubRubro.getText()),
-                            Float.parseFloat(fontSizeMarca.getText()), Float.parseFloat(fontSizePrecio.getText()), Float.parseFloat(fontSizeCodigoExterno.getText()),
+                            Float.parseFloat(codigoFontSize.getText()), Float.parseFloat(productoFontSize.getText()), Float.parseFloat(rubroFontSize.getText()), Float.parseFloat(subRubroFontSize.getText()),
+                            Float.parseFloat(marcaFontSize.getText()), Float.parseFloat(precioFontSize.getText()), Float.parseFloat(codigoExternoFontSize.getText()),
                             new DeviceRgb((int) (codigoColorPicker.getValue().getRed() * 255), (int) (codigoColorPicker.getValue().getGreen() * 255), (int) (codigoColorPicker.getValue().getBlue() * 255)),
                             new DeviceRgb((int) (productoColorPicker.getValue().getRed() * 255), (int) (productoColorPicker.getValue().getGreen() * 255), (int) (productoColorPicker.getValue().getBlue() * 255)),
                             new DeviceRgb((int) (rubroColorPicker.getValue().getRed() * 255), (int) (rubroColorPicker.getValue().getGreen() * 255), (int) (rubroColorPicker.getValue().getBlue() * 255)),
@@ -193,7 +191,7 @@ public class VentanaController implements Initializable {
                         progressIndicator.setVisible(false);
                     });
                     service.setOnFailed(e -> {
-//                    service.getException().printStackTrace();
+                    service.getException().printStackTrace();
                         logTextArea.setStyle("-fx-text-fill: firebrick;");
                         logTextArea.appendText("Error: " + service.getException().getLocalizedMessage() + "\n");
                         generarButton.setDisable(false);
@@ -212,15 +210,6 @@ public class VentanaController implements Initializable {
     }
 
     @FXML
-    public void onClickLinks(Event event) {
-        if (linksCheckBox.isSelected()) {
-            imageSizeTextInput.setText("64");
-        } else {
-            imageSizeTextInput.setText("89");
-        }
-    }
-
-    @FXML
     public void onClickImagenes(Event event) {
         if (imagenCheckBox.isSelected()) {
             imageSizeTextInput.setDisable(false);
@@ -230,96 +219,134 @@ public class VentanaController implements Initializable {
     }
 
     @FXML
+    public void onClickLinks(Event event) {
+        if (linksCheckBox.isSelected()) {
+            if (isNumeric(imageSizeTextInput.getText()))
+                imageSizeTextInput.setText("" + (Float.parseFloat(imageSizeTextInput.getText()) - 25));
+        } else {
+            if (isNumeric(imageSizeTextInput.getText()))
+                imageSizeTextInput.setText("" + (Float.parseFloat(imageSizeTextInput.getText()) + 25));
+        }
+    }
+
+    @FXML
     public void onClickCodigoColumn(Event event) {
         if (codigoCheckBox.isSelected()) {
-            fontSizeCodigo.setDisable(false);
+            codigoFontSize.setDisable(false);
             codigoColorPicker.setDisable(false);
+            if (isNumeric(imageSizeTextInput.getText()) && isNumeric(codigoFontSize.getText()))
+                imageSizeTextInput.setText("" + (Float.parseFloat(imageSizeTextInput.getText()) - Float.parseFloat(codigoFontSize.getText())));
         } else {
-            fontSizeCodigo.setDisable(true);
+            codigoFontSize.setDisable(true);
             codigoColorPicker.setDisable(true);
+            if (isNumeric(imageSizeTextInput.getText()) && isNumeric(codigoFontSize.getText()))
+                imageSizeTextInput.setText("" + (Float.parseFloat(imageSizeTextInput.getText()) + Float.parseFloat(codigoFontSize.getText())));
         }
     }
 
     @FXML
     public void onClickProductoColumn(Event event) {
         if (productoCheckBox.isSelected()) {
-            fontSizeProducto.setDisable(false);
+            productoFontSize.setDisable(false);
             productoColorPicker.setDisable(false);
+            if (isNumeric(imageSizeTextInput.getText()) && isNumeric(productoFontSize.getText()))
+                imageSizeTextInput.setText("" + (Float.parseFloat(imageSizeTextInput.getText()) - Float.parseFloat(productoFontSize.getText())));
         } else {
-            fontSizeProducto.setDisable(true);
+            productoFontSize.setDisable(true);
             productoColorPicker.setDisable(true);
+            if (isNumeric(imageSizeTextInput.getText()) && isNumeric(productoFontSize.getText()))
+                imageSizeTextInput.setText("" + (Float.parseFloat(imageSizeTextInput.getText()) + Float.parseFloat(productoFontSize.getText())));
         }
     }
 
     @FXML
     public void onClickRubroColumn(Event event) {
         if (rubroCheckBox.isSelected()) {
-            fontSizeRubro.setDisable(false);
+            rubroFontSize.setDisable(false);
             rubroColorPicker.setDisable(false);
-            rubroColorPicker.getValue();
+            if (isNumeric(imageSizeTextInput.getText()) && isNumeric(rubroFontSize.getText()))
+                imageSizeTextInput.setText("" + (Float.parseFloat(imageSizeTextInput.getText()) - Float.parseFloat(rubroFontSize.getText())));
         } else {
-            fontSizeRubro.setDisable(true);
+            rubroFontSize.setDisable(true);
             rubroColorPicker.setDisable(true);
+            if (isNumeric(imageSizeTextInput.getText()) && isNumeric(rubroFontSize.getText()))
+                imageSizeTextInput.setText("" + (Float.parseFloat(imageSizeTextInput.getText()) + Float.parseFloat(rubroFontSize.getText())));
         }
     }
 
     @FXML
     public void onClickSubRubroColumn(Event event) {
         if (subRubroCheckBox.isSelected()) {
-            fontSizeSubRubro.setDisable(false);
+            subRubroFontSize.setDisable(false);
             subRubroColorPicker.setDisable(false);
+            if (isNumeric(imageSizeTextInput.getText()) && isNumeric(subRubroFontSize.getText()))
+                imageSizeTextInput.setText("" + (Float.parseFloat(imageSizeTextInput.getText()) - Float.parseFloat(subRubroFontSize.getText())));
         } else {
-            fontSizeSubRubro.setDisable(true);
+            subRubroFontSize.setDisable(true);
             subRubroColorPicker.setDisable(true);
+            if (isNumeric(imageSizeTextInput.getText()) && isNumeric(subRubroFontSize.getText()))
+                imageSizeTextInput.setText("" + (Float.parseFloat(imageSizeTextInput.getText()) + Float.parseFloat(subRubroFontSize.getText())));
         }
     }
 
     @FXML
     public void onClickMarcaColumn(Event event) {
         if (marcaCheckBox.isSelected()) {
-            fontSizeMarca.setDisable(false);
+            marcaFontSize.setDisable(false);
             marcaColorPicker.setDisable(false);
+            if (isNumeric(imageSizeTextInput.getText()) && isNumeric(marcaFontSize.getText()))
+                imageSizeTextInput.setText("" + (Float.parseFloat(imageSizeTextInput.getText()) - Float.parseFloat(marcaFontSize.getText())));
         } else {
-            fontSizeMarca.setDisable(true);
+            marcaFontSize.setDisable(true);
             marcaColorPicker.setDisable(true);
+            if (isNumeric(imageSizeTextInput.getText()) && isNumeric(marcaFontSize.getText()))
+                imageSizeTextInput.setText("" + (Float.parseFloat(imageSizeTextInput.getText()) + Float.parseFloat(marcaFontSize.getText())));
         }
     }
 
     @FXML
     public void onClickPrecioColumn(Event event) {
         if (precioCheckBox.isSelected()) {
-            fontSizePrecio.setDisable(false);
+            precioFontSize.setDisable(false);
             precioColorPicker.setDisable(false);
+            if (isNumeric(imageSizeTextInput.getText()) && isNumeric(precioFontSize.getText()))
+                imageSizeTextInput.setText("" + (Float.parseFloat(imageSizeTextInput.getText()) - Float.parseFloat(precioFontSize.getText())));
         } else {
-            fontSizePrecio.setDisable(true);
+            precioFontSize.setDisable(true);
             precioColorPicker.setDisable(true);
+            if (isNumeric(imageSizeTextInput.getText()) && isNumeric(precioFontSize.getText()))
+                imageSizeTextInput.setText("" + (Float.parseFloat(imageSizeTextInput.getText()) + Float.parseFloat(precioFontSize.getText())));
         }
     }
 
     @FXML
     public void onClickCodigoExternoColumn(Event event) {
         if (codigoExternoCheckBox.isSelected()) {
-            fontSizeCodigoExterno.setDisable(false);
+            codigoExternoFontSize.setDisable(false);
             codigoExternoColorPicker.setDisable(false);
+            if (isNumeric(imageSizeTextInput.getText()) && isNumeric(codigoExternoFontSize.getText()))
+                imageSizeTextInput.setText("" + (Float.parseFloat(imageSizeTextInput.getText()) - Float.parseFloat(codigoExternoFontSize.getText())));
         } else {
-            fontSizeCodigoExterno.setDisable(true);
+            codigoExternoFontSize.setDisable(true);
             codigoExternoColorPicker.setDisable(true);
+            if (isNumeric(imageSizeTextInput.getText()) && isNumeric(codigoExternoFontSize.getText()))
+                imageSizeTextInput.setText("" + (Float.parseFloat(imageSizeTextInput.getText()) + Float.parseFloat(codigoExternoFontSize.getText())));
         }
     }
 
     private void loadPreferences() {
         Preferences prefs = Preferences.userRoot().node("catalogo");
-        fontSizeCodigo.setText(prefs.get("fontSizeCodigo", "6"));
-        fontSizeProducto.setText(prefs.get("fontSizeProducto", "6"));
-        fontSizeRubro.setText(prefs.get("fontSizeRubro", "6"));
-        fontSizeSubRubro.setText(prefs.get("fontSizeSubRubro", "6"));
-        fontSizeMarca.setText(prefs.get("fontSizeMarca", "6"));
-        fontSizePrecio.setText(prefs.get("fontSizePrecio", "7"));
-        fontSizeCodigoExterno.setText(prefs.get("fontSizeCodigoExterno", "6"));
+        codigoFontSize.setText(prefs.get("codigoFontSize", "6"));
+        productoFontSize.setText(prefs.get("productoFontSize", "6"));
+        rubroFontSize.setText(prefs.get("rubroFontSize", "6"));
+        subRubroFontSize.setText(prefs.get("subRubroFontSize", "6"));
+        marcaFontSize.setText(prefs.get("marcaFontSize", "6"));
+        precioFontSize.setText(prefs.get("precioFontSize", "7"));
+        codigoExternoFontSize.setText(prefs.get("codigoExternoFontSize", "6"));
 
         String[] codigoColor = prefs.get("codigoColorPicker", "0,0,0").split(",");
         codigoColorPicker.setValue(new Color(Double.parseDouble(codigoColor[0]), Double.parseDouble(codigoColor[1]), Double.parseDouble(codigoColor[2]), 1));
-        String[] productoColor = prefs.get("productoColorPicker", "0,0,139").split(",");
+        String[] productoColor = prefs.get("productoColorPicker", "0,0,0.54").split(",");
         productoColorPicker.setValue(new Color(Double.parseDouble(productoColor[0]), Double.parseDouble(productoColor[1]), Double.parseDouble(productoColor[2]), 1));
         String[] rubroColor = prefs.get("rubroColorPicker", "0,0,0").split(",");
         rubroColorPicker.setValue(new Color(Double.parseDouble(rubroColor[0]), Double.parseDouble(rubroColor[1]), Double.parseDouble(rubroColor[2]), 1));
@@ -327,7 +354,7 @@ public class VentanaController implements Initializable {
         subRubroColorPicker.setValue(new Color(Double.parseDouble(subRubroColor[0]), Double.parseDouble(subRubroColor[1]), Double.parseDouble(subRubroColor[2]), 1));
         String[] marcaColor = prefs.get("marcaColorPicker", "0,0,0").split(",");
         marcaColorPicker.setValue(new Color(Double.parseDouble(marcaColor[0]), Double.parseDouble(marcaColor[1]), Double.parseDouble(marcaColor[2]), 1));
-        String[] precioColor = prefs.get("precioColorPicker", "139,0,0").split(",");
+        String[] precioColor = prefs.get("precioColorPicker", "0.54,0,0").split(",");
         precioColorPicker.setValue(new Color(Double.parseDouble(precioColor[0]), Double.parseDouble(precioColor[1]), Double.parseDouble(precioColor[2]), 1));
         String[] codigoExternoColor = prefs.get("codigoExternoColorPicker", "0,0,0").split(",");
         codigoExternoColorPicker.setValue(new Color(Double.parseDouble(codigoExternoColor[0]), Double.parseDouble(codigoExternoColor[1]), Double.parseDouble(codigoExternoColor[2]), 1));
@@ -338,55 +365,56 @@ public class VentanaController implements Initializable {
 
         codigoCheckBox.setSelected(prefs.getBoolean("codigoCheckBox", true));
         if (!codigoCheckBox.isSelected()) {
-            fontSizeCodigo.setDisable(true);
+            codigoFontSize.setDisable(true);
             codigoColorPicker.setDisable(true);
         }
         productoCheckBox.setSelected(prefs.getBoolean("productoCheckBox", true));
         if (!productoCheckBox.isSelected()) {
-            fontSizeProducto.setDisable(true);
+            productoFontSize.setDisable(true);
             productoColorPicker.setDisable(true);
         }
         rubroCheckBox.setSelected(prefs.getBoolean("rubroCheckBox", true));
         if (!rubroCheckBox.isSelected()) {
-            fontSizeRubro.setDisable(true);
+            rubroFontSize.setDisable(true);
             rubroColorPicker.setDisable(true);
         }
         subRubroCheckBox.setSelected(prefs.getBoolean("subRubroCheckBox", true));
         if (!subRubroCheckBox.isSelected()) {
-            fontSizeSubRubro.setDisable(true);
+            subRubroFontSize.setDisable(true);
             subRubroColorPicker.setDisable(true);
         }
         marcaCheckBox.setSelected(prefs.getBoolean("marcaCheckBox", true));
         if (!marcaCheckBox.isSelected()) {
-            fontSizeMarca.setDisable(true);
+            marcaFontSize.setDisable(true);
             marcaColorPicker.setDisable(true);
         }
         precioCheckBox.setSelected(prefs.getBoolean("precioCheckBox", true));
         if (!precioCheckBox.isSelected()) {
-            fontSizePrecio.setDisable(true);
+            precioFontSize.setDisable(true);
             precioColorPicker.setDisable(true);
         }
         codigoExternoCheckBox.setSelected(prefs.getBoolean("codigoExternoCheckBox", true));
         if (!codigoExternoCheckBox.isSelected()) {
-            fontSizeCodigoExterno.setDisable(true);
+            codigoExternoFontSize.setDisable(true);
             codigoExternoColorPicker.setDisable(true);
         }
         imagenCheckBox.setSelected(prefs.getBoolean("imagenCheckBox", true));
         if (!imagenCheckBox.isSelected()) {
             imageSizeTextInput.setDisable(true);
         }
+        linksCheckBox.setSelected(prefs.getBoolean("linksCheckBox", false));
     }
 
     private void savePreferences() {
         // Save state to preferences when the application is closed
         Preferences prefs = Preferences.userRoot().node("catalogo");
-        prefs.put("fontSizeCodigo", fontSizeCodigo.getText());
-        prefs.put("fontSizeProducto", fontSizeProducto.getText());
-        prefs.put("fontSizeRubro", fontSizeRubro.getText());
-        prefs.put("fontSizeSubRubro", fontSizeSubRubro.getText());
-        prefs.put("fontSizeMarca", fontSizeMarca.getText());
-        prefs.put("fontSizePrecio", fontSizePrecio.getText());
-        prefs.put("fontSizeCodigoExterno", fontSizeCodigoExterno.getText());
+        prefs.put("codigoFontSize", codigoFontSize.getText());
+        prefs.put("productoFontSize", productoFontSize.getText());
+        prefs.put("rubroFontSize", rubroFontSize.getText());
+        prefs.put("subRubroFontSize", subRubroFontSize.getText());
+        prefs.put("marcaFontSize", marcaFontSize.getText());
+        prefs.put("precioFontSize", precioFontSize.getText());
+        prefs.put("codigoExternoFontSize", codigoExternoFontSize.getText());
 
         prefs.put("codigoColorPicker", codigoColorPicker.getValue().getRed() + "," + codigoColorPicker.getValue().getGreen() + "," + codigoColorPicker.getValue().getBlue());
         prefs.put("productoColorPicker", productoColorPicker.getValue().getRed() + "," + productoColorPicker.getValue().getGreen() + "," + productoColorPicker.getValue().getBlue());
@@ -424,8 +452,8 @@ public class VentanaController implements Initializable {
     }
 
     private boolean validarTextInputs() {
-        return isNumeric(fontSizeCodigo.getText()) && isNumeric(fontSizeProducto.getText()) && isNumeric(fontSizeRubro.getText()) && isNumeric(fontSizeSubRubro.getText())
-                && isNumeric(fontSizeMarca.getText()) && isNumeric(fontSizePrecio.getText()) && isNumeric(fontSizeCodigoExterno.getText()) &&
+        return isNumeric(codigoFontSize.getText()) && isNumeric(productoFontSize.getText()) && isNumeric(rubroFontSize.getText()) && isNumeric(subRubroFontSize.getText())
+                && isNumeric(marcaFontSize.getText()) && isNumeric(precioFontSize.getText()) && isNumeric(codigoExternoFontSize.getText()) &&
                 isNumeric(imageSizeTextInput.getText()) && isNumeric(pageWidthTextInput.getText()) && isNumeric(pageHeightTextInput.getText());
     }
 
