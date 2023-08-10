@@ -6,7 +6,11 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.media.AudioClip;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import org.apache.log4j.BasicConfigurator;
@@ -16,6 +20,7 @@ import java.io.*;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 
@@ -56,6 +61,20 @@ public class VentanaController implements Initializable {
     @FXML
     private ColorPicker codigoExternoColorPicker;
     @FXML
+    private ChoiceBox<String> codigoFont;
+    @FXML
+    private ChoiceBox<String> productoFont;
+    @FXML
+    private ChoiceBox<String> rubroFont;
+    @FXML
+    private ChoiceBox<String> subRubroFont;
+    @FXML
+    private ChoiceBox<String> marcaFont;
+    @FXML
+    private ChoiceBox<String> precioFont;
+    @FXML
+    private ChoiceBox<String> codigoExternoFont;
+    @FXML
     private TextField imageSizeTextInput;
     @FXML
     private TextField pageWidthTextInput;
@@ -91,12 +110,14 @@ public class VentanaController implements Initializable {
     private File archivoPdf;
     private File archivoDestino;
 
+    final AudioClip errorSound = new AudioClip(getClass().getResource("/audios/error.mp3").toExternalForm());
+    final AudioClip successSound = new AudioClip(getClass().getResource("/audios/success.mp3").toExternalForm());
+
     public void initialize(URL url, ResourceBundle rb) {
         BasicConfigurator.configure(); // configure Log4j
+        cargarChoiceBoxes();
         loadPreferences(); // Load previous state from preferences
-        Main.stage.setOnCloseRequest(event -> {
-            savePreferences();
-        });
+        Main.stage.setOnCloseRequest(event -> savePreferences());
     }
 
     @FXML
@@ -105,7 +126,7 @@ public class VentanaController implements Initializable {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Elige archivo .XLSX");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivo XLSX", "*.xlsx"));
-        final File defaultPath = new File("Z:\\Doc. Compartidos\\CATALOGOS");
+        final File defaultPath = new File("G:\\Otros ordenadores\\Mi PC (1)\\CATALOGOS\\EXCELs");
         if (!defaultPath.exists() || !defaultPath.isDirectory()) {
             fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
         } else {
@@ -144,7 +165,7 @@ public class VentanaController implements Initializable {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Elige archivo .PDF");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivo PDF", "*.pdf"));
-        final File defaultPath = new File("Z:\\Doc. Compartidos\\CATALOGOS\\CATALOGOS VENDEDORES\\CARATULAS");
+        final File defaultPath = new File("G:\\Otros ordenadores\\Mi PC (1)\\CATALOGOS\\CARATULAS");
         if (!defaultPath.exists() || !defaultPath.isDirectory()) {
             fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
         } else {
@@ -159,7 +180,7 @@ public class VentanaController implements Initializable {
     }
 
     @FXML
-    public void generar(ActionEvent event) {
+    public void generarCatalogo(ActionEvent event) {
         logTextArea.clear();
         if (archivoExcel != null && archivoExcel.isFile() && carpetaImagenes != null && carpetaImagenes.exists()) {
             if (validarTextInputs()) {
@@ -168,6 +189,7 @@ public class VentanaController implements Initializable {
                             Float.parseFloat(codigoFontSize.getText()), Float.parseFloat(productoFontSize.getText()), Float.parseFloat(rubroFontSize.getText()), Float.parseFloat(subRubroFontSize.getText()),
                             Float.parseFloat(marcaFontSize.getText()), Float.parseFloat(precioFontSize.getText()), Float.parseFloat(codigoExternoFontSize.getText()),
                             getRGB(codigoColorPicker), getRGB(productoColorPicker), getRGB(rubroColorPicker), getRGB(subRubroColorPicker), getRGB(marcaColorPicker), getRGB(precioColorPicker), getRGB(codigoExternoColorPicker),
+                            codigoFont.getValue(), productoFont.getValue(), rubroFont.getValue(), subRubroFont.getValue(), marcaFont.getValue(), precioFont.getValue(), codigoExternoFont.getValue(),
                             Float.parseFloat(imageSizeTextInput.getText()), Float.parseFloat(pageWidthTextInput.getText()), Float.parseFloat(pageHeightTextInput.getText()),
                             codigoCheckBox.isSelected(), productoCheckBox.isSelected(), rubroCheckBox.isSelected(), subRubroCheckBox.isSelected(), marcaCheckBox.isSelected(), precioCheckBox.isSelected(),
                             codigoExternoCheckBox.isSelected(), imagenCheckBox.isSelected(), linksCheckBox.isSelected(), logTextArea);
@@ -178,14 +200,19 @@ public class VentanaController implements Initializable {
                         logTextArea.appendText("Generando PDF...\n");
                     });
                     service.setOnSucceeded(e -> {
+                        successSound.play();
                         logTextArea.setStyle("-fx-text-fill: darkgreen;");
                         logTextArea.appendText("Se han generado " + service.getValue() + " productos.\n");
                         logTextArea.appendText('"' + archivoDestino.getAbsolutePath() + "\" generado.\n");
                         generarButton.setDisable(false);
                         progressIndicator.setVisible(false);
+//                        logTextArea.appendText(""); // Add an empty line to trigger scroll
+//                        final ScrollBar verticalScrollBar = (ScrollBar) logTextArea.lookup(".scroll-bar:vertical");
+//                        verticalScrollBar.setValue(verticalScrollBar.getMax());
                     });
                     service.setOnFailed(e -> {
 //                        service.getException().printStackTrace();
+                        errorSound.play();
                         logTextArea.setStyle("-fx-text-fill: firebrick;");
                         logTextArea.appendText("Error: " + service.getException().getLocalizedMessage() + "\n");
                         generarButton.setDisable(false);
@@ -228,11 +255,13 @@ public class VentanaController implements Initializable {
         if (codigoCheckBox.isSelected()) {
             codigoFontSize.setDisable(false);
             codigoColorPicker.setDisable(false);
+            codigoFont.setDisable(false);
             if (isNumeric(imageSizeTextInput.getText()) && isNumeric(codigoFontSize.getText()))
                 imageSizeTextInput.setText("" + (Float.parseFloat(imageSizeTextInput.getText()) - Float.parseFloat(codigoFontSize.getText())));
         } else {
             codigoFontSize.setDisable(true);
             codigoColorPicker.setDisable(true);
+            codigoFont.setDisable(true);
             if (isNumeric(imageSizeTextInput.getText()) && isNumeric(codigoFontSize.getText()))
                 imageSizeTextInput.setText("" + (Float.parseFloat(imageSizeTextInput.getText()) + Float.parseFloat(codigoFontSize.getText())));
         }
@@ -243,11 +272,13 @@ public class VentanaController implements Initializable {
         if (productoCheckBox.isSelected()) {
             productoFontSize.setDisable(false);
             productoColorPicker.setDisable(false);
+            productoFont.setDisable(false);
             if (isNumeric(imageSizeTextInput.getText()) && isNumeric(productoFontSize.getText()))
                 imageSizeTextInput.setText("" + (Float.parseFloat(imageSizeTextInput.getText()) - Float.parseFloat(productoFontSize.getText())));
         } else {
             productoFontSize.setDisable(true);
             productoColorPicker.setDisable(true);
+            productoFont.setDisable(true);
             if (isNumeric(imageSizeTextInput.getText()) && isNumeric(productoFontSize.getText()))
                 imageSizeTextInput.setText("" + (Float.parseFloat(imageSizeTextInput.getText()) + Float.parseFloat(productoFontSize.getText())));
         }
@@ -258,11 +289,13 @@ public class VentanaController implements Initializable {
         if (rubroCheckBox.isSelected()) {
             rubroFontSize.setDisable(false);
             rubroColorPicker.setDisable(false);
+            rubroFont.setDisable(false);
             if (isNumeric(imageSizeTextInput.getText()) && isNumeric(rubroFontSize.getText()))
                 imageSizeTextInput.setText("" + (Float.parseFloat(imageSizeTextInput.getText()) - Float.parseFloat(rubroFontSize.getText())));
         } else {
             rubroFontSize.setDisable(true);
             rubroColorPicker.setDisable(true);
+            rubroFont.setDisable(true);
             if (isNumeric(imageSizeTextInput.getText()) && isNumeric(rubroFontSize.getText()))
                 imageSizeTextInput.setText("" + (Float.parseFloat(imageSizeTextInput.getText()) + Float.parseFloat(rubroFontSize.getText())));
         }
@@ -273,11 +306,13 @@ public class VentanaController implements Initializable {
         if (subRubroCheckBox.isSelected()) {
             subRubroFontSize.setDisable(false);
             subRubroColorPicker.setDisable(false);
+            subRubroFont.setDisable(false);
             if (isNumeric(imageSizeTextInput.getText()) && isNumeric(subRubroFontSize.getText()))
                 imageSizeTextInput.setText("" + (Float.parseFloat(imageSizeTextInput.getText()) - Float.parseFloat(subRubroFontSize.getText())));
         } else {
             subRubroFontSize.setDisable(true);
             subRubroColorPicker.setDisable(true);
+            subRubroFont.setDisable(true);
             if (isNumeric(imageSizeTextInput.getText()) && isNumeric(subRubroFontSize.getText()))
                 imageSizeTextInput.setText("" + (Float.parseFloat(imageSizeTextInput.getText()) + Float.parseFloat(subRubroFontSize.getText())));
         }
@@ -288,11 +323,13 @@ public class VentanaController implements Initializable {
         if (marcaCheckBox.isSelected()) {
             marcaFontSize.setDisable(false);
             marcaColorPicker.setDisable(false);
+            marcaFont.setDisable(false);
             if (isNumeric(imageSizeTextInput.getText()) && isNumeric(marcaFontSize.getText()))
                 imageSizeTextInput.setText("" + (Float.parseFloat(imageSizeTextInput.getText()) - Float.parseFloat(marcaFontSize.getText())));
         } else {
             marcaFontSize.setDisable(true);
             marcaColorPicker.setDisable(true);
+            marcaFont.setDisable(true);
             if (isNumeric(imageSizeTextInput.getText()) && isNumeric(marcaFontSize.getText()))
                 imageSizeTextInput.setText("" + (Float.parseFloat(imageSizeTextInput.getText()) + Float.parseFloat(marcaFontSize.getText())));
         }
@@ -303,11 +340,13 @@ public class VentanaController implements Initializable {
         if (precioCheckBox.isSelected()) {
             precioFontSize.setDisable(false);
             precioColorPicker.setDisable(false);
+            precioFont.setDisable(false);
             if (isNumeric(imageSizeTextInput.getText()) && isNumeric(precioFontSize.getText()))
                 imageSizeTextInput.setText("" + (Float.parseFloat(imageSizeTextInput.getText()) - Float.parseFloat(precioFontSize.getText())));
         } else {
             precioFontSize.setDisable(true);
             precioColorPicker.setDisable(true);
+            precioFont.setDisable(true);
             if (isNumeric(imageSizeTextInput.getText()) && isNumeric(precioFontSize.getText()))
                 imageSizeTextInput.setText("" + (Float.parseFloat(imageSizeTextInput.getText()) + Float.parseFloat(precioFontSize.getText())));
         }
@@ -318,11 +357,13 @@ public class VentanaController implements Initializable {
         if (codigoExternoCheckBox.isSelected()) {
             codigoExternoFontSize.setDisable(false);
             codigoExternoColorPicker.setDisable(false);
+            codigoExternoFont.setDisable(false);
             if (isNumeric(imageSizeTextInput.getText()) && isNumeric(codigoExternoFontSize.getText()))
                 imageSizeTextInput.setText("" + (Float.parseFloat(imageSizeTextInput.getText()) - Float.parseFloat(codigoExternoFontSize.getText())));
         } else {
             codigoExternoFontSize.setDisable(true);
             codigoExternoColorPicker.setDisable(true);
+            codigoExternoFont.setDisable(true);
             if (isNumeric(imageSizeTextInput.getText()) && isNumeric(codigoExternoFontSize.getText()))
                 imageSizeTextInput.setText("" + (Float.parseFloat(imageSizeTextInput.getText()) + Float.parseFloat(codigoExternoFontSize.getText())));
         }
@@ -353,6 +394,14 @@ public class VentanaController implements Initializable {
         String[] codigoExternoColor = prefs.get("codigoExternoColorPicker", "0,0,0").split(",");
         codigoExternoColorPicker.setValue(new Color(Double.parseDouble(codigoExternoColor[0]), Double.parseDouble(codigoExternoColor[1]), Double.parseDouble(codigoExternoColor[2]), 1));
 
+        codigoFont.setValue(prefs.get("codigoFont", "Calibri"));
+        productoFont.setValue(prefs.get("productoFont", "Calibri"));
+        rubroFont.setValue(prefs.get("rubroFont", "Calibri"));
+        subRubroFont.setValue(prefs.get("subRubroFont", "Calibri"));
+        marcaFont.setValue(prefs.get("marcaFont", "Calibri"));
+        precioFont.setValue(prefs.get("precioFont", "Calibri"));
+        codigoExternoFont.setValue(prefs.get("codigoExternoFont", "Calibri"));
+
         imageSizeTextInput.setText(prefs.get("imageSizeTextInput", "89"));
         pageWidthTextInput.setText(prefs.get("pageWidthTextInput", "595"));
         pageHeightTextInput.setText(prefs.get("pageHeightTextInput", "842"));
@@ -361,36 +410,43 @@ public class VentanaController implements Initializable {
         if (!codigoCheckBox.isSelected()) {
             codigoFontSize.setDisable(true);
             codigoColorPicker.setDisable(true);
+            codigoFont.setDisable(true);
         }
         productoCheckBox.setSelected(prefs.getBoolean("productoCheckBox", true));
         if (!productoCheckBox.isSelected()) {
             productoFontSize.setDisable(true);
             productoColorPicker.setDisable(true);
+            productoFont.setDisable(true);
         }
         rubroCheckBox.setSelected(prefs.getBoolean("rubroCheckBox", true));
         if (!rubroCheckBox.isSelected()) {
             rubroFontSize.setDisable(true);
             rubroColorPicker.setDisable(true);
+            rubroFont.setDisable(true);
         }
         subRubroCheckBox.setSelected(prefs.getBoolean("subRubroCheckBox", true));
         if (!subRubroCheckBox.isSelected()) {
             subRubroFontSize.setDisable(true);
             subRubroColorPicker.setDisable(true);
+            subRubroFont.setDisable(true);
         }
         marcaCheckBox.setSelected(prefs.getBoolean("marcaCheckBox", true));
         if (!marcaCheckBox.isSelected()) {
             marcaFontSize.setDisable(true);
             marcaColorPicker.setDisable(true);
+            marcaFont.setDisable(true);
         }
         precioCheckBox.setSelected(prefs.getBoolean("precioCheckBox", true));
         if (!precioCheckBox.isSelected()) {
             precioFontSize.setDisable(true);
             precioColorPicker.setDisable(true);
+            precioFont.setDisable(true);
         }
         codigoExternoCheckBox.setSelected(prefs.getBoolean("codigoExternoCheckBox", true));
         if (!codigoExternoCheckBox.isSelected()) {
             codigoExternoFontSize.setDisable(true);
             codigoExternoColorPicker.setDisable(true);
+            codigoExternoFont.setDisable(true);
         }
         imagenCheckBox.setSelected(prefs.getBoolean("imagenCheckBox", true));
         if (!imagenCheckBox.isSelected()) {
@@ -417,6 +473,14 @@ public class VentanaController implements Initializable {
         prefs.put("marcaColorPicker", marcaColorPicker.getValue().getRed() + "," + marcaColorPicker.getValue().getGreen() + "," + marcaColorPicker.getValue().getBlue());
         prefs.put("precioColorPicker", precioColorPicker.getValue().getRed() + "," + precioColorPicker.getValue().getGreen() + "," + precioColorPicker.getValue().getBlue());
         prefs.put("codigoExternoColorPicker", codigoExternoColorPicker.getValue().getRed() + "," + codigoExternoColorPicker.getValue().getGreen() + "," + codigoExternoColorPicker.getValue().getBlue());
+
+        prefs.put("codigoFont", codigoFont.getValue());
+        prefs.put("productoFont", productoFont.getValue());
+        prefs.put("rubroFont", rubroFont.getValue());
+        prefs.put("subRubroFont", subRubroFont.getValue());
+        prefs.put("marcaFont", marcaFont.getValue());
+        prefs.put("precioFont", precioFont.getValue());
+        prefs.put("codigoExternoFont", codigoExternoFont.getValue());
 
         prefs.put("imageSizeTextInput", imageSizeTextInput.getText());
         prefs.put("pageWidthTextInput", pageWidthTextInput.getText());
@@ -473,6 +537,19 @@ public class VentanaController implements Initializable {
         } else {
             return false;
         }
+    }
+
+    private void cargarChoiceBoxes() {
+        // Get the list of available font families
+        final List<String> fontFamilies = Font.getFamilies();
+        // Populate the ChoiceBox with font families
+        codigoFont.getItems().addAll(fontFamilies);
+        productoFont.getItems().addAll(fontFamilies);
+        rubroFont.getItems().addAll(fontFamilies);
+        subRubroFont.getItems().addAll(fontFamilies);
+        marcaFont.getItems().addAll(fontFamilies);
+        precioFont.getItems().addAll(fontFamilies);
+        codigoExternoFont.getItems().addAll(fontFamilies);
     }
 
 }
