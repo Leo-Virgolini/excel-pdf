@@ -7,8 +7,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.media.AudioClip;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.DirectoryChooser;
@@ -402,7 +400,7 @@ public class VentanaController implements Initializable {
         precioFont.setValue(prefs.get("precioFont", "Calibri"));
         codigoExternoFont.setValue(prefs.get("codigoExternoFont", "Calibri"));
 
-        imageSizeTextInput.setText(prefs.get("imageSizeTextInput", "89"));
+        imageSizeTextInput.setText(prefs.get("imageSizeTextInput", "83"));
         pageWidthTextInput.setText(prefs.get("pageWidthTextInput", "595"));
         pageHeightTextInput.setText(prefs.get("pageHeightTextInput", "842"));
 

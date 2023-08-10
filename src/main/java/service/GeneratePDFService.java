@@ -27,7 +27,6 @@ import pdf.ClippedTableRenderer;
 import java.io.File;
 import java.io.FileInputStream;
 import java.math.BigDecimal;
-import java.net.MalformedURLException;
 
 public class GeneratePDFService extends Service<Integer> {
 
@@ -148,13 +147,13 @@ public class GeneratePDFService extends Service<Integer> {
         urlPie.setFixedPosition(pageWidth / 4 - 100, -1.5f, 100);
         urlPie.setAction(PdfAction.createURI(urlPie.toString()));
 
-        final Paragraph marcaPie = new Paragraph("LINEA GE");
-        marcaPie.setFontFamily("Calibri").setFontSize(6.5f).setBold().setFontColor(new DeviceRgb(12, 93, 182));
-        marcaPie.setFixedPosition(pageWidth / 4 + 6, -2.5f, 50);
-
         final Image geLogo = new Image(ImageDataFactory.create(getClass().getResource("/images/ge.jpg").toExternalForm()));
         geLogo.setWidth(5.5f).setHeight(5.5f);
         geLogo.setFixedPosition(pageWidth / 4, 0);
+
+        final Paragraph marcaPie = new Paragraph("LINEA GE");
+        marcaPie.setFontFamily("Calibri").setFontSize(6.5f).setBold().setFontColor(new DeviceRgb(12, 93, 182));
+        marcaPie.setFixedPosition(pageWidth / 4 + 7, -2.5f, 50);
 
         final int productsPerPage = 20;
         final int rowsPerPage = 5;
@@ -380,6 +379,10 @@ public class GeneratePDFService extends Service<Integer> {
                     table.setFixedLayout();
                     table.setNextRenderer(new ClippedTableRenderer(table));
                     doc.add(table);
+                    doc.add(kitchenLogo);
+                    doc.add(urlPie);
+                    doc.add(geLogo);
+                    doc.add(marcaPie);
                 }
                 agregarNumeroPagina(pdfDoc, doc);
             } catch (Exception e) {
@@ -447,10 +450,9 @@ public class GeneratePDFService extends Service<Integer> {
         }
     }
 
-    private void agregarNumeroPagina(PdfDocument pdfDoc, Document doc) throws MalformedURLException {
+    private void agregarNumeroPagina(PdfDocument pdfDoc, Document doc) {
         final int numberOfPages = pdfDoc.getNumberOfPages();
         final DeviceRgb greyColor = new DeviceRgb(128, 128, 128);
-
         for (int i = 1; i <= numberOfPages; i++) {
             // Write aligned text to the specified parameters point
             doc.showTextAligned(new Paragraph(String.format("Página %s de %s", i, numberOfPages)).setFontSize(5).setFontColor(greyColor),
