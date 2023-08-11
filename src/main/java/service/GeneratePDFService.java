@@ -138,22 +138,22 @@ public class GeneratePDFService extends Service<Integer> {
         final Image sinImagen = new Image(ImageDataFactory.create((getClass().getResource("/images/SINIMAGEN.jpg").toExternalForm())));
         final ImageData buttonImagenData = ImageDataFactory.create(getClass().getResource("/images/button.png").toExternalForm());
 
-        final Image kitchenLogo = new Image(ImageDataFactory.create(getClass().getResource("/images/kitchen.png").toExternalForm()));
-        kitchenLogo.setWidth(5.5f).setHeight(5.5f);
-        kitchenLogo.setFixedPosition(pageWidth / 4 - 107, 0);
+        final Image kitchenPieImage = new Image(ImageDataFactory.create(getClass().getResource("/images/kitchen.png").toExternalForm()));
+        kitchenPieImage.setWidth(5.5f).setHeight(5.5f);
+        kitchenPieImage.setFixedPosition(pageWidth / 4 - 107, 0);
 
-        final Paragraph urlPie = new Paragraph("https://kitchentools.com.ar");
-        urlPie.setFontFamily("Helvetica").setFontSize(6).setUnderline().setFontColor(new DeviceRgb(12, 93, 182));
-        urlPie.setFixedPosition(pageWidth / 4 - 100, -1.5f, 100);
-        urlPie.setAction(PdfAction.createURI(urlPie.toString()));
+        final Paragraph urlPieParagraph = new Paragraph("https://kitchentools.com.ar");
+        urlPieParagraph.setFontFamily("Helvetica").setFontSize(6).setUnderline().setFontColor(new DeviceRgb(12, 93, 182));
+        urlPieParagraph.setFixedPosition(pageWidth / 4 - 100, -1.5f, 100);
+        urlPieParagraph.setAction(PdfAction.createURI(urlPieParagraph.toString()));
 
-        final Image geLogo = new Image(ImageDataFactory.create(getClass().getResource("/images/ge.jpg").toExternalForm()));
-        geLogo.setWidth(5.5f).setHeight(5.5f);
-        geLogo.setFixedPosition(pageWidth / 4, 0);
+        final Image gePieImage = new Image(ImageDataFactory.create(getClass().getResource("/images/ge.jpg").toExternalForm()));
+        gePieImage.setWidth(5.5f).setHeight(5.5f);
+        gePieImage.setFixedPosition(pageWidth / 4, 0);
 
-        final Paragraph marcaPie = new Paragraph("LINEA GE");
-        marcaPie.setFontFamily("Calibri").setFontSize(6.5f).setBold().setFontColor(new DeviceRgb(12, 93, 182));
-        marcaPie.setFixedPosition(pageWidth / 4 + 7, -2.5f, 50);
+        final Paragraph marcaPieParagraph = new Paragraph("LINEA GE");
+        marcaPieParagraph.setFontFamily("Calibri").setFontSize(6.5f).setBold().setFontColor(new DeviceRgb(12, 93, 182));
+        marcaPieParagraph.setFixedPosition(pageWidth / 4 + 7, -2.5f, 50);
 
         final int productsPerPage = 20;
         final int rowsPerPage = 5;
@@ -192,7 +192,7 @@ public class GeneratePDFService extends Service<Integer> {
                 for (int i = 1; i < rowCount; i++) {
                     // Read the product data from the Excel rows
                     Row row = sheet.getRow(i);
-                    // Create a new table cell with the image and product data
+                    // Create a new table cell
                     Cell cell = new Cell();
                     cell.setPadding(1);
                     cell.setMargin(0);
@@ -362,10 +362,10 @@ public class GeneratePDFService extends Service<Integer> {
                         table.setFixedLayout();
                         table.setNextRenderer(new ClippedTableRenderer(table));
                         doc.add(table);
-                        doc.add(kitchenLogo);
-                        doc.add(urlPie);
-                        doc.add(geLogo);
-                        doc.add(marcaPie);
+                        doc.add(kitchenPieImage);
+                        doc.add(urlPieParagraph);
+                        doc.add(gePieImage);
+                        doc.add(marcaPieParagraph);
                         doc.add(new AreaBreak(AreaBreakType.NEXT_PAGE));
                         table = new Table(UnitValue.createPercentArray(4)).useAllAvailableWidth();
                     }
@@ -379,10 +379,10 @@ public class GeneratePDFService extends Service<Integer> {
                     table.setFixedLayout();
                     table.setNextRenderer(new ClippedTableRenderer(table));
                     doc.add(table);
-                    doc.add(kitchenLogo);
-                    doc.add(urlPie);
-                    doc.add(geLogo);
-                    doc.add(marcaPie);
+                    doc.add(kitchenPieImage);
+                    doc.add(urlPieParagraph);
+                    doc.add(gePieImage);
+                    doc.add(marcaPieParagraph);
                 }
                 agregarNumeroPagina(pdfDoc, doc);
             } catch (Exception e) {
@@ -420,9 +420,9 @@ public class GeneratePDFService extends Service<Integer> {
             case STRING:
                 return cell.getStringCellValue();
             case NUMERIC:
-                if (DateUtil.isCellDateFormatted(cell)) { // date values
+                if (DateUtil.isCellDateFormatted(cell)) { // date
                     return cell.getDateCellValue().toString();
-                } else { // numeric values
+                } else { // numeric
                     return String.valueOf(cell.getNumericCellValue());
                 }
             case BOOLEAN:

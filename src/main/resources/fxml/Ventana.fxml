@@ -18,7 +18,7 @@
 
 <AnchorPane minHeight="318.0" minWidth="500.0" prefHeight="579.0" prefWidth="838.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fx.VentanaController">
    <children>
-      <Pane layoutX="7.0" layoutY="305.0" prefHeight="298.0" prefWidth="828.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="305.0">
+      <Pane layoutX="7.0" layoutY="299.0" prefHeight="280.0" prefWidth="838.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="299.0">
          <children>
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffffff00" height="118.0" layoutX="626.0" layoutY="138.60000610351562" stroke="BLACK" strokeType="INSIDE" width="160.0" />
             <Button fx:id="generarButton" alignment="CENTER" layoutX="333.0" layoutY="167.0" mnemonicParsing="false" onAction="#generarCatalogo" prefHeight="63.0" prefWidth="214.0" text="Generar PDF" textFill="#ff5722" wrapText="true">

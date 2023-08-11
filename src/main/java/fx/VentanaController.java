@@ -108,11 +108,13 @@ public class VentanaController implements Initializable {
     private File archivoPdf;
     private File archivoDestino;
 
-    final AudioClip errorSound = new AudioClip(getClass().getResource("/audios/error.mp3").toExternalForm());
-    final AudioClip successSound = new AudioClip(getClass().getResource("/audios/success.mp3").toExternalForm());
+    AudioClip errorSound;
+    AudioClip successSound;
 
     public void initialize(URL url, ResourceBundle rb) {
         BasicConfigurator.configure(); // configure Log4j
+        errorSound = new AudioClip(getClass().getResource("/audios/error.mp3").toExternalForm());
+        successSound = new AudioClip(getClass().getResource("/audios/success.mp3").toExternalForm());
         cargarChoiceBoxes();
         loadPreferences(); // Load previous state from preferences
         Main.stage.setOnCloseRequest(event -> savePreferences());
@@ -368,7 +370,7 @@ public class VentanaController implements Initializable {
     }
 
     private void loadPreferences() {
-        Preferences prefs = Preferences.userRoot().node("catalogo");
+        final Preferences prefs = Preferences.userRoot().node("catalogo");
         codigoFontSize.setText(prefs.get("codigoFontSize", "6"));
         productoFontSize.setText(prefs.get("productoFontSize", "6"));
         rubroFontSize.setText(prefs.get("rubroFontSize", "6"));
@@ -455,7 +457,7 @@ public class VentanaController implements Initializable {
 
     private void savePreferences() {
         // Save state to preferences when the application is closed
-        Preferences prefs = Preferences.userRoot().node("catalogo");
+        final Preferences prefs = Preferences.userRoot().node("catalogo");
         prefs.put("codigoFontSize", codigoFontSize.getText());
         prefs.put("productoFontSize", productoFontSize.getText());
         prefs.put("rubroFontSize", rubroFontSize.getText());
