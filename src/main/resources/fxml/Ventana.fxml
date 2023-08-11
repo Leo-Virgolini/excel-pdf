@@ -68,17 +68,17 @@
                   <Font name="System Bold" size="15.0" />
                </font>
             </CheckBox>
-            <CheckBox fx:id="codigoCheckBox" layoutX="2.0" mnemonicParsing="false" onAction="#onClickCodigoColumn" selected="true" text="Código" textFill="#056600" underline="true">
+            <CheckBox fx:id="codigoCheckBox" layoutX="12.0" mnemonicParsing="false" onAction="#onClickCodigoColumn" selected="true" text="Código" textFill="#056600" underline="true">
                <font>
                   <Font name="System Bold" size="15.0" />
                </font>
             </CheckBox>
-            <CheckBox fx:id="rubroCheckBox" layoutX="229.0" layoutY="1.0" mnemonicParsing="false" onAction="#onClickRubroColumn" selected="true" text="Rubro" textFill="#056600" underline="true">
+            <CheckBox fx:id="rubroCheckBox" layoutX="230.0" layoutY="1.0" mnemonicParsing="false" onAction="#onClickRubroColumn" selected="true" text="Rubro" textFill="#056600" underline="true">
                <font>
                   <Font name="System Bold" size="15.0" />
                </font>
             </CheckBox>
-            <CheckBox fx:id="codigoExternoCheckBox" layoutX="685.0" mnemonicParsing="false" onAction="#onClickCodigoExternoColumn" selected="true" text="Código externo" textFill="#056600" underline="true">
+            <CheckBox fx:id="codigoExternoCheckBox" layoutX="693.0" mnemonicParsing="false" onAction="#onClickCodigoExternoColumn" selected="true" text="Código externo" textFill="#056600" underline="true">
                <font>
                   <Font name="System Bold" size="15.0" />
                </font>
@@ -113,7 +113,7 @@
                   <Font name="System Bold" size="24.0" />
                </font>
             </Label>
-            <TextField fx:id="codigoFontSize" alignment="CENTER" layoutX="21.0" layoutY="26.0" prefHeight="30.0" prefWidth="43.0" text="6">
+            <TextField fx:id="codigoFontSize" alignment="CENTER" layoutX="28.0" layoutY="26.0" prefHeight="30.0" prefWidth="43.0" text="6">
                <font>
                   <Font size="14.0" />
                </font>
@@ -123,7 +123,7 @@
                   <Font size="14.0" />
                </font>
             </TextField>
-            <TextField fx:id="rubroFontSize" alignment="CENTER" layoutX="241.0" layoutY="26.0" prefHeight="30.0" prefWidth="43.0" text="6">
+            <TextField fx:id="rubroFontSize" alignment="CENTER" layoutX="243.0" layoutY="26.0" prefHeight="30.0" prefWidth="43.0" text="6">
                <font>
                   <Font size="14.0" />
                </font>
@@ -133,7 +133,7 @@
                   <Font size="14.0" />
                </font>
             </TextField>
-            <TextField fx:id="marcaFontSize" alignment="CENTER" layoutX="464.0" layoutY="26.0" prefHeight="30.0" prefWidth="43.0" text="6">
+            <TextField fx:id="marcaFontSize" alignment="CENTER" layoutX="466.0" layoutY="26.0" prefHeight="30.0" prefWidth="43.0" text="6">
                <font>
                   <Font size="14.0" />
                </font>
@@ -148,7 +148,7 @@
                   <Font size="14.0" />
                </font>
             </TextField>
-            <Label layoutX="65.0" layoutY="22.0" prefHeight="35.0" prefWidth="22.0" text="px">
+            <Label layoutX="72.0" layoutY="22.0" prefHeight="35.0" prefWidth="22.0" text="px">
                <font>
                   <Font size="15.0" />
                </font>
@@ -173,7 +173,7 @@
                   <Font size="15.0" />
                </font>
             </Label>
-            <Label layoutX="285.0" layoutY="22.0" prefHeight="35.0" prefWidth="22.0" text="px">
+            <Label layoutX="286.0" layoutY="22.0" prefHeight="35.0" prefWidth="22.0" text="px">
                <font>
                   <Font size="15.0" />
                </font>
@@ -183,7 +183,7 @@
                   <Font size="15.0" />
                </font>
             </Label>
-            <Label layoutX="509.0" layoutY="22.0" prefHeight="35.0" prefWidth="22.0" text="px">
+            <Label layoutX="510.0" layoutY="22.0" prefHeight="35.0" prefWidth="22.0" text="px">
                <font>
                   <Font size="15.0" />
                </font>
@@ -198,7 +198,7 @@
                   <Font size="15.0" />
                </font>
             </Label>
-            <ColorPicker fx:id="codigoColorPicker" layoutY="58.0" prefHeight="26.0" prefWidth="98.0">
+            <ColorPicker fx:id="codigoColorPicker" layoutX="4.0" layoutY="58.0" prefHeight="26.0" prefWidth="98.0">
                <value>
                   <Color />
                </value>
@@ -228,18 +228,18 @@
                   <Color red="0.545098066329956" />
                </value>
             </ColorPicker>
-            <ColorPicker fx:id="codigoExternoColorPicker" layoutX="707.0" layoutY="58.0" prefHeight="26.0" prefWidth="98.0">
+            <ColorPicker fx:id="codigoExternoColorPicker" layoutX="707.0" layoutY="58.0" prefHeight="26.0" prefWidth="113.0">
                <value>
                   <Color />
                </value>
             </ColorPicker>
-            <ChoiceBox fx:id="codigoFont" layoutY="95.0" prefHeight="25.0" prefWidth="98.0" />
-            <ChoiceBox fx:id="productoFont" layoutX="112.0" layoutY="95.0" prefHeight="25.0" prefWidth="98.0" />
-            <ChoiceBox fx:id="rubroFont" layoutX="224.0" layoutY="95.0" prefHeight="25.0" prefWidth="98.0" />
-            <ChoiceBox fx:id="subRubroFont" layoutX="336.0" layoutY="95.0" prefHeight="25.0" prefWidth="98.0" />
-            <ChoiceBox fx:id="marcaFont" layoutX="451.0" layoutY="95.0" prefHeight="25.0" prefWidth="98.0" />
-            <ChoiceBox fx:id="precioFont" layoutX="564.0" layoutY="95.0" prefHeight="25.0" prefWidth="120.0" />
-            <ChoiceBox fx:id="codigoExternoFont" layoutX="707.0" layoutY="95.0" prefHeight="25.0" prefWidth="98.0" />
+            <ChoiceBox fx:id="codigoFont" layoutX="4.0" layoutY="91.0" prefHeight="25.0" prefWidth="98.0" />
+            <ChoiceBox fx:id="productoFont" layoutX="112.0" layoutY="91.0" prefHeight="25.0" prefWidth="98.0" />
+            <ChoiceBox fx:id="rubroFont" layoutX="224.0" layoutY="92.0" prefHeight="25.0" prefWidth="98.0" />
+            <ChoiceBox fx:id="subRubroFont" layoutX="336.0" layoutY="92.0" prefHeight="25.0" prefWidth="98.0" />
+            <ChoiceBox fx:id="marcaFont" layoutX="451.0" layoutY="92.0" prefHeight="25.0" prefWidth="98.0" />
+            <ChoiceBox fx:id="precioFont" layoutX="564.0" layoutY="92.0" prefHeight="25.0" prefWidth="120.0" />
+            <ChoiceBox fx:id="codigoExternoFont" layoutX="707.0" layoutY="92.0" prefHeight="25.0" prefWidth="113.0" />
          </children>
       </Pane>
       <Label layoutX="35.0" layoutY="12.0" prefHeight="35.0" prefWidth="177.0" text="Ubicación archivo excel:">

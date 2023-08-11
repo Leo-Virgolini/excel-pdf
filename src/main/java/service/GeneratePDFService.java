@@ -315,7 +315,7 @@ public class GeneratePDFService extends Service<Integer> {
                                 image = new Image(ImageDataFactory.create(imageFile.getAbsolutePath()));
                             } else { // si no existe el archivo de la imagen usar SINIMAGEN.jpg
                                 image = sinImagen;
-                                log.append("Advertencia: La imagen \"" + codigo + "\" no existe.\n");
+                                log.append("Advertencia: La imagen \"").append(codigo).append("\" no existe.\n");
                             }
                             image
                                     .setHeight(imageSize)
