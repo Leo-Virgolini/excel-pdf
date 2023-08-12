@@ -140,7 +140,7 @@ public class GeneratePDFService extends Service<Integer> {
 
         final Image kitchenPieImage = new Image(ImageDataFactory.create(getClass().getResource("/images/kitchen.png").toExternalForm()));
         kitchenPieImage.setWidth(5.5f).setHeight(5.5f);
-        kitchenPieImage.setFixedPosition(pageWidth / 4 - 107, 0);
+        kitchenPieImage.setFixedPosition(pageWidth / 4 - 107, 0.3f);
 
         final Paragraph urlPieParagraph = new Paragraph("https://kitchentools.com.ar");
         urlPieParagraph.setFontFamily("Helvetica").setFontSize(6).setUnderline().setFontColor(new DeviceRgb(12, 93, 182));
@@ -149,7 +149,7 @@ public class GeneratePDFService extends Service<Integer> {
 
         final Image gePieImage = new Image(ImageDataFactory.create(getClass().getResource("/images/ge.jpg").toExternalForm()));
         gePieImage.setWidth(5.5f).setHeight(5.5f);
-        gePieImage.setFixedPosition(pageWidth / 4, 0);
+        gePieImage.setFixedPosition(pageWidth / 4, 0.3f);
 
         final Paragraph marcaPieParagraph = new Paragraph("LINEA GE");
         marcaPieParagraph.setFontFamily("Calibri").setFontSize(6.5f).setBold().setFontColor(new DeviceRgb(12, 93, 182));

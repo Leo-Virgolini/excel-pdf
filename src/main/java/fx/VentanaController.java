@@ -8,7 +8,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.media.AudioClip;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import org.apache.log4j.BasicConfigurator;
@@ -59,19 +61,19 @@ public class VentanaController implements Initializable {
     @FXML
     private ColorPicker codigoExternoColorPicker;
     @FXML
-    private ChoiceBox<String> codigoFont;
+    private ComboBox<String> codigoFont;
     @FXML
-    private ChoiceBox<String> productoFont;
+    private ComboBox<String> productoFont;
     @FXML
-    private ChoiceBox<String> rubroFont;
+    private ComboBox<String> rubroFont;
     @FXML
-    private ChoiceBox<String> subRubroFont;
+    private ComboBox<String> subRubroFont;
     @FXML
-    private ChoiceBox<String> marcaFont;
+    private ComboBox<String> marcaFont;
     @FXML
-    private ChoiceBox<String> precioFont;
+    private ComboBox<String> precioFont;
     @FXML
-    private ChoiceBox<String> codigoExternoFont;
+    private ComboBox<String> codigoExternoFont;
     @FXML
     private TextField imageSizeTextInput;
     @FXML
@@ -114,7 +116,9 @@ public class VentanaController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         BasicConfigurator.configure(); // configure Log4j
         errorSound = new AudioClip(getClass().getResource("/audios/error.mp3").toExternalForm());
+        errorSound.setVolume(0.3);
         successSound = new AudioClip(getClass().getResource("/audios/success.mp3").toExternalForm());
+        successSound.setVolume(0.3);
         cargarChoiceBoxes();
         loadPreferences(); // Load previous state from preferences
         Main.stage.setOnCloseRequest(event -> savePreferences());
@@ -281,7 +285,82 @@ public class VentanaController implements Initializable {
         deshabilitarColumna(codigoExternoCheckBox, codigoExternoFontSize, codigoExternoColorPicker, codigoExternoFont);
     }
 
-    private void deshabilitarColumna(CheckBox checkBox, TextField fontSize, ColorPicker colorPicker, ChoiceBox<String> font) {
+    @FXML
+    public void onCodigoColorChange(Event event) {
+        codigoCheckBox.setTextFill(Paint.valueOf((codigoColorPicker.getValue().toString())));
+    }
+
+    @FXML
+    public void onProductoColorChange(Event event) {
+        productoCheckBox.setTextFill(Paint.valueOf((productoColorPicker.getValue().toString())));
+    }
+
+    @FXML
+    public void onRubroColorChange(Event event) {
+        rubroCheckBox.setTextFill(Paint.valueOf((rubroColorPicker.getValue().toString())));
+    }
+
+    @FXML
+    public void onSubRubroColorChange(Event event) {
+        subRubroCheckBox.setTextFill(Paint.valueOf((subRubroColorPicker.getValue().toString())));
+    }
+
+    @FXML
+    public void onMarcaColorChange(Event event) {
+        marcaCheckBox.setTextFill(Paint.valueOf((marcaColorPicker.getValue().toString())));
+    }
+
+    @FXML
+    public void onPrecioColorChange(Event event) {
+        precioCheckBox.setTextFill(Paint.valueOf((precioColorPicker.getValue().toString())));
+    }
+
+    @FXML
+    public void onCodigoExternoColorChange(Event event) {
+        codigoExternoCheckBox.setTextFill(Paint.valueOf((codigoExternoColorPicker.getValue().toString())));
+    }
+
+    @FXML
+    public void onCodigoFontChange(Event event) {
+        codigoCheckBox.setFont(Font.font(codigoFont.getValue(), FontWeight.BOLD, 15));
+    }
+
+    @FXML
+    public void onProductoFontChange(Event event) {
+        productoCheckBox.setFont(Font.font(productoFont.getValue(), FontWeight.BOLD, 15));
+    }
+
+    @FXML
+    public void onRubroFontChange(Event event) {
+        rubroCheckBox.setFont(Font.font(rubroFont.getValue(), FontWeight.BOLD, 15));
+    }
+
+    @FXML
+    public void onSubRubroFontChange(Event event) {
+        subRubroCheckBox.setFont(Font.font(subRubroFont.getValue(), FontWeight.BOLD, 15));
+    }
+
+    @FXML
+    public void onMarcaFontChange(Event event) {
+        marcaCheckBox.setFont(Font.font(marcaFont.getValue(), FontWeight.BOLD, 15));
+    }
+
+    @FXML
+    public void onPrecioFontChange(Event event) {
+        precioCheckBox.setFont(Font.font(precioFont.getValue(), FontWeight.BOLD, 15));
+    }
+
+    @FXML
+    public void onCodigoExternoFontChange(Event event) {
+        codigoExternoCheckBox.setFont(Font.font(codigoExternoFont.getValue(), FontWeight.BOLD, 15));
+    }
+
+    private String getRGBAStyle(ColorPicker colorPicker) {
+        return "rgba(" + colorPicker.getValue().getRed() * 255 + "," + colorPicker.getValue().getGreen() * 255 + ","
+                + colorPicker.getValue().getBlue() * 255 + "," + colorPicker.getValue().getOpacity() + ")";
+    }
+
+    private void deshabilitarColumna(CheckBox checkBox, TextField fontSize, ColorPicker colorPicker, ComboBox<String> font) {
         if (checkBox.isSelected()) {
             fontSize.setDisable(false);
             colorPicker.setDisable(false);
@@ -381,6 +460,22 @@ public class VentanaController implements Initializable {
             imageSizeTextInput.setDisable(true);
         }
         linksCheckBox.setSelected(prefs.getBoolean("linksCheckBox", false));
+
+        codigoCheckBox.setTextFill(Paint.valueOf((codigoColorPicker.getValue().toString())));
+        productoCheckBox.setTextFill(Paint.valueOf((productoColorPicker.getValue().toString())));
+        rubroCheckBox.setTextFill(Paint.valueOf((rubroColorPicker.getValue().toString())));
+        subRubroCheckBox.setTextFill(Paint.valueOf((subRubroColorPicker.getValue().toString())));
+        marcaCheckBox.setTextFill(Paint.valueOf((marcaColorPicker.getValue().toString())));
+        precioCheckBox.setTextFill(Paint.valueOf((precioColorPicker.getValue().toString())));
+        codigoExternoCheckBox.setTextFill(Paint.valueOf((codigoExternoColorPicker.getValue().toString())));
+
+        codigoCheckBox.setFont(Font.font(codigoFont.getValue(), FontWeight.BOLD, 15));
+        productoCheckBox.setFont(Font.font(productoFont.getValue(), FontWeight.BOLD, 15));
+        rubroCheckBox.setFont(Font.font(rubroFont.getValue(), FontWeight.BOLD, 15));
+        subRubroCheckBox.setFont(Font.font(subRubroFont.getValue(), FontWeight.BOLD, 15));
+        marcaCheckBox.setFont(Font.font(marcaFont.getValue(), FontWeight.BOLD, 15));
+        precioCheckBox.setFont(Font.font(precioFont.getValue(), FontWeight.BOLD, 15));
+        codigoExternoCheckBox.setFont(Font.font(codigoExternoFont.getValue(), FontWeight.BOLD, 15));
     }
 
     private void savePreferences() {
