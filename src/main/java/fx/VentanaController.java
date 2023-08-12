@@ -116,9 +116,9 @@ public class VentanaController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         BasicConfigurator.configure(); // configure Log4j
         errorSound = new AudioClip(getClass().getResource("/audios/error.mp3").toExternalForm());
-        errorSound.setVolume(0.3);
+        errorSound.setVolume(0.1);
         successSound = new AudioClip(getClass().getResource("/audios/success.mp3").toExternalForm());
-        successSound.setVolume(0.3);
+        successSound.setVolume(0.1);
         cargarChoiceBoxes();
         loadPreferences(); // Load previous state from preferences
         Main.stage.setOnCloseRequest(event -> savePreferences());

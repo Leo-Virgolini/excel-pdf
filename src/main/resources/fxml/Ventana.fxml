@@ -42,7 +42,7 @@
                   </ImageView>
                </graphic>
             </Button>
-            <TextField fx:id="imageSizeTextInput" alignment="CENTER" layoutX="183.0" layoutY="172.0" prefHeight="31.0" prefWidth="53.0" text="83">
+            <TextField fx:id="imageSizeTextInput" alignment="CENTER" layoutX="183.0" layoutY="172.0" prefHeight="31.0" prefWidth="59.0" text="83">
                <font>
                   <Font name="System Bold" size="15.0" />
                </font>
@@ -178,7 +178,7 @@
                   <Font size="15.0" />
                </font>
             </Label>
-            <Label layoutX="236.0" layoutY="170.0" prefHeight="35.0" prefWidth="22.0" text="px">
+            <Label layoutX="242.0" layoutY="170.0" prefHeight="35.0" prefWidth="22.0" text="px">
                <font>
                   <Font size="15.0" />
                </font>
