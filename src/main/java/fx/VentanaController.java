@@ -355,11 +355,6 @@ public class VentanaController implements Initializable {
         codigoExternoCheckBox.setFont(Font.font(codigoExternoFont.getValue(), FontWeight.BOLD, 15));
     }
 
-    private String getRGBAStyle(ColorPicker colorPicker) {
-        return "rgba(" + colorPicker.getValue().getRed() * 255 + "," + colorPicker.getValue().getGreen() * 255 + ","
-                + colorPicker.getValue().getBlue() * 255 + "," + colorPicker.getValue().getOpacity() + ")";
-    }
-
     private void deshabilitarColumna(CheckBox checkBox, TextField fontSize, ColorPicker colorPicker, ComboBox<String> font) {
         if (checkBox.isSelected()) {
             fontSize.setDisable(false);
