@@ -1,6 +1,5 @@
 package fx;
 
-import com.itextpdf.kernel.colors.DeviceRgb;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -14,6 +13,7 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import org.apache.log4j.BasicConfigurator;
+import pdf.model.CustomFont;
 import service.GeneratePDFService;
 
 import java.io.*;
@@ -61,19 +61,19 @@ public class VentanaController implements Initializable {
     @FXML
     private ColorPicker codigoExternoColorPicker;
     @FXML
-    private ComboBox<String> codigoFont;
+    private ComboBox<String> codigoFontComboBox;
     @FXML
-    private ComboBox<String> productoFont;
+    private ComboBox<String> productoFontComboBox;
     @FXML
-    private ComboBox<String> rubroFont;
+    private ComboBox<String> rubroFontComboBox;
     @FXML
-    private ComboBox<String> subRubroFont;
+    private ComboBox<String> subRubroFontComboBox;
     @FXML
-    private ComboBox<String> marcaFont;
+    private ComboBox<String> marcaFontComboBox;
     @FXML
-    private ComboBox<String> precioFont;
+    private ComboBox<String> precioFontComboBox;
     @FXML
-    private ComboBox<String> codigoExternoFont;
+    private ComboBox<String> codigoExternoFontComboBox;
     @FXML
     private TextField imageSizeTextInput;
     @FXML
@@ -115,12 +115,7 @@ public class VentanaController implements Initializable {
 
     public void initialize(URL url, ResourceBundle rb) {
         BasicConfigurator.configure(); // configure Log4j
-        errorSound = new AudioClip(getClass().getResource("/audios/error.mp3").toExternalForm());
-        errorSound.setVolume(0.1);
-        successSound = new AudioClip(getClass().getResource("/audios/success.mp3").toExternalForm());
-        successSound.setVolume(0.1);
-        cargarChoiceBoxes();
-        loadPreferences(); // Load previous state from preferences
+        inicializarComponentes();
         Main.stage.setOnCloseRequest(event -> savePreferences());
     }
 
@@ -189,11 +184,16 @@ public class VentanaController implements Initializable {
         if (archivoExcel != null && archivoExcel.isFile() && carpetaImagenes != null && carpetaImagenes.exists()) {
             if (validarTextInputs()) {
                 if (elegirDestino()) {
+                    final CustomFont codigoFont = new CustomFont(Float.parseFloat(codigoFontSize.getText()), codigoColorPicker.getValue(), codigoFontComboBox.getValue());
+                    final CustomFont productoFont = new CustomFont(Float.parseFloat(productoFontSize.getText()), productoColorPicker.getValue(), productoFontComboBox.getValue());
+                    final CustomFont rubroFont = new CustomFont(Float.parseFloat(rubroFontSize.getText()), rubroColorPicker.getValue(), rubroFontComboBox.getValue());
+                    final CustomFont subRubroFont = new CustomFont(Float.parseFloat(subRubroFontSize.getText()), subRubroColorPicker.getValue(), subRubroFontComboBox.getValue());
+                    final CustomFont marcaFont = new CustomFont(Float.parseFloat(marcaFontSize.getText()), marcaColorPicker.getValue(), marcaFontComboBox.getValue());
+                    final CustomFont precioFont = new CustomFont(Float.parseFloat(precioFontSize.getText()), precioColorPicker.getValue(), precioFontComboBox.getValue());
+                    final CustomFont codigoExternoFont = new CustomFont(Float.parseFloat(codigoExternoFontSize.getText()), codigoExternoColorPicker.getValue(), codigoExternoFontComboBox.getValue());
+
                     GeneratePDFService service = new GeneratePDFService(archivoExcel, carpetaImagenes, archivoPdf, archivoDestino,
-                            Float.parseFloat(codigoFontSize.getText()), Float.parseFloat(productoFontSize.getText()), Float.parseFloat(rubroFontSize.getText()), Float.parseFloat(subRubroFontSize.getText()),
-                            Float.parseFloat(marcaFontSize.getText()), Float.parseFloat(precioFontSize.getText()), Float.parseFloat(codigoExternoFontSize.getText()),
-                            getRGB(codigoColorPicker), getRGB(productoColorPicker), getRGB(rubroColorPicker), getRGB(subRubroColorPicker), getRGB(marcaColorPicker), getRGB(precioColorPicker), getRGB(codigoExternoColorPicker),
-                            codigoFont.getValue(), productoFont.getValue(), rubroFont.getValue(), subRubroFont.getValue(), marcaFont.getValue(), precioFont.getValue(), codigoExternoFont.getValue(),
+                            codigoFont, productoFont, rubroFont, subRubroFont, marcaFont, precioFont, codigoExternoFont,
                             Float.parseFloat(imageSizeTextInput.getText()), Float.parseFloat(pageWidthTextInput.getText()), Float.parseFloat(pageHeightTextInput.getText()),
                             codigoCheckBox.isSelected(), productoCheckBox.isSelected(), rubroCheckBox.isSelected(), subRubroCheckBox.isSelected(), marcaCheckBox.isSelected(), precioCheckBox.isSelected(),
                             codigoExternoCheckBox.isSelected(), imagenCheckBox.isSelected(), linksCheckBox.isSelected(), logTextArea);
@@ -252,37 +252,37 @@ public class VentanaController implements Initializable {
 
     @FXML
     public void onClickCodigoColumn(Event event) {
-        deshabilitarColumna(codigoCheckBox, codigoFontSize, codigoColorPicker, codigoFont);
+        deshabilitarColumna(codigoCheckBox, codigoFontSize, codigoColorPicker, codigoFontComboBox);
     }
 
     @FXML
     public void onClickProductoColumn(Event event) {
-        deshabilitarColumna(productoCheckBox, productoFontSize, productoColorPicker, productoFont);
+        deshabilitarColumna(productoCheckBox, productoFontSize, productoColorPicker, productoFontComboBox);
     }
 
     @FXML
     public void onClickRubroColumn(Event event) {
-        deshabilitarColumna(rubroCheckBox, rubroFontSize, rubroColorPicker, rubroFont);
+        deshabilitarColumna(rubroCheckBox, rubroFontSize, rubroColorPicker, rubroFontComboBox);
     }
 
     @FXML
     public void onClickSubRubroColumn(Event event) {
-        deshabilitarColumna(subRubroCheckBox, subRubroFontSize, subRubroColorPicker, subRubroFont);
+        deshabilitarColumna(subRubroCheckBox, subRubroFontSize, subRubroColorPicker, subRubroFontComboBox);
     }
 
     @FXML
     public void onClickMarcaColumn(Event event) {
-        deshabilitarColumna(marcaCheckBox, marcaFontSize, marcaColorPicker, marcaFont);
+        deshabilitarColumna(marcaCheckBox, marcaFontSize, marcaColorPicker, marcaFontComboBox);
     }
 
     @FXML
     public void onClickPrecioColumn(Event event) {
-        deshabilitarColumna(precioCheckBox, precioFontSize, precioColorPicker, precioFont);
+        deshabilitarColumna(precioCheckBox, precioFontSize, precioColorPicker, precioFontComboBox);
     }
 
     @FXML
     public void onClickCodigoExternoColumn(Event event) {
-        deshabilitarColumna(codigoExternoCheckBox, codigoExternoFontSize, codigoExternoColorPicker, codigoExternoFont);
+        deshabilitarColumna(codigoExternoCheckBox, codigoExternoFontSize, codigoExternoColorPicker, codigoExternoFontComboBox);
     }
 
     @FXML
@@ -322,37 +322,37 @@ public class VentanaController implements Initializable {
 
     @FXML
     public void onCodigoFontChange(Event event) {
-        codigoCheckBox.setFont(Font.font(codigoFont.getValue(), FontWeight.BOLD, 15));
+        codigoCheckBox.setFont(Font.font(codigoFontComboBox.getValue(), FontWeight.BOLD, 15));
     }
 
     @FXML
     public void onProductoFontChange(Event event) {
-        productoCheckBox.setFont(Font.font(productoFont.getValue(), FontWeight.BOLD, 15));
+        productoCheckBox.setFont(Font.font(productoFontComboBox.getValue(), FontWeight.BOLD, 15));
     }
 
     @FXML
     public void onRubroFontChange(Event event) {
-        rubroCheckBox.setFont(Font.font(rubroFont.getValue(), FontWeight.BOLD, 15));
+        rubroCheckBox.setFont(Font.font(rubroFontComboBox.getValue(), FontWeight.BOLD, 15));
     }
 
     @FXML
     public void onSubRubroFontChange(Event event) {
-        subRubroCheckBox.setFont(Font.font(subRubroFont.getValue(), FontWeight.BOLD, 15));
+        subRubroCheckBox.setFont(Font.font(subRubroFontComboBox.getValue(), FontWeight.BOLD, 15));
     }
 
     @FXML
     public void onMarcaFontChange(Event event) {
-        marcaCheckBox.setFont(Font.font(marcaFont.getValue(), FontWeight.BOLD, 15));
+        marcaCheckBox.setFont(Font.font(marcaFontComboBox.getValue(), FontWeight.BOLD, 15));
     }
 
     @FXML
     public void onPrecioFontChange(Event event) {
-        precioCheckBox.setFont(Font.font(precioFont.getValue(), FontWeight.BOLD, 15));
+        precioCheckBox.setFont(Font.font(precioFontComboBox.getValue(), FontWeight.BOLD, 15));
     }
 
     @FXML
     public void onCodigoExternoFontChange(Event event) {
-        codigoExternoCheckBox.setFont(Font.font(codigoExternoFont.getValue(), FontWeight.BOLD, 15));
+        codigoExternoCheckBox.setFont(Font.font(codigoExternoFontComboBox.getValue(), FontWeight.BOLD, 15));
     }
 
     private void deshabilitarColumna(CheckBox checkBox, TextField fontSize, ColorPicker colorPicker, ComboBox<String> font) {
@@ -396,13 +396,13 @@ public class VentanaController implements Initializable {
         String[] codigoExternoColor = prefs.get("codigoExternoColorPicker", "0,0,0").split(",");
         codigoExternoColorPicker.setValue(new Color(Double.parseDouble(codigoExternoColor[0]), Double.parseDouble(codigoExternoColor[1]), Double.parseDouble(codigoExternoColor[2]), 1));
 
-        codigoFont.setValue(prefs.get("codigoFont", "Calibri"));
-        productoFont.setValue(prefs.get("productoFont", "Calibri"));
-        rubroFont.setValue(prefs.get("rubroFont", "Calibri"));
-        subRubroFont.setValue(prefs.get("subRubroFont", "Calibri"));
-        marcaFont.setValue(prefs.get("marcaFont", "Calibri"));
-        precioFont.setValue(prefs.get("precioFont", "Calibri"));
-        codigoExternoFont.setValue(prefs.get("codigoExternoFont", "Calibri"));
+        codigoFontComboBox.setValue(prefs.get("codigoFont", "Calibri"));
+        productoFontComboBox.setValue(prefs.get("productoFont", "Calibri"));
+        rubroFontComboBox.setValue(prefs.get("rubroFont", "Calibri"));
+        subRubroFontComboBox.setValue(prefs.get("subRubroFont", "Calibri"));
+        marcaFontComboBox.setValue(prefs.get("marcaFont", "Calibri"));
+        precioFontComboBox.setValue(prefs.get("precioFont", "Calibri"));
+        codigoExternoFontComboBox.setValue(prefs.get("codigoExternoFont", "Calibri"));
 
         imageSizeTextInput.setText(prefs.get("imageSizeTextInput", "83"));
         pageWidthTextInput.setText(prefs.get("pageWidthTextInput", "595"));
@@ -412,43 +412,43 @@ public class VentanaController implements Initializable {
         if (!codigoCheckBox.isSelected()) {
             codigoFontSize.setDisable(true);
             codigoColorPicker.setDisable(true);
-            codigoFont.setDisable(true);
+            codigoFontComboBox.setDisable(true);
         }
         productoCheckBox.setSelected(prefs.getBoolean("productoCheckBox", true));
         if (!productoCheckBox.isSelected()) {
             productoFontSize.setDisable(true);
             productoColorPicker.setDisable(true);
-            productoFont.setDisable(true);
+            productoFontComboBox.setDisable(true);
         }
         rubroCheckBox.setSelected(prefs.getBoolean("rubroCheckBox", true));
         if (!rubroCheckBox.isSelected()) {
             rubroFontSize.setDisable(true);
             rubroColorPicker.setDisable(true);
-            rubroFont.setDisable(true);
+            rubroFontComboBox.setDisable(true);
         }
         subRubroCheckBox.setSelected(prefs.getBoolean("subRubroCheckBox", true));
         if (!subRubroCheckBox.isSelected()) {
             subRubroFontSize.setDisable(true);
             subRubroColorPicker.setDisable(true);
-            subRubroFont.setDisable(true);
+            subRubroFontComboBox.setDisable(true);
         }
         marcaCheckBox.setSelected(prefs.getBoolean("marcaCheckBox", true));
         if (!marcaCheckBox.isSelected()) {
             marcaFontSize.setDisable(true);
             marcaColorPicker.setDisable(true);
-            marcaFont.setDisable(true);
+            marcaFontComboBox.setDisable(true);
         }
         precioCheckBox.setSelected(prefs.getBoolean("precioCheckBox", true));
         if (!precioCheckBox.isSelected()) {
             precioFontSize.setDisable(true);
             precioColorPicker.setDisable(true);
-            precioFont.setDisable(true);
+            precioFontComboBox.setDisable(true);
         }
         codigoExternoCheckBox.setSelected(prefs.getBoolean("codigoExternoCheckBox", true));
         if (!codigoExternoCheckBox.isSelected()) {
             codigoExternoFontSize.setDisable(true);
             codigoExternoColorPicker.setDisable(true);
-            codigoExternoFont.setDisable(true);
+            codigoExternoFontComboBox.setDisable(true);
         }
         imagenCheckBox.setSelected(prefs.getBoolean("imagenCheckBox", true));
         if (!imagenCheckBox.isSelected()) {
@@ -464,13 +464,13 @@ public class VentanaController implements Initializable {
         precioCheckBox.setTextFill(Paint.valueOf((precioColorPicker.getValue().toString())));
         codigoExternoCheckBox.setTextFill(Paint.valueOf((codigoExternoColorPicker.getValue().toString())));
 
-        codigoCheckBox.setFont(Font.font(codigoFont.getValue(), FontWeight.BOLD, 15));
-        productoCheckBox.setFont(Font.font(productoFont.getValue(), FontWeight.BOLD, 15));
-        rubroCheckBox.setFont(Font.font(rubroFont.getValue(), FontWeight.BOLD, 15));
-        subRubroCheckBox.setFont(Font.font(subRubroFont.getValue(), FontWeight.BOLD, 15));
-        marcaCheckBox.setFont(Font.font(marcaFont.getValue(), FontWeight.BOLD, 15));
-        precioCheckBox.setFont(Font.font(precioFont.getValue(), FontWeight.BOLD, 15));
-        codigoExternoCheckBox.setFont(Font.font(codigoExternoFont.getValue(), FontWeight.BOLD, 15));
+        codigoCheckBox.setFont(Font.font(codigoFontComboBox.getValue(), FontWeight.BOLD, 15));
+        productoCheckBox.setFont(Font.font(productoFontComboBox.getValue(), FontWeight.BOLD, 15));
+        rubroCheckBox.setFont(Font.font(rubroFontComboBox.getValue(), FontWeight.BOLD, 15));
+        subRubroCheckBox.setFont(Font.font(subRubroFontComboBox.getValue(), FontWeight.BOLD, 15));
+        marcaCheckBox.setFont(Font.font(marcaFontComboBox.getValue(), FontWeight.BOLD, 15));
+        precioCheckBox.setFont(Font.font(precioFontComboBox.getValue(), FontWeight.BOLD, 15));
+        codigoExternoCheckBox.setFont(Font.font(codigoExternoFontComboBox.getValue(), FontWeight.BOLD, 15));
     }
 
     private void savePreferences() {
@@ -492,13 +492,13 @@ public class VentanaController implements Initializable {
         prefs.put("precioColorPicker", precioColorPicker.getValue().getRed() + "," + precioColorPicker.getValue().getGreen() + "," + precioColorPicker.getValue().getBlue());
         prefs.put("codigoExternoColorPicker", codigoExternoColorPicker.getValue().getRed() + "," + codigoExternoColorPicker.getValue().getGreen() + "," + codigoExternoColorPicker.getValue().getBlue());
 
-        prefs.put("codigoFont", codigoFont.getValue());
-        prefs.put("productoFont", productoFont.getValue());
-        prefs.put("rubroFont", rubroFont.getValue());
-        prefs.put("subRubroFont", subRubroFont.getValue());
-        prefs.put("marcaFont", marcaFont.getValue());
-        prefs.put("precioFont", precioFont.getValue());
-        prefs.put("codigoExternoFont", codigoExternoFont.getValue());
+        prefs.put("codigoFont", codigoFontComboBox.getValue());
+        prefs.put("productoFont", productoFontComboBox.getValue());
+        prefs.put("rubroFont", rubroFontComboBox.getValue());
+        prefs.put("subRubroFont", subRubroFontComboBox.getValue());
+        prefs.put("marcaFont", marcaFontComboBox.getValue());
+        prefs.put("precioFont", precioFontComboBox.getValue());
+        prefs.put("codigoExternoFont", codigoExternoFontComboBox.getValue());
 
         prefs.put("imageSizeTextInput", imageSizeTextInput.getText());
         prefs.put("pageWidthTextInput", pageWidthTextInput.getText());
@@ -527,9 +527,6 @@ public class VentanaController implements Initializable {
         return true;
     }
 
-    private DeviceRgb getRGB(ColorPicker colorPicker) {
-        return new DeviceRgb((int) (colorPicker.getValue().getRed() * 255), (int) (colorPicker.getValue().getGreen() * 255), (int) (colorPicker.getValue().getBlue() * 255));
-    }
 
     private boolean validarTextInputs() {
         return isNumeric(codigoFontSize.getText()) && isNumeric(productoFontSize.getText()) && isNumeric(rubroFontSize.getText()) && isNumeric(subRubroFontSize.getText())
@@ -557,17 +554,24 @@ public class VentanaController implements Initializable {
         }
     }
 
-    private void cargarChoiceBoxes() {
+    private void inicializarComponentes() {
         // Get the list of available font families
         final List<String> fontFamilies = Font.getFamilies();
         // Populate the ChoiceBox with font families
-        codigoFont.getItems().addAll(fontFamilies);
-        productoFont.getItems().addAll(fontFamilies);
-        rubroFont.getItems().addAll(fontFamilies);
-        subRubroFont.getItems().addAll(fontFamilies);
-        marcaFont.getItems().addAll(fontFamilies);
-        precioFont.getItems().addAll(fontFamilies);
-        codigoExternoFont.getItems().addAll(fontFamilies);
+        codigoFontComboBox.getItems().addAll(fontFamilies);
+        productoFontComboBox.getItems().addAll(fontFamilies);
+        rubroFontComboBox.getItems().addAll(fontFamilies);
+        subRubroFontComboBox.getItems().addAll(fontFamilies);
+        marcaFontComboBox.getItems().addAll(fontFamilies);
+        precioFontComboBox.getItems().addAll(fontFamilies);
+        codigoExternoFontComboBox.getItems().addAll(fontFamilies);
+
+        errorSound = new AudioClip(getClass().getResource("/audios/error.mp3").toExternalForm());
+        errorSound.setVolume(0.1);
+        successSound = new AudioClip(getClass().getResource("/audios/success.mp3").toExternalForm());
+        successSound.setVolume(0.1);
+
+        loadPreferences(); // Load previous state from preferences
     }
 
 }

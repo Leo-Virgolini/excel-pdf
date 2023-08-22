@@ -258,13 +258,13 @@
                   <Color />
                </value>
             </ColorPicker>
-            <ComboBox fx:id="codigoFont" layoutX="14.0" layoutY="95.0" onAction="#onCodigoFontChange" prefHeight="25.0" prefWidth="129.0" />
-            <ComboBox fx:id="productoFont" layoutX="156.0" layoutY="95.0" onAction="#onProductoFontChange" prefHeight="25.0" prefWidth="129.0" />
-            <ComboBox fx:id="rubroFont" layoutX="300.0" layoutY="95.0" onAction="#onRubroFontChange" prefHeight="25.0" prefWidth="129.0" />
-            <ComboBox fx:id="subRubroFont" layoutX="445.0" layoutY="95.0" onAction="#onSubRubroFontChange" prefHeight="25.0" prefWidth="129.0" />
-            <ComboBox fx:id="marcaFont" layoutX="590.0" layoutY="95.0" onAction="#onMarcaFontChange" prefHeight="25.0" prefWidth="129.0" />
-            <ComboBox fx:id="precioFont" layoutX="734.0" layoutY="95.0" onAction="#onPrecioFontChange" prefHeight="25.0" prefWidth="129.0" />
-            <ComboBox fx:id="codigoExternoFont" layoutX="878.0" layoutY="95.0" onAction="#onCodigoExternoFontChange" prefHeight="25.0" prefWidth="129.0" />
+            <ComboBox fx:id="codigoFontComboBox" layoutX="14.0" layoutY="95.0" onAction="#onCodigoFontChange" prefHeight="25.0" prefWidth="129.0" />
+            <ComboBox fx:id="productoFontComboBox" layoutX="156.0" layoutY="95.0" onAction="#onProductoFontChange" prefHeight="25.0" prefWidth="129.0" />
+            <ComboBox fx:id="rubroFontComboBox" layoutX="300.0" layoutY="95.0" onAction="#onRubroFontChange" prefHeight="25.0" prefWidth="129.0" />
+            <ComboBox fx:id="subRubroFontComboBox" layoutX="445.0" layoutY="95.0" onAction="#onSubRubroFontChange" prefHeight="25.0" prefWidth="129.0" />
+            <ComboBox fx:id="marcaFontComboBox" layoutX="590.0" layoutY="95.0" onAction="#onMarcaFontChange" prefHeight="25.0" prefWidth="129.0" />
+            <ComboBox fx:id="precioFontComboBox" layoutX="734.0" layoutY="95.0" onAction="#onPrecioFontChange" prefHeight="25.0" prefWidth="129.0" />
+            <ComboBox fx:id="codigoExternoFontComboBox" layoutX="878.0" layoutY="95.0" onAction="#onCodigoExternoFontChange" prefHeight="25.0" prefWidth="129.0" />
          </children>
       </Pane>
       <Label layoutX="35.0" layoutY="12.0" prefHeight="35.0" prefWidth="177.0" text="Ubicación archivo excel:">
