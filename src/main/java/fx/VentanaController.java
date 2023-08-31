@@ -215,7 +215,7 @@ public class VentanaController implements Initializable {
 //                        verticalScrollBar.setValue(verticalScrollBar.getMax());
                     });
                     service.setOnFailed(e -> {
-//                        service.getException().printStackTrace();
+                        service.getException().printStackTrace();
                         errorSound.play();
                         logTextArea.setStyle("-fx-text-fill: firebrick;");
                         logTextArea.appendText("Error: " + service.getException().getLocalizedMessage() + "\n");
@@ -355,17 +355,17 @@ public class VentanaController implements Initializable {
         codigoExternoCheckBox.setFont(Font.font(codigoExternoFontComboBox.getValue(), FontWeight.BOLD, 15));
     }
 
-    private void deshabilitarColumna(CheckBox checkBox, TextField fontSize, ColorPicker colorPicker, ComboBox<String> font) {
+    private void deshabilitarColumna(CheckBox checkBox, TextField fontSize, ColorPicker colorPicker, ComboBox<String> fontComboBox) {
         if (checkBox.isSelected()) {
             fontSize.setDisable(false);
             colorPicker.setDisable(false);
-            font.setDisable(false);
+            fontComboBox.setDisable(false);
             if (isNumeric(imageSizeTextInput.getText()) && isNumeric(fontSize.getText()))
                 imageSizeTextInput.setText("" + (Float.parseFloat(imageSizeTextInput.getText()) - Float.parseFloat(fontSize.getText())));
         } else {
             fontSize.setDisable(true);
             colorPicker.setDisable(true);
-            font.setDisable(true);
+            fontComboBox.setDisable(true);
             if (isNumeric(imageSizeTextInput.getText()) && isNumeric(fontSize.getText()))
                 imageSizeTextInput.setText("" + (Float.parseFloat(imageSizeTextInput.getText()) + Float.parseFloat(fontSize.getText())));
         }
@@ -381,19 +381,19 @@ public class VentanaController implements Initializable {
         precioFontSize.setText(prefs.get("precioFontSize", "7"));
         codigoExternoFontSize.setText(prefs.get("codigoExternoFontSize", "6"));
 
-        String[] codigoColor = prefs.get("codigoColorPicker", "0,0,0").split(",");
+        final String[] codigoColor = prefs.get("codigoColorPicker", "0,0,0").split(",");
         codigoColorPicker.setValue(new Color(Double.parseDouble(codigoColor[0]), Double.parseDouble(codigoColor[1]), Double.parseDouble(codigoColor[2]), 1));
-        String[] productoColor = prefs.get("productoColorPicker", "0,0,0.54").split(",");
+        final String[] productoColor = prefs.get("productoColorPicker", "0,0,0.54").split(",");
         productoColorPicker.setValue(new Color(Double.parseDouble(productoColor[0]), Double.parseDouble(productoColor[1]), Double.parseDouble(productoColor[2]), 1));
-        String[] rubroColor = prefs.get("rubroColorPicker", "0,0,0").split(",");
+        final String[] rubroColor = prefs.get("rubroColorPicker", "0,0,0").split(",");
         rubroColorPicker.setValue(new Color(Double.parseDouble(rubroColor[0]), Double.parseDouble(rubroColor[1]), Double.parseDouble(rubroColor[2]), 1));
-        String[] subRubroColor = prefs.get("subRubroColorPicker", "0,0,0").split(",");
+        final String[] subRubroColor = prefs.get("subRubroColorPicker", "0,0,0").split(",");
         subRubroColorPicker.setValue(new Color(Double.parseDouble(subRubroColor[0]), Double.parseDouble(subRubroColor[1]), Double.parseDouble(subRubroColor[2]), 1));
-        String[] marcaColor = prefs.get("marcaColorPicker", "0,0,0").split(",");
+        final String[] marcaColor = prefs.get("marcaColorPicker", "0,0,0").split(",");
         marcaColorPicker.setValue(new Color(Double.parseDouble(marcaColor[0]), Double.parseDouble(marcaColor[1]), Double.parseDouble(marcaColor[2]), 1));
-        String[] precioColor = prefs.get("precioColorPicker", "0.54,0,0").split(",");
+        final String[] precioColor = prefs.get("precioColorPicker", "0.54,0,0").split(",");
         precioColorPicker.setValue(new Color(Double.parseDouble(precioColor[0]), Double.parseDouble(precioColor[1]), Double.parseDouble(precioColor[2]), 1));
-        String[] codigoExternoColor = prefs.get("codigoExternoColorPicker", "0,0,0").split(",");
+        final String[] codigoExternoColor = prefs.get("codigoExternoColorPicker", "0,0,0").split(",");
         codigoExternoColorPicker.setValue(new Color(Double.parseDouble(codigoExternoColor[0]), Double.parseDouble(codigoExternoColor[1]), Double.parseDouble(codigoExternoColor[2]), 1));
 
         codigoFontComboBox.setValue(prefs.get("codigoFont", "Calibri"));
@@ -567,9 +567,14 @@ public class VentanaController implements Initializable {
         codigoExternoFontComboBox.getItems().addAll(fontFamilies);
 
         errorSound = new AudioClip(getClass().getResource("/audios/error.mp3").toExternalForm());
-        errorSound.setVolume(0.1);
         successSound = new AudioClip(getClass().getResource("/audios/success.mp3").toExternalForm());
+        errorSound.setVolume(0.1);
         successSound.setVolume(0.1);
+
+        carpetaImagenes = new File("Z:\\Doc. Compartidos\\DUX ERP Linea GE\\IMAGENES (subidas a la Web)");
+        if (carpetaImagenes != null && carpetaImagenes.isDirectory()) {
+            ubicacionImagenes.setText(carpetaImagenes.getAbsolutePath());
+        }
 
         loadPreferences(); // Load previous state from preferences
     }

@@ -16,17 +16,19 @@ import com.itextpdf.layout.properties.*;
 import com.itextpdf.layout.properties.HorizontalAlignment;
 import com.itextpdf.layout.properties.VerticalAlignment;
 import com.itextpdf.styledxmlparser.resolver.font.BasicFontProvider;
+import org.apache.poi.openxml4j.opc.OPCPackage;
+import pdf.ClippedTableRenderer;
+import pdf.model.CustomFont;
+
 import javafx.application.Platform;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.scene.control.TextArea;
+
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import pdf.ClippedTableRenderer;
-import pdf.model.CustomFont;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.math.BigDecimal;
 
 public class GeneratePDFService extends Service<Integer> {
@@ -115,9 +117,18 @@ public class GeneratePDFService extends Service<Integer> {
         int generatedProducts = 0;
         final StringBuilder log = new StringBuilder();
         // Read the Excel file
-        try (final FileInputStream inputStream = new FileInputStream(archivoExcel.getAbsolutePath());
-             final Workbook workbook = new XSSFWorkbook(inputStream)) {
-            final FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
+        try (final OPCPackage pkg = OPCPackage.open(archivoExcel);
+             final XSSFWorkbook workbook = new XSSFWorkbook(pkg)) {
+            // Set the external workbook reference in the evaluator
+//            final FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
+//            evaluator.setIgnoreMissingWorkbooks(true);
+//            final Map<String, FormulaEvaluator> workbooksMap = new HashMap<>();
+//            workbooksMap.put(archivoExcel.getName(), evaluator);
+//            workbooksMap.put("MASTER.xlsx", masterWorkbook.getCreationHelper().createFormulaEvaluator());
+//            evaluator.setupReferencedWorkbooks(workbooksMap);
+            // Evaluate: NO FUNCIONA
+//            evaluator.evaluateAll();
+
             final Sheet sheet = workbook.getSheetAt(0);
             // Calculate the actual row count with data
             int rowCount = 0;
@@ -156,7 +167,7 @@ public class GeneratePDFService extends Service<Integer> {
 //                    cell.setHeight((pageHeight - 20) / rowsPerPage);
                     if (codigoColumn) { // CODIGO
                         try {
-                            final double codigoValue = Double.parseDouble(getCellValue(row.getCell(0), evaluator));
+                            final double codigoValue = Double.parseDouble(getCellValue(row.getCell(0)));
                             final String codigo = (codigoValue % 1 == 0) ? String.format("%.0f", codigoValue) : String.valueOf(codigoValue);
                             // Add the bookmark for the product
 //                            addBookmarks(pdfDoc, codigo, pdfDoc.getNumberOfPages());
@@ -175,7 +186,7 @@ public class GeneratePDFService extends Service<Integer> {
                     }
 
                     if (productoColumn) { // PRODUCTO
-                        final String producto = getCellValue(row.getCell(1), evaluator);
+                        final String producto = getCellValue(row.getCell(1));
                         final Paragraph productoParagraph = new Paragraph(producto);
                         productoParagraph
                                 .setFontFamily(productoFont.getFamily())
@@ -186,7 +197,7 @@ public class GeneratePDFService extends Service<Integer> {
                     }
 
                     if (rubroColumn) { // RUBRO
-                        final String rubro = getCellValue(row.getCell(2), evaluator);
+                        final String rubro = getCellValue(row.getCell(2));
                         final Paragraph rubroParagraph = new Paragraph();
                         rubroParagraph.add(new Text("RUBRO: ").setBold());
                         rubroParagraph.add(new Text(rubro));
@@ -199,7 +210,7 @@ public class GeneratePDFService extends Service<Integer> {
                     }
 
                     if (subRubroColumn) { // SUBRUBRO
-                        final String subRubro = getCellValue(row.getCell(3), evaluator);
+                        final String subRubro = getCellValue(row.getCell(3));
                         final Paragraph subRubroParagraph = new Paragraph();
                         subRubroParagraph.add(new Text("SUB RUBRO: ").setBold());
                         subRubroParagraph.add(new Text(subRubro));
@@ -212,7 +223,7 @@ public class GeneratePDFService extends Service<Integer> {
                     }
 
                     if (marcaColumn) { // MARCA
-                        final String marca = getCellValue(row.getCell(4), evaluator);
+                        final String marca = getCellValue(row.getCell(4));
                         final Paragraph marcaParagraph = new Paragraph();
                         marcaParagraph.add(new Text("MARCA: ").setBold());
                         marcaParagraph.add(new Text(marca));
@@ -226,7 +237,7 @@ public class GeneratePDFService extends Service<Integer> {
 
                     if (precioColumn) { // PRECIO
                         try {
-                            final BigDecimal precioVenta = new BigDecimal(getCellValue(row.getCell(5), evaluator));
+                            final BigDecimal precioVenta = new BigDecimal(getCellValue(row.getCell(5)));
                             final String formattedPrecioVenta = precioVenta.compareTo(BigDecimal.ZERO) == 0 ? "$ --" : String.format("$ %(,.2f", precioVenta);
                             final Paragraph precioParagraph = new Paragraph(formattedPrecioVenta).setBold();
                             precioParagraph
@@ -241,7 +252,7 @@ public class GeneratePDFService extends Service<Integer> {
                     }
 
                     if (codigoExternoColumn) { // CODIGO EXTERNO
-                        final String codigoExterno = getCellValue(row.getCell(6), evaluator);
+                        final String codigoExterno = getCellValue(row.getCell(6));
                         final Paragraph codExtParagraph = new Paragraph();
                         codExtParagraph.add(new Text("COD. EXT.: ").setBold());
                         codExtParagraph.add(new Text(codigoExterno));
@@ -255,7 +266,7 @@ public class GeneratePDFService extends Service<Integer> {
 
                     if (imagenes) { // IMAGENES
                         try {
-                            final double codigoValue = Double.parseDouble(getCellValue(row.getCell(0), evaluator));
+                            final double codigoValue = Double.parseDouble(getCellValue(row.getCell(0)));
                             final String codigo = (codigoValue % 1 == 0) ? String.format("%.0f", codigoValue) : String.valueOf(codigoValue);
                             Image image;
                             File imageFile = null;
@@ -284,7 +295,7 @@ public class GeneratePDFService extends Service<Integer> {
                     }
 
                     if (links) { // LINKS
-                        final String producto = getCellValue(row.getCell(1), evaluator);
+                        final String producto = getCellValue(row.getCell(1));
                         if (!producto.isBlank()) {
                             final Image button = new Image(buttonImagenData);
                             button
@@ -305,7 +316,6 @@ public class GeneratePDFService extends Service<Integer> {
 //                    cell.setKeepTogether(true);
 
                     table.addCell(cell);
-//                    System.out.println("cell height: " + cell.getHeight());
 
                     // If we've added the maximum number of products per page, start a new page
                     if ((table.getNumberOfRows() % rowsPerPage == 0) && (i % productsPerPage == 0)) {
@@ -349,7 +359,7 @@ public class GeneratePDFService extends Service<Integer> {
 
     private boolean isEmptyRow(Row row) {
         for (int i = row.getFirstCellNum(); i <= row.getLastCellNum(); i++) {
-            org.apache.poi.ss.usermodel.Cell cell = row.getCell(i);
+            final org.apache.poi.ss.usermodel.Cell cell = row.getCell(i);
             if (cell != null && cell.getCellType() != CellType.BLANK) {
                 return false;
             }
@@ -357,7 +367,7 @@ public class GeneratePDFService extends Service<Integer> {
         return true;
     }
 
-    private String getCellValue(org.apache.poi.ss.usermodel.Cell cell, FormulaEvaluator evaluator) {
+    private String getCellValue(org.apache.poi.ss.usermodel.Cell cell) {
         if (cell == null) {
             return "";
         }
@@ -375,18 +385,20 @@ public class GeneratePDFService extends Service<Integer> {
             case BOOLEAN:
                 return String.valueOf(cell.getBooleanCellValue());
             case FORMULA:
-                final CellValue formulaValue = evaluator.evaluate(cell);
-                switch (formulaValue.getCellType()) {
+//                final CellType formulaCellType = evaluator.evaluateFormulaCell(cell);
+                switch (cell.getCachedFormulaResultType()) {
                     case STRING:
-                        return formulaValue.getStringValue();
+                        return cell.getStringCellValue();
                     case NUMERIC:
                         if (DateUtil.isCellDateFormatted(cell)) {
                             return cell.getDateCellValue().toString();
                         } else {
-                            return String.valueOf(formulaValue.getNumberValue());
+                            return String.valueOf(cell.getNumericCellValue());
                         }
                     case BOOLEAN:
-                        return String.valueOf(formulaValue.getBooleanValue());
+                        return String.valueOf(cell.getBooleanCellValue());
+                    case ERROR:
+                        return "0";
                     default:
                         return "";
                 }
