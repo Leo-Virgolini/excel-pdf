@@ -130,6 +130,11 @@ public class GeneratePDFService extends Service<Integer> {
 //            evaluator.evaluateAll();
 
             final Sheet sheet = workbook.getSheetAt(0);
+            // Verificar que tenga 7 columnas
+            final Row firstRow = sheet.getRow(0);
+            if (firstRow != null && firstRow.getLastCellNum() < 7) {
+                throw new Exception("Verifique que la hoja tenga las 7 columnas requeridas en orden: CODIGO, PRODUCTO, RUBRO, SUB RUBRO, MARCA, PRECIO DE VENTA y CODIGO EXTERNO.");
+            }
             // Calculate the actual row count with data
             int rowCount = 0;
             for (Row row : sheet) {
@@ -367,7 +372,7 @@ public class GeneratePDFService extends Service<Integer> {
         return true;
     }
 
-    private String getCellValue(org.apache.poi.ss.usermodel.Cell cell) {
+    private String getCellValue(org.apache.poi.ss.usermodel.Cell cell) throws Exception {
         if (cell == null) {
             return "";
         }
@@ -404,6 +409,8 @@ public class GeneratePDFService extends Service<Integer> {
                 }
             case BLANK:
                 return "";
+            case ERROR:
+                throw new Exception("Error en la celda fila: " + cell.getAddress().getRow() + 1 + " columna: " + cell.getAddress().getColumn() + 1);
             default:
                 return "";
         }
