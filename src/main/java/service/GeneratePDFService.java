@@ -9,24 +9,21 @@ import com.itextpdf.kernel.pdf.action.PdfAction;
 import com.itextpdf.kernel.pdf.navigation.PdfExplicitDestination;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.*;
-import com.itextpdf.layout.element.Cell;
-import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.font.FontProvider;
 import com.itextpdf.layout.properties.*;
-import com.itextpdf.layout.properties.HorizontalAlignment;
-import com.itextpdf.layout.properties.VerticalAlignment;
 import com.itextpdf.styledxmlparser.resolver.font.BasicFontProvider;
-import org.apache.poi.openxml4j.opc.OPCPackage;
-import pdf.ClippedTableRenderer;
-import pdf.model.CustomFont;
-
 import javafx.application.Platform;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.scene.control.TextArea;
-
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import pdf.ClippedTableRenderer;
+import pdf.model.CustomFont;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -133,7 +130,7 @@ public class GeneratePDFService extends Service<Integer> {
             // Verificar que tenga 7 columnas
             final Row firstRow = sheet.getRow(0);
             if (firstRow != null && firstRow.getLastCellNum() < 7) {
-                throw new Exception("Verifique que la hoja tenga las 7 columnas requeridas en orden: CODIGO, PRODUCTO, RUBRO, SUB RUBRO, MARCA, PRECIO DE VENTA y CODIGO EXTERNO.");
+                throw new Exception("Verifique que la hoja tenga las 7 columnas en orden: CODIGO | PRODUCTO | RUBRO | SUB RUBRO | MARCA | PRECIO DE VENTA | CODIGO EXTERNO");
             }
             // Calculate the actual row count with data
             int rowCount = 0;

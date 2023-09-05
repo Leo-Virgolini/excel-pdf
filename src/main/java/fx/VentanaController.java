@@ -16,7 +16,7 @@ import org.apache.log4j.BasicConfigurator;
 import pdf.model.CustomFont;
 import service.GeneratePDFService;
 
-import java.io.*;
+import java.io.File;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -210,12 +210,9 @@ public class VentanaController implements Initializable {
                         logTextArea.appendText('"' + archivoDestino.getAbsolutePath() + "\" generado.\n");
                         generarButton.setDisable(false);
                         progressIndicator.setVisible(false);
-//                        logTextArea.appendText(""); // Add an empty line to trigger scroll
-//                        final ScrollBar verticalScrollBar = (ScrollBar) logTextArea.lookup(".scroll-bar:vertical");
-//                        verticalScrollBar.setValue(verticalScrollBar.getMax());
                     });
                     service.setOnFailed(e -> {
-                        service.getException().printStackTrace();
+//                        service.getException().printStackTrace();
                         errorSound.play();
                         logTextArea.setStyle("-fx-text-fill: firebrick;");
                         logTextArea.appendText("Error: " + service.getException().getLocalizedMessage() + "\n");
