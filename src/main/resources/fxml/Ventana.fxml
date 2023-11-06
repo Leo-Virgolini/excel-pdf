@@ -82,17 +82,17 @@
                   <Font size="15.0" />
                </font>
             </CheckBox>
-            <CheckBox fx:id="rubroCheckBox" layoutX="336.0" layoutY="8.0" mnemonicParsing="false" onAction="#onClickRubroColumn" selected="true" text="Rubro">
+            <CheckBox fx:id="rubroCheckBox" layoutX="314.0" layoutY="8.0" mnemonicParsing="false" onAction="#onClickRubroColumn" selected="true" text="Columna 3">
                <font>
                   <Font size="15.0" />
                </font>
             </CheckBox>
-            <CheckBox fx:id="codigoExternoCheckBox" layoutX="876.0" layoutY="7.0" mnemonicParsing="false" onAction="#onClickCodigoExternoColumn" selected="true" text="Código externo">
+            <CheckBox fx:id="codigoExternoCheckBox" layoutX="890.0" layoutY="7.0" mnemonicParsing="false" onAction="#onClickCodigoExternoColumn" selected="true" text="Columna 7">
                <font>
                   <Font size="15.0" />
                </font>
             </CheckBox>
-            <CheckBox fx:id="precioCheckBox" layoutX="734.0" layoutY="8.0" mnemonicParsing="false" onAction="#onClickPrecioColumn" selected="true" text="Precio de venta">
+            <CheckBox fx:id="precioCheckBox" layoutX="732.0" layoutY="8.0" mnemonicParsing="false" onAction="#onClickPrecioColumn" selected="true" text="Precio de venta">
                <font>
                   <Font size="15.0" />
                </font>
@@ -102,12 +102,12 @@
                   <Font size="15.0" />
                </font>
             </CheckBox>
-            <CheckBox fx:id="subRubroCheckBox" layoutX="465.0" layoutY="7.0" mnemonicParsing="false" onAction="#onClickSubRubroColumn" selected="true" text="Sub rubro">
+            <CheckBox fx:id="subRubroCheckBox" layoutX="457.0" layoutY="7.0" mnemonicParsing="false" onAction="#onClickSubRubroColumn" selected="true" text="Columna 4">
                <font>
                   <Font size="15.0" />
                </font>
             </CheckBox>
-            <CheckBox fx:id="marcaCheckBox" layoutX="619.0" layoutY="8.0" mnemonicParsing="false" onAction="#onClickMarcaColumn" selected="true" text="Marca">
+            <CheckBox fx:id="marcaCheckBox" layoutX="597.0" layoutY="8.0" mnemonicParsing="false" onAction="#onClickMarcaColumn" selected="true" text="Columna 5">
                <font>
                   <Font size="15.0" />
                </font>

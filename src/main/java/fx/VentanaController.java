@@ -357,14 +357,16 @@ public class VentanaController implements Initializable {
             fontSize.setDisable(false);
             colorPicker.setDisable(false);
             fontComboBox.setDisable(false);
-            if (isNumeric(imageSizeTextInput.getText()) && isNumeric(fontSize.getText()))
+            if (isNumeric(imageSizeTextInput.getText()) && isNumeric(fontSize.getText())) {
                 imageSizeTextInput.setText("" + (Float.parseFloat(imageSizeTextInput.getText()) - Float.parseFloat(fontSize.getText())));
+            }
         } else {
             fontSize.setDisable(true);
             colorPicker.setDisable(true);
             fontComboBox.setDisable(true);
-            if (isNumeric(imageSizeTextInput.getText()) && isNumeric(fontSize.getText()))
+            if (isNumeric(imageSizeTextInput.getText()) && isNumeric(fontSize.getText())) {
                 imageSizeTextInput.setText("" + (Float.parseFloat(imageSizeTextInput.getText()) + Float.parseFloat(fontSize.getText())));
+            }
         }
     }
 
@@ -552,6 +554,8 @@ public class VentanaController implements Initializable {
     }
 
     private void inicializarComponentes() {
+        ubicacionExcel.setTooltip(new Tooltip("La 1º hoja debe contener los siguientes encabezados en orden: CODIGO | PRODUCTO | RUBRO | SUB RUBRO | MARCA | PRECIO DE VENTA | CODIGO EXTERNO"));
+        ubicacionImagenes.setTooltip(new Tooltip("Formatos de las imágenes: .jpg, .jpeg, .png y .bmp"));
         // Get the list of available font families
         final List<String> fontFamilies = Font.getFamilies();
         // Populate the ChoiceBox with font families

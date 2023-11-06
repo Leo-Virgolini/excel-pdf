@@ -130,8 +130,16 @@ public class GeneratePDFService extends Service<Integer> {
             // Verificar que tenga 7 columnas
             final Row firstRow = sheet.getRow(0);
             if (firstRow != null && firstRow.getLastCellNum() < 7) {
-                throw new Exception("Verifique que la hoja tenga las 7 columnas en orden: CODIGO | PRODUCTO | RUBRO | SUB RUBRO | MARCA | PRECIO DE VENTA | CODIGO EXTERNO");
+                throw new Exception("Verifique que la hoja tenga los 7 encabezados en orden.");
             }
+            final String encabezado1 = getCellValue(firstRow.getCell(0));
+//            final String encabezado2 = getCellValue(firstRow.getCell(1));
+            final String encabezado3 = getCellValue(firstRow.getCell(2));
+            final String encabezado4 = getCellValue(firstRow.getCell(3));
+            final String encabezado5 = getCellValue(firstRow.getCell(4));
+//            final String encabezado6 = getCellValue(firstRow.getCell(5));
+            final String encabezado7 = getCellValue(firstRow.getCell(6));
+
             // Calculate the actual row count with data
             int rowCount = 0;
             for (Row row : sheet) {
@@ -174,7 +182,7 @@ public class GeneratePDFService extends Service<Integer> {
                             // Add the bookmark for the product
 //                            addBookmarks(pdfDoc, codigo, pdfDoc.getNumberOfPages());
                             final Paragraph codigoParagraph = new Paragraph();
-                            codigoParagraph.add(new Text("CODIGO: ").setBold());
+                            codigoParagraph.add(new Text(encabezado1 + ": ").setBold());
                             codigoParagraph.add(new Text(codigo));
                             codigoParagraph
                                     .setFontFamily(codigoFont.getFamily())
@@ -183,7 +191,7 @@ public class GeneratePDFService extends Service<Integer> {
                                     .setTextAlignment(TextAlignment.CENTER);
                             cell.add(codigoParagraph);
                         } catch (NumberFormatException nfe) {
-                            throw new NumberFormatException("Fila #" + (i + 1) + " el CODIGO no es un número.");
+                            throw new NumberFormatException("Fila #" + (i + 1) + " el " + encabezado1 + " debe ser un número.");
                         }
                     }
 
@@ -201,7 +209,7 @@ public class GeneratePDFService extends Service<Integer> {
                     if (rubroColumn) { // RUBRO
                         final String rubro = getCellValue(row.getCell(2));
                         final Paragraph rubroParagraph = new Paragraph();
-                        rubroParagraph.add(new Text("RUBRO: ").setBold());
+                        rubroParagraph.add(new Text(encabezado3 + ": ").setBold());
                         rubroParagraph.add(new Text(rubro));
                         rubroParagraph
                                 .setFontFamily(rubroFont.getFamily())
@@ -214,7 +222,7 @@ public class GeneratePDFService extends Service<Integer> {
                     if (subRubroColumn) { // SUBRUBRO
                         final String subRubro = getCellValue(row.getCell(3));
                         final Paragraph subRubroParagraph = new Paragraph();
-                        subRubroParagraph.add(new Text("SUB RUBRO: ").setBold());
+                        subRubroParagraph.add(new Text(encabezado4 + ": ").setBold());
                         subRubroParagraph.add(new Text(subRubro));
                         subRubroParagraph
                                 .setFontFamily(subRubroFont.getFamily())
@@ -227,7 +235,7 @@ public class GeneratePDFService extends Service<Integer> {
                     if (marcaColumn) { // MARCA
                         final String marca = getCellValue(row.getCell(4));
                         final Paragraph marcaParagraph = new Paragraph();
-                        marcaParagraph.add(new Text("MARCA: ").setBold());
+                        marcaParagraph.add(new Text(encabezado5 + ": ").setBold());
                         marcaParagraph.add(new Text(marca));
                         marcaParagraph
                                 .setFontFamily(marcaFont.getFamily())
@@ -256,7 +264,7 @@ public class GeneratePDFService extends Service<Integer> {
                     if (codigoExternoColumn) { // CODIGO EXTERNO
                         final String codigoExterno = getCellValue(row.getCell(6));
                         final Paragraph codExtParagraph = new Paragraph();
-                        codExtParagraph.add(new Text("COD. EXT.: ").setBold());
+                        codExtParagraph.add(new Text(encabezado7 + ": ").setBold());
                         codExtParagraph.add(new Text(codigoExterno));
                         codExtParagraph
                                 .setFontFamily(codigoExternoFont.getFamily())
