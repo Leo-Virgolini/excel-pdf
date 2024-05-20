@@ -19,6 +19,7 @@ import service.GeneratePDFService;
 import java.io.File;
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -201,21 +202,21 @@ public class VentanaController implements Initializable {
                         generarButton.setDisable(true);
                         progressIndicator.setVisible(true);
                         logTextArea.setStyle("-fx-text-fill: darkblue;");
-                        logTextArea.appendText("Generando PDF...\n");
+                        logTextArea.appendText(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yy HH:mm:ss")) + ": Generando PDF...\n");
                     });
                     service.setOnSucceeded(e -> {
                         successSound.play();
                         logTextArea.setStyle("-fx-text-fill: darkgreen;");
                         logTextArea.appendText("Se han generado " + service.getValue() + " productos.\n");
-                        logTextArea.appendText('"' + archivoDestino.getAbsolutePath() + "\" generado.\n");
+                        logTextArea.appendText(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yy HH:mm:ss")) + ": \"" + archivoDestino.getAbsolutePath() + "\" generado.\n");
                         generarButton.setDisable(false);
                         progressIndicator.setVisible(false);
                     });
                     service.setOnFailed(e -> {
-//                        service.getException().printStackTrace();
+                        service.getException().printStackTrace();
                         errorSound.play();
                         logTextArea.setStyle("-fx-text-fill: firebrick;");
-                        logTextArea.appendText("Error: " + service.getException().getLocalizedMessage() + "\n");
+                        logTextArea.appendText(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yy HH:mm:ss")) + ": Error: " + service.getException().getLocalizedMessage() + "\n");
                         generarButton.setDisable(false);
                         progressIndicator.setVisible(false);
                     });
@@ -554,7 +555,7 @@ public class VentanaController implements Initializable {
     }
 
     private void inicializarComponentes() {
-        ubicacionExcel.setTooltip(new Tooltip("La 1º hoja debe contener los siguientes encabezados en orden: CODIGO | PRODUCTO | RUBRO | SUB RUBRO | MARCA | PRECIO DE VENTA | CODIGO EXTERNO"));
+        ubicacionExcel.setTooltip(new Tooltip("La 1º hoja debe contener los 7 encabezados en orden."));
         ubicacionImagenes.setTooltip(new Tooltip("Formatos de las imágenes: .jpg, .jpeg, .png y .bmp"));
         // Get the list of available font families
         final List<String> fontFamilies = Font.getFamilies();

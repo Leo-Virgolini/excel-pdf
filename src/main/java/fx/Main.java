@@ -15,7 +15,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         stage = primaryStage;
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/Ventana.fxml"));
-        primaryStage.setTitle("Generar PDF - Leo");
+        primaryStage.setTitle("Generar PDF™ - Leo ©℗®");
         final Image icon = new Image(getClass().getResource("/images/ge.jpg").toExternalForm());
         primaryStage.getIcons().add(icon);
         primaryStage.setScene(new Scene(root));
