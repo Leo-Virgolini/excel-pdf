@@ -8,6 +8,7 @@ import com.itextpdf.kernel.pdf.*;
 import com.itextpdf.kernel.pdf.action.PdfAction;
 import com.itextpdf.kernel.pdf.navigation.PdfExplicitDestination;
 import com.itextpdf.layout.Document;
+import com.itextpdf.layout.Style;
 import com.itextpdf.layout.element.*;
 import com.itextpdf.layout.font.FontProvider;
 import com.itextpdf.layout.properties.*;
@@ -33,7 +34,7 @@ public class GeneratePDFService extends Service<Integer> {
 
     private final File archivoExcel;
     private final File carpetaImagenes;
-    private final File archivoPdf;
+    private final File caratulaPdf;
     private final File archivoDestino;
     private final CustomFont codigoFont;
     private final CustomFont productoFont;
@@ -56,13 +57,13 @@ public class GeneratePDFService extends Service<Integer> {
     private final boolean links;
     private final TextArea logTextArea;
 
-    public GeneratePDFService(File archivoExcel, File carpetaImagenes, File archivoPdf, File archivoDestino,
+    public GeneratePDFService(File archivoExcel, File carpetaImagenes, File caratulaPdf, File archivoDestino,
                               CustomFont codigoFont, CustomFont productoFont, CustomFont rubroFont, CustomFont subRubroFont, CustomFont marcaFont, CustomFont precioFont, CustomFont codigoExternoFont,
                               float imageSize, float pageWidth, float pageHeight, boolean codigoColumn, boolean productoColumn,
                               boolean rubroColumn, boolean subRubroColumn, boolean marcaColumn, boolean precioColumn, boolean codigoExternoColumn, boolean imagenes, boolean links, TextArea logTextArea) {
         this.archivoExcel = archivoExcel;
         this.carpetaImagenes = carpetaImagenes;
-        this.archivoPdf = archivoPdf;
+        this.caratulaPdf = caratulaPdf;
         this.archivoDestino = archivoDestino;
         this.codigoFont = codigoFont;
         this.productoFont = productoFont;
@@ -91,25 +92,16 @@ public class GeneratePDFService extends Service<Integer> {
         return new Task<>() {
             @Override
             protected Integer call() throws Exception {
-                return generarPDF(archivoExcel, carpetaImagenes, archivoPdf, archivoDestino,
-                        codigoFont, productoFont, rubroFont, subRubroFont, marcaFont, precioFont, codigoExternoFont,
-                        imageSize, pageWidth, pageHeight,
-                        codigoColumn, productoColumn, rubroColumn, subRubroColumn, marcaColumn, precioColumn, codigoExternoColumn,
-                        imagenes, links, logTextArea);
+                return generarPDF();
             }
         };
     }
 
-    private Integer generarPDF(File archivoExcel, File carpetaImagenes, File archivoPdf, File archivoDestino,
-                               CustomFont codigoFont, CustomFont productoFont, CustomFont rubroFont, CustomFont subRubroFont, CustomFont marcaFont, CustomFont precioFont, CustomFont codigoExternoFont,
-                               float imageSize, float pageWidth, float pageHeight,
-                               boolean codigoColumn, boolean productoColumn, boolean rubroColumn, boolean subRubroColumn, boolean marcaColumn, boolean precioColumn, boolean codigoExternoColumn,
-                               boolean imagenes, boolean links, TextArea logTextArea) throws Exception {
+    private Integer generarPDF() throws Exception {
 
         final String[] supportedExtensions = {".jpg", ".jpeg", ".png", ".bmp"};
         final Image sinImagen = new Image(ImageDataFactory.create((getClass().getResource("/images/SINIMAGEN.jpg").toExternalForm())));
         final ImageData buttonImagenData = ImageDataFactory.create(getClass().getResource("/images/button.png").toExternalForm());
-//        final Map<String, String> productos = new HashMap<>();
 
         final int productsPerPage = 20;
         final int rowsPerPage = 5;
@@ -142,13 +134,31 @@ public class GeneratePDFService extends Service<Integer> {
                 try (final PdfDocument pdfDoc = new PdfDocument(new PdfWriter(archivoDestino.getAbsolutePath()));
                      final Document doc = new Document(pdfDoc, new PageSize(pageWidth, pageHeight), false)) {
 
+                    // Set the viewer preferences to fit the page
+                    pdfDoc.getCatalog().setViewerPreferences(
+                            new PdfViewerPreferences().setFitWindow(true)
+                    );
+
+                    // To set FitPage or FitWidth
+                    pdfDoc.getCatalog().setOpenAction(
+                            PdfAction.createGoTo("FitPage") // FitWidth can be used similarly
+                    );
+
                     final FontProvider fontProvider = new BasicFontProvider(true, true);
                     doc.setFontProvider(fontProvider);
                     doc.setMargins(0, 0, 0, 0);
 
-                    if (archivoPdf != null && archivoPdf.isFile()) {
+                    if (caratulaPdf != null && caratulaPdf.isFile()) {
                         agregarCaratula(pdfDoc, doc);
                     }
+
+                    final Style codigoStyle = new Style().setFontFamily(codigoFont.getFamily()).setFontSize(codigoFont.getSize()).setFontColor(codigoFont.getRGB()).setTextAlignment(TextAlignment.CENTER);
+                    final Style productoStyle = new Style().setFontFamily(productoFont.getFamily()).setFontSize(productoFont.getSize()).setFontColor(productoFont.getRGB()).setTextAlignment(TextAlignment.CENTER);
+                    final Style rubroStyle = new Style().setFontFamily(rubroFont.getFamily()).setFontSize(rubroFont.getSize()).setFontColor(rubroFont.getRGB()).setTextAlignment(TextAlignment.CENTER);
+                    final Style subRubroStyle = new Style().setFontFamily(subRubroFont.getFamily()).setFontSize(subRubroFont.getSize()).setFontColor(subRubroFont.getRGB()).setTextAlignment(TextAlignment.CENTER);
+                    final Style marcaStyle = new Style().setFontFamily(marcaFont.getFamily()).setFontSize(marcaFont.getSize()).setFontColor(marcaFont.getRGB()).setTextAlignment(TextAlignment.CENTER);
+                    final Style precioStyle = new Style().setFontFamily(precioFont.getFamily()).setFontSize(precioFont.getSize()).setFontColor(precioFont.getRGB()).setTextAlignment(TextAlignment.CENTER).simulateBold();
+                    final Style codigoExternoStyle = new Style().setFontFamily(codigoExternoFont.getFamily()).setFontSize(codigoExternoFont.getSize()).setFontColor(codigoExternoFont.getRGB()).setTextAlignment(TextAlignment.CENTER);
 
                     // Create a table with 4 columns and 5 rows per page
                     Table table = new Table(UnitValue.createPercentArray(4)).useAllAvailableWidth();
@@ -171,14 +181,10 @@ public class GeneratePDFService extends Service<Integer> {
                                 // Add the bookmark for the product
 //                            addBookmarks(pdfDoc, codigo, pdfDoc.getNumberOfPages());
                                 final Paragraph codigoParagraph = new Paragraph();
-                                codigoParagraph.add(new Text(encabezado1 + ": ").setBold());
+                                codigoParagraph.add(new Text(encabezado1 + ": ").simulateBold());
                                 codigoParagraph.add(new Text(codigo));
-                                codigoParagraph
-                                        .setDestination(codigo) //
-                                        .setFontFamily(codigoFont.getFamily())
-                                        .setFontSize(codigoFont.getSize())
-                                        .setFontColor(codigoFont.getRGB())
-                                        .setTextAlignment(TextAlignment.CENTER);
+                                codigoParagraph.addStyle(codigoStyle);
+//                                        .setDestination(codigo) //
                                 cell.add(codigoParagraph);
                             } catch (NumberFormatException nfe) {
                                 throw new NumberFormatException("Fila #" + (i + 1) + " " + encabezado1 + " debe ser un número.");
@@ -188,50 +194,34 @@ public class GeneratePDFService extends Service<Integer> {
                         if (productoColumn) { // PRODUCTO
                             final String producto = getCellValue(row.getCell(1));
                             final Paragraph productoParagraph = new Paragraph(producto);
-                            productoParagraph
-                                    .setFontFamily(productoFont.getFamily())
-                                    .setFontSize(productoFont.getSize())
-                                    .setFontColor(productoFont.getRGB())
-                                    .setTextAlignment(TextAlignment.CENTER);
+                            productoParagraph.addStyle(productoStyle);
                             cell.add(productoParagraph);
                         }
 
                         if (rubroColumn) { // RUBRO
                             final String rubro = getCellValue(row.getCell(2));
                             final Paragraph rubroParagraph = new Paragraph();
-                            rubroParagraph.add(new Text(encabezado3 + ": ").setBold());
+                            rubroParagraph.add(new Text(encabezado3 + ": ").simulateBold());
                             rubroParagraph.add(new Text(rubro));
-                            rubroParagraph
-                                    .setFontFamily(rubroFont.getFamily())
-                                    .setFontSize(rubroFont.getSize())
-                                    .setFontColor(rubroFont.getRGB())
-                                    .setTextAlignment(TextAlignment.CENTER);
+                            rubroParagraph.addStyle(rubroStyle);
                             cell.add(rubroParagraph);
                         }
 
                         if (subRubroColumn) { // SUBRUBRO
                             final String subRubro = getCellValue(row.getCell(3));
                             final Paragraph subRubroParagraph = new Paragraph();
-                            subRubroParagraph.add(new Text(encabezado4 + ": ").setBold());
+                            subRubroParagraph.add(new Text(encabezado4 + ": ").simulateBold());
                             subRubroParagraph.add(new Text(subRubro));
-                            subRubroParagraph
-                                    .setFontFamily(subRubroFont.getFamily())
-                                    .setFontSize(subRubroFont.getSize())
-                                    .setFontColor(subRubroFont.getRGB())
-                                    .setTextAlignment(TextAlignment.CENTER);
+                            subRubroParagraph.addStyle(subRubroStyle);
                             cell.add(subRubroParagraph);
                         }
 
                         if (marcaColumn) { // MARCA
                             final String marca = getCellValue(row.getCell(4));
                             final Paragraph marcaParagraph = new Paragraph();
-                            marcaParagraph.add(new Text(encabezado5 + ": ").setBold());
+                            marcaParagraph.add(new Text(encabezado5 + ": ").simulateBold());
                             marcaParagraph.add(new Text(marca));
-                            marcaParagraph
-                                    .setFontFamily(marcaFont.getFamily())
-                                    .setFontSize(marcaFont.getSize())
-                                    .setFontColor(marcaFont.getRGB())
-                                    .setTextAlignment(TextAlignment.CENTER);
+                            marcaParagraph.addStyle(marcaStyle);
                             cell.add(marcaParagraph);
                         }
 
@@ -239,12 +229,8 @@ public class GeneratePDFService extends Service<Integer> {
                             try {
                                 final BigDecimal precioVenta = new BigDecimal(getCellValue(row.getCell(5)));
                                 final String formattedPrecioVenta = precioVenta.compareTo(BigDecimal.ZERO) == 0 ? "$ --" : String.format("$ %(,.2f", precioVenta);
-                                final Paragraph precioParagraph = new Paragraph(formattedPrecioVenta).setBold();
-                                precioParagraph
-                                        .setFontFamily(precioFont.getFamily())
-                                        .setFontSize(precioFont.getSize())
-                                        .setFontColor(precioFont.getRGB())
-                                        .setTextAlignment(TextAlignment.CENTER);
+                                final Paragraph precioParagraph = new Paragraph(formattedPrecioVenta);
+                                precioParagraph.addStyle(precioStyle);
                                 cell.add(precioParagraph);
                             } catch (NumberFormatException nfe) {
                                 throw new NumberFormatException("Fila #" + (i + 1) + " el PRECIO DE VENTA es incorrecto.");
@@ -254,13 +240,9 @@ public class GeneratePDFService extends Service<Integer> {
                         if (codigoExternoColumn) { // CODIGO EXTERNO
                             final String codigoExterno = getCellValue(row.getCell(6));
                             final Paragraph codExtParagraph = new Paragraph();
-                            codExtParagraph.add(new Text(encabezado7 + ": ").setBold());
+                            codExtParagraph.add(new Text(encabezado7 + ": ").simulateBold());
                             codExtParagraph.add(new Text(codigoExterno));
-                            codExtParagraph
-                                    .setFontFamily(codigoExternoFont.getFamily())
-                                    .setFontSize(codigoExternoFont.getSize())
-                                    .setFontColor(codigoExternoFont.getRGB())
-                                    .setTextAlignment(TextAlignment.CENTER);
+                            codExtParagraph.addStyle(codigoExternoStyle);
                             cell.add(codExtParagraph);
                         }
 
@@ -284,8 +266,7 @@ public class GeneratePDFService extends Service<Integer> {
                                     log.append("Advertencia: La imagen \"").append(codigo).append("\" no existe.\n");
                                 }
                                 image
-                                        .setHeight(imageSize)
-                                        .setWidth(imageSize)
+                                        .scaleToFit(imageSize, imageSize)
                                         .setHorizontalAlignment(HorizontalAlignment.CENTER)
                                         .setMarginBottom(0);
                                 cell.add(image);
@@ -416,17 +397,17 @@ public class GeneratePDFService extends Service<Integer> {
 
     private void agregarNumeroPagina(PdfDocument pdfDoc, Document doc) {
         final int numberOfPages = pdfDoc.getNumberOfPages();
-        final DeviceRgb greyColor = new DeviceRgb(128, 128, 128);
+        final Style fontStyle = new Style().setFontSize(5).setFontColor(new DeviceRgb(128, 128, 128));
         for (int i = 1; i <= numberOfPages; i++) {
             // Write aligned text to the specified parameters point
-            doc.showTextAligned(new Paragraph(String.format("Página %s de %s", i, numberOfPages)).setFontSize(5).setFontColor(greyColor),
+            doc.showTextAligned(new Paragraph(String.format("Página %s de %s", i, numberOfPages)).addStyle(fontStyle),
                     pageWidth / 2, 2.5f, i, TextAlignment.CENTER, VerticalAlignment.MIDDLE, 0);
         }
     }
 
     private void agregarCaratula(PdfDocument targetPdfDoc, Document doc) throws Exception {
         // Path to the PDF file containing the page to be added
-        final String pageFilePath = archivoPdf.getAbsolutePath();
+        final String pageFilePath = caratulaPdf.getAbsolutePath();
         try (// Create a PdfReader object for the page PDF file
              PdfReader pagePdfReader = new PdfReader(pageFilePath);
              // Create a PdfDocument object for the page PDF
